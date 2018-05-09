@@ -1,8 +1,9 @@
 var game = new Phaser.Game(800, 500, Phaser.AUTO);
 
 // P L A Y E R
-var Pboi; // it's a player
+//var Pboi; // it's a player
 var playerV = 10; //changable for each level
+var player;
 
 // O B S T A C L E S
 
@@ -16,23 +17,48 @@ level1.prototype = {
 		console.log('First level: preload');
 		game.load.atlas('sheeet', 'assets/img/spritesheet.png', 'assets/img/sprites.json'); // load the stuff
 
-		
+
 		},
 	create: function() {
 		console.log('First level: create');
+		
+		game.physics.startSystem(Phaser.Physics.ARCADE); // stole this from the tutorial to add physics
+		
 		game.add.sprite(0, 0, 'sheeet', 'Background1'); // add da background
-        Pboi = new Player(game, 'sheeet', 'Body');
-		game.add.existing(Pboi);
-		Pboi.body.gravity = 100;
-		game.physics.startSystem(Phaser.Physics.ARCADE);
 
+		player = game.add.sprite(400, 250, 'sheeet', 'Body');
+		game.physics.arcade.enable(player); // add physics to the playa
+		player.body.gravity.y = 450; // succumb to gravity mortal fool
+		player.body.collideWorldBounds = true; // don't fall through the earth
 
 		},
 	update: function() {
 		// main menu logic
 		
+		var cursors = game.input.keyboard.createCursorKeys();
+	
+		if(cursors.up.isDown){ //press up to jump
+			player.body.velocity.y = -150;
+			console.log('jump');
+		}
+
+	
+		if (cursors.left.isDown){
+			//  go left
+			player.body.velocity.x = -150;
+		}
+	
+		else if (cursors.right.isDown){
+			//  go right
+			player.body.velocity.x = 150;
+		}
+		
+		else {
+			//  go right
+			player.body.velocity.x = 0;
 		}
 	}
+}
 
 
 //travel cutscene---------------------------------------------------------------------------

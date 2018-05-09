@@ -8,12 +8,14 @@ function Player (game, key, frame) {
 	this.body.collideWorldBounds = true; //set to false later
 	game.physics.startSystem(Phaser.Physics.ARCADE);
 	this.body.velocity.x = 0;
-	
+	this.body.immovable = false;
 	}
 Player.prototype = Object.create(Phaser.Sprite.prototype);
 Player.prototype.constructor = Player;
 
 Player.prototype.update = function(){
+	
+	/*
 	var cursors = game.input.keyboard.createCursorKeys();
 		console.log('Player update called');
 
