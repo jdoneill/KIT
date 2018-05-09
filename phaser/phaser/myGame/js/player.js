@@ -5,41 +5,38 @@ function Player (game, key, frame) {
 	this.scale.setTo(2, 2);
 	
 	game.physics.enable(this);
-	this.body.collideWorldBounds = true; //set to false later
-	game.physics.startSystem(Phaser.Physics.ARCADE);
-	this.body.velocity.x = 0;
 	this.body.immovable = false;
+	
+		game.physics.arcade.enable(this); // add physics to the playa
+		this.body.gravity.y = 450; // succumb to gravity mortal fool
+		this.body.collideWorldBounds = true; // don't fall through the earth
+
+	
 	}
 Player.prototype = Object.create(Phaser.Sprite.prototype);
 Player.prototype.constructor = Player;
 
 Player.prototype.update = function(){
 	
-	/*
 	var cursors = game.input.keyboard.createCursorKeys();
-		console.log('Player update called');
-
-	//game.input.keyboard.justPressed(Phaser.Keyboard.up)
-
-	if(cursors.up.justPressed && this.body.touching.down){ //press up to jump
-		Player.y = Player.y - playerV;
+	
+	if(cursors.up.isDown){ //press up to jump
+		player.body.velocity.y = -150;
 		console.log('jump');
 	}
 	
-	if(cursors.left.isDown){ //press left to go left
-	this.body.velocity.x = -10;
-		console.log('left');
-
+	if (cursors.left.isDown){
+		//  go left
+		player.body.velocity.x = -150;
 	}
 	
-	if(game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)){
-		this.body.velocity.x = this.body.velocity.x + 100;
-		console.log('right');
-
+	else if (cursors.right.isDown){
+		//  go right
+		player.body.velocity.x = 150;
 	}
 	
-	/*if(cursors.up.justPressed && this.player.body.touching.down && hitPlatform){
-		this.player.body.velocity.y = -305;
+	else {
+		//  go right
+		player.body.velocity.x = 0;
 	}
-	*/
 }

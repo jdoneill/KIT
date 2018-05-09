@@ -26,37 +26,14 @@ level1.prototype = {
 		
 		game.add.sprite(0, 0, 'sheeet', 'Background1'); // add da background
 
-		player = game.add.sprite(400, 250, 'sheeet', 'Body');
-		game.physics.arcade.enable(player); // add physics to the playa
-		player.body.gravity.y = 450; // succumb to gravity mortal fool
-		player.body.collideWorldBounds = true; // don't fall through the earth
+        player = new Player(game, 'sheeet', 'Body');	
+        game.add.existing(player);
+		
 
 		},
 	update: function() {
 		// main menu logic
-		
-		var cursors = game.input.keyboard.createCursorKeys();
-	
-		if(cursors.up.isDown){ //press up to jump
-			player.body.velocity.y = -150;
-			console.log('jump');
-		}
 
-	
-		if (cursors.left.isDown){
-			//  go left
-			player.body.velocity.x = -150;
-		}
-	
-		else if (cursors.right.isDown){
-			//  go right
-			player.body.velocity.x = 150;
-		}
-		
-		else {
-			//  go right
-			player.body.velocity.x = 0;
-		}
 	}
 }
 
