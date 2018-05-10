@@ -51,10 +51,16 @@ level1.prototype = {
 			if(cursors.up.isDown){ //press up to make jump sfx
 				
 				console.log('jumpSound');
+				//pause walking sound when jumping
+				if(walking.play()){
+					walking.pause();
+				}
 			}
 			if (cursors.left.isDown || cursors.right.isDown){
-				//  Play walk sound
-				walking.resume();
+				if(player.body.onFloor()){ //play sound when player is moving on the ground (taken from phaser.io exmaple code)
+					//  Play walk sound
+					walking.resume();
+				}
 			}
 			else {
 				//  Pause music/sfx

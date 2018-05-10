@@ -20,8 +20,8 @@ Player.prototype.update = function(){
 	
 	var cursors = game.input.keyboard.createCursorKeys();
 	
-	if(cursors.up.justPressed){ //press up to jump
-		player.body.velocity.y = -150;
+	if(cursors.up.isDown && player.body.onFloor()){ //press up to jump (taken from phaser.io example code)
+		player.body.velocity.y = -250;
 		console.log('jump');
 	}
 	
