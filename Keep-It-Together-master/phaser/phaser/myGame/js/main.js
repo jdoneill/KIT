@@ -11,8 +11,8 @@ var size;
 // S O U N D S
 var music;
 var walking;
-var fallSFX
-
+var fallSFX;
+var jumping;
 
 // L E V E L  O N E 
 var level1 = function(game) {};
@@ -25,6 +25,7 @@ level1.prototype = {
 		// L O A D  A U D I O
 		game.load.audio('walkNoise', 'assets/audio/rub.mp3');
 		game.load.audio('claireDeLune', 'assets/audio/Clair De lune.mp3');
+		game.load.audio('paperTap', 'assets/audio/jumpSFX.mp3');
 
 		},
 	create: function() {
@@ -34,8 +35,11 @@ level1.prototype = {
 		
 		game.add.sprite(0, 0, 'back', 'Background1'); // add da background
 		
+		// Assigns the audio to a global variable
 		walking = game.add.audio('walkNoise', 1, true); // add walk sfx, vol 1, looping true
 		music = game.add.audio('claireDeLune',2,true);
+		jumping = game.add.audio('paperTap',1,false);
+		
 
         player = new Player(game, 'guy', 'Body');	
         game.add.existing(player);
@@ -48,9 +52,11 @@ level1.prototype = {
 	update: function() {
 		var cursors = game.input.keyboard.createCursorKeys();
 			
-			if(cursors.up.isDown){ //press up to make jump sfx
+			if(cursors.up.isDown && player.body.onFloor()){ //press up to make jump sfx
 				
-				console.log('jumpSound');
+				jumping.play();
+				
+				
 				//pause walking sound when jumping
 				if(walking.play()){
 					walking.pause();
@@ -135,9 +141,9 @@ level2.prototype = {
 	update: function() {
 		var cursors = game.input.keyboard.createCursorKeys();
 		
-		if(cursors.up.isDown){ //press up to make jump sfx
+		if(cursors.up.isDown && player.body.onFloor()){ //press up to make jump sfx
 			
-			console.log('jumpSound');
+			jumping.play();
 		}
 		
 		if (cursors.left.isDown || cursors.right.isDown){
@@ -169,7 +175,6 @@ load3.prototype = {
 		console.log('load3: preload');
 		game.load.atlas('guy', 'assets/img/Player.png', 'assets/img/Player.json'); // load the stuff
 		game.load.atlas('back', 'assets/img/Backgrounds.png', 'assets/img/Backgrounds.json'); // load the stuff
-		game.load.audio('flip', 'assets/audio/flip.mp3');
 
 		},
 	create: function() {
@@ -177,9 +182,9 @@ load3.prototype = {
 		game.add.sprite(0, 0, 'back', 'BackgroundCutscene'); // add da background
 		cutscene = new Cutscene(game, 'guy', 'Body');
         game.add.existing(cutscene);
-
-		fallSFX = game.add.audio('flip', 1, false);
-		fallSFX.play();
+		
+		// Restarts falling noise
+		fallSFX.restart();
 		},
 	update: function() {
 		// main menu logic
@@ -223,9 +228,9 @@ level3.prototype = {
 	update: function() {
 			var cursors = game.input.keyboard.createCursorKeys();
 			
-			if(cursors.up.isDown){ //press up to make jump sfx
+			if(cursors.up.isDown && player.body.onFloor()){ //press up to make jump sfx
 				
-				console.log('jumpSound');
+				jumping.play();
 			}
 			
 			if (cursors.left.isDown || cursors.right.isDown){
@@ -256,7 +261,6 @@ load4.prototype = {
 		console.log('load4: preload');
 		game.load.atlas('guy', 'assets/img/Player.png', 'assets/img/Player.json'); // load the stuff
 		game.load.atlas('back', 'assets/img/Backgrounds.png', 'assets/img/Backgrounds.json'); // load the stuff
-		game.load.audio('flip', 'assets/audio/flip.mp3');
 
 		},
 	create: function() {
@@ -265,8 +269,8 @@ load4.prototype = {
 		cutscene = new Cutscene(game, 'guy', 'Body');
         game.add.existing(cutscene);
 
-		fallSFX = game.add.audio('flip', 1, false);
-		fallSFX.play();
+		// Restarts falling noise
+		fallSFX.restart();
 		},
 	update: function() {
 		// main menu logic
@@ -310,9 +314,9 @@ level4.prototype = {
 	update: function() {
 		var cursors = game.input.keyboard.createCursorKeys();
 		
-		if(cursors.up.isDown){ //press up to make jump sfx
+		if(cursors.up.isDown && player.body.onFloor()){ //press up to make jump sfx
 			
-			console.log('jumpSound');
+			jumping.play();
 		}
 		
 		if (cursors.left.isDown || cursors.right.isDown){
@@ -343,7 +347,6 @@ load5.prototype = {
 		console.log('load5: preload');
 		game.load.atlas('guy', 'assets/img/Player.png', 'assets/img/Player.json'); // load the stuff
 		game.load.atlas('back', 'assets/img/Backgrounds.png', 'assets/img/Backgrounds.json'); // load the stuff
-		game.load.audio('flip', 'assets/audio/flip.mp3');
 
 		},
 	create: function() {
@@ -352,8 +355,8 @@ load5.prototype = {
 		cutscene = new Cutscene(game, 'guy', 'Body');
         game.add.existing(cutscene);
 
-		fallSFX = game.add.audio('flip', 1, false);
-		fallSFX.play();
+		// Restarts falling noise
+		fallSFX.restart();
 		},
 	update: function() {
 		// main menu logic
@@ -397,9 +400,9 @@ level5.prototype = {
 	update: function() {
 		var cursors = game.input.keyboard.createCursorKeys();
 		
-		if(cursors.up.isDown){ //press up to make jump sfx
+		if(cursors.up.isDown && player.body.onFloor()){ //press up to make jump sfx
 			
-			console.log('jumpSound');
+			jumping.play();
 		}
 		
 		if (cursors.left.isDown || cursors.right.isDown){
@@ -430,7 +433,7 @@ endLoad.prototype = {
 		console.log('endLoad: preload');
 		game.load.atlas('guy', 'assets/img/Player.png', 'assets/img/Player.json'); // load the stuff
 		game.load.atlas('back', 'assets/img/Backgrounds.png', 'assets/img/Backgrounds.json'); // load the stuff
-		game.load.audio('flip', 'assets/audio/flip.mp3');
+
 
 		},
 	create: function() {
@@ -439,8 +442,8 @@ endLoad.prototype = {
 		cutscene = new Cutscene(game, 'guy', 'Body');
         game.add.existing(cutscene);
 
-		fallSFX = game.add.audio('flip', 1, false);
-		fallSFX.play();
+		// Restarts falling noise
+		fallSFX.restart();
 		},
 	update: function() {
 		// main menu logic
