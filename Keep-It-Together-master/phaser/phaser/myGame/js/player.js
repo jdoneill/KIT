@@ -20,7 +20,7 @@ Player.prototype.update = function(){
 	
 	var cursors = game.input.keyboard.createCursorKeys();
 	
-	if(cursors.up.isDown){ //press up to jump
+	if(cursors.up.justPressed){ //press up to jump
 		player.body.velocity.y = -150;
 		console.log('jump');
 	}
