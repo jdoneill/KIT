@@ -3,12 +3,16 @@ var game = new Phaser.Game(800, 500, Phaser.AUTO);
 // P L A Y E R
 var playerV = 10; //changable for each level
 var player;
+var cutscene;
+var size;
 
 // O B S T A C L E S
 
 // S O U N D S
 var music;
 var walking;
+var fallSFX
+
 
 // L E V E L  O N E 
 var level1 = function(game) {};
@@ -38,7 +42,7 @@ level1.prototype = {
 
 		walking.play();
 		music.play();
-		
+		size = 1;
 
 		},
 	update: function() {
@@ -48,23 +52,18 @@ level1.prototype = {
 				
 				console.log('jumpSound');
 			}
-			
 			if (cursors.left.isDown || cursors.right.isDown){
 				//  Play walk sound
 				walking.resume();
-				
 			}
-			
 			else {
 				//  Pause music/sfx
 				 walking.pause();
-				
 			}
 			if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR))
 			{
 				game.state.start('load2')
 			}
-
 	}
 }
 
@@ -76,11 +75,17 @@ load2.prototype = {
 		console.log('load2: preload');
 		game.load.atlas('guy', 'assets/img/Player.png', 'assets/img/Player.json'); // load the stuff
 		game.load.atlas('back', 'assets/img/Backgrounds.png', 'assets/img/Backgrounds.json'); // load the stuff
+		game.load.audio('flip', 'assets/audio/flip.mp3');
 
 		},
 	create: function() {
 		console.log('load2: create');
+		game.add.sprite(0, 0, 'back', 'BackgroundCutscene'); // add da background
+		cutscene = new Cutscene(game, 'guy', 'Body');
+        game.add.existing(cutscene);
 
+		fallSFX = game.add.audio('flip', 1, false);
+		fallSFX.play();
 		},
 	update: function() {
 		// main menu logic
@@ -90,9 +95,12 @@ load2.prototype = {
 		
 		if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR))
 		{
-			game.state.start('level2')
+			game.state.start('level2')//switch level
 		}
-		
+		if(cutscene.body.y >820){
+			game.state.start('level2')//switch level
+
+		}
 		}
 	}
 
@@ -115,7 +123,7 @@ level2.prototype = {
 
         player = new Player(game, 'guy', 'Body');	
         game.add.existing(player);
-		
+		size = 1;
 
 		},
 	update: function() {
@@ -155,22 +163,32 @@ load3.prototype = {
 		console.log('load3: preload');
 		game.load.atlas('guy', 'assets/img/Player.png', 'assets/img/Player.json'); // load the stuff
 		game.load.atlas('back', 'assets/img/Backgrounds.png', 'assets/img/Backgrounds.json'); // load the stuff
+		game.load.audio('flip', 'assets/audio/flip.mp3');
 
 		},
 	create: function() {
-		console.log('load3: create');
+		console.log('load2: create');
+		game.add.sprite(0, 0, 'back', 'BackgroundCutscene'); // add da background
+		cutscene = new Cutscene(game, 'guy', 'Body');
+        game.add.existing(cutscene);
 
+		fallSFX = game.add.audio('flip', 1, false);
+		fallSFX.play();
 		},
 	update: function() {
 		// main menu logic
 		
+		// Pauses SFX
 		walking.pause();
+		
 		if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR))
 		{
-			game.state.start('level3')
+			game.state.start('level3')//switch level
 		}
+		if(cutscene.body.y >820){
+			game.state.start('level3')//switch level
 
-
+		}
 		}
 	}
 
@@ -193,7 +211,7 @@ level3.prototype = {
 
         player = new Player(game, 'guy', 'Body');	
         game.add.existing(player);
-		
+		size = 1;
 
 		},
 	update: function() {
@@ -232,22 +250,32 @@ load4.prototype = {
 		console.log('load4: preload');
 		game.load.atlas('guy', 'assets/img/Player.png', 'assets/img/Player.json'); // load the stuff
 		game.load.atlas('back', 'assets/img/Backgrounds.png', 'assets/img/Backgrounds.json'); // load the stuff
+		game.load.audio('flip', 'assets/audio/flip.mp3');
 
 		},
 	create: function() {
-		console.log('load4: create');
+		console.log('load2: create');
+		game.add.sprite(0, 0, 'back', 'BackgroundCutscene'); // add da background
+		cutscene = new Cutscene(game, 'guy', 'Body');
+        game.add.existing(cutscene);
 
+		fallSFX = game.add.audio('flip', 1, false);
+		fallSFX.play();
 		},
 	update: function() {
 		// main menu logic
 		
+		// Pauses SFX
 		walking.pause();
 		
 		if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR))
 		{
-			game.state.start('level4')
+			game.state.start('level4')//switch level
 		}
+		if(cutscene.body.y >820){
+			game.state.start('level4')//switch level
 
+		}
 		}
 	}
 
@@ -270,7 +298,7 @@ level4.prototype = {
 
         player = new Player(game, 'guy', 'Body');	
         game.add.existing(player);
-		
+		size = 1;
 
 		},
 	update: function() {
@@ -309,22 +337,32 @@ load5.prototype = {
 		console.log('load5: preload');
 		game.load.atlas('guy', 'assets/img/Player.png', 'assets/img/Player.json'); // load the stuff
 		game.load.atlas('back', 'assets/img/Backgrounds.png', 'assets/img/Backgrounds.json'); // load the stuff
+		game.load.audio('flip', 'assets/audio/flip.mp3');
 
 		},
 	create: function() {
-		console.log('load5: create');
+		console.log('load2: create');
+		game.add.sprite(0, 0, 'back', 'BackgroundCutscene'); // add da background
+		cutscene = new Cutscene(game, 'guy', 'Body');
+        game.add.existing(cutscene);
 
+		fallSFX = game.add.audio('flip', 1, false);
+		fallSFX.play();
 		},
 	update: function() {
 		// main menu logic
 		
+		// Pauses SFX
 		walking.pause();
 		
 		if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR))
 		{
-			game.state.start('level5')
+			game.state.start('level5')//switch level
 		}
+		if(cutscene.body.y >820){
+			game.state.start('level5')//switch level
 
+		}
 		}
 	}
 
@@ -347,7 +385,7 @@ level5.prototype = {
 
         player = new Player(game, 'guy', 'Body');	
         game.add.existing(player);
-		
+		size = 1;
 
 		},
 	update: function() {
@@ -386,21 +424,32 @@ endLoad.prototype = {
 		console.log('endLoad: preload');
 		game.load.atlas('guy', 'assets/img/Player.png', 'assets/img/Player.json'); // load the stuff
 		game.load.atlas('back', 'assets/img/Backgrounds.png', 'assets/img/Backgrounds.json'); // load the stuff
+		game.load.audio('flip', 'assets/audio/flip.mp3');
 
 		},
 	create: function() {
-		console.log('endLoad: create');
+		console.log('load2: create');
+		game.add.sprite(0, 0, 'back', 'BackgroundCutscene'); // add da background
+		cutscene = new Cutscene(game, 'guy', 'Body');
+        game.add.existing(cutscene);
 
+		fallSFX = game.add.audio('flip', 1, false);
+		fallSFX.play();
 		},
 	update: function() {
 		// main menu logic
+		
+		// Pauses SFX
 		walking.pause();
 		
 		if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR))
 		{
-			game.state.start('endCutscene')
+			game.state.start('endCutscene')//switch level
 		}
+		if(cutscene.body.y >820){
+			game.state.start('endCutscene')//switch level
 
+		}
 		}
 	}
 
