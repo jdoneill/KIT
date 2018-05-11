@@ -36,7 +36,8 @@ level1.prototype = {
 		game.physics.startSystem(Phaser.Physics.ARCADE); // stole this from the tutorial to add physics
 		
 		game.add.sprite(0, 0, 'back', 'Background1'); // add da background
-		
+		game.add.text(0, 0, 'Oh, you got here early...\n We still need to build most of the puzzles,\n but feel free to look around. -> \n...Oh and use the arrow keys to move\n If you want to skip to any stage press space', { fontSize: '30px', fill: '#000' });
+
 		// Assigns the audio to a global variable
 		walking = game.add.audio('walkNoise', 1, true); // add walk sfx, vol 1, looping true
 		music = game.add.audio('claireDeLune',2,true);
@@ -49,6 +50,7 @@ level1.prototype = {
 		walking.play();
 		music.play();
 		size = 1;
+		
 
 		},
 	update: function() {
