@@ -66,6 +66,11 @@ level1.prototype = {
 					walking.pause();
 				}
 			}
+			if(player.body.onFloor() != true)
+			{
+				walking.pause();
+
+			}
 			if (cursors.left.isDown || cursors.right.isDown){
 				if(player.body.onFloor()){ //play sound when player is moving on the ground (taken from phaser.io exmaple code)
 					//  Play walk sound
@@ -144,23 +149,32 @@ level2.prototype = {
 		},
 	update: function() {
 		var cursors = game.input.keyboard.createCursorKeys();
-		
-		if(cursors.up.isDown && player.body.onFloor()){ //press up to make jump sfx
 			
-			jumping.play();
-		}
-		
-		if (cursors.left.isDown || cursors.right.isDown){
-			//  Play walk sound
-			walking.resume();
-			
-		}
-		
-		else {
-			//  Pause music/sfx
-			 walking.pause();
-			
-		}
+			if(cursors.up.isDown && player.body.onFloor()){ //press up to make jump sfx
+				
+				jumping.play();
+				
+				
+				//pause walking sound when jumping
+				if(walking.play()){
+					walking.pause();
+				}
+			}
+			if(player.body.onFloor() != true)
+			{
+				walking.pause();
+
+			}
+			if (cursors.left.isDown || cursors.right.isDown){
+				if(player.body.onFloor()){ //play sound when player is moving on the ground (taken from phaser.io exmaple code)
+					//  Play walk sound
+					walking.resume();
+				}
+			}
+			else {
+				//  Pause music/sfx
+				 walking.pause();
+			}
 		if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) || player.x > 760)
 		{
 			game.state.start('load3')
@@ -230,23 +244,32 @@ level3.prototype = {
 
 		},
 	update: function() {
-			var cursors = game.input.keyboard.createCursorKeys();
+		var cursors = game.input.keyboard.createCursorKeys();
 			
 			if(cursors.up.isDown && player.body.onFloor()){ //press up to make jump sfx
 				
 				jumping.play();
-			}
-			
-			if (cursors.left.isDown || cursors.right.isDown){
-				//  Play walk sound
-				walking.resume();
 				
+				
+				//pause walking sound when jumping
+				if(walking.play()){
+					walking.pause();
+				}
 			}
-			
+			if(player.body.onFloor() != true)
+			{
+				walking.pause();
+
+			}
+			if (cursors.left.isDown || cursors.right.isDown){
+				if(player.body.onFloor()){ //play sound when player is moving on the ground (taken from phaser.io exmaple code)
+					//  Play walk sound
+					walking.resume();
+				}
+			}
 			else {
 				//  Pause music/sfx
 				 walking.pause();
-				
 			}
 			if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) || player.x > 760)
 			{
@@ -317,23 +340,32 @@ level4.prototype = {
 		},
 	update: function() {
 		var cursors = game.input.keyboard.createCursorKeys();
-		
-		if(cursors.up.isDown && player.body.onFloor()){ //press up to make jump sfx
 			
-			jumping.play();
-		}
-		
-		if (cursors.left.isDown || cursors.right.isDown){
-			//  Play walk sound
-			walking.resume();
-			
-		}
-		
-		else {
-			//  Pause music/sfx
-			 walking.pause();
-			
-		}
+			if(cursors.up.isDown && player.body.onFloor()){ //press up to make jump sfx
+				
+				jumping.play();
+				
+				
+				//pause walking sound when jumping
+				if(walking.play()){
+					walking.pause();
+				}
+			}
+			if(player.body.onFloor() != true)
+			{
+				walking.pause();
+
+			}
+			if (cursors.left.isDown || cursors.right.isDown){
+				if(player.body.onFloor()){ //play sound when player is moving on the ground (taken from phaser.io exmaple code)
+					//  Play walk sound
+					walking.resume();
+				}
+			}
+			else {
+				//  Pause music/sfx
+				 walking.pause();
+			}
 		if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) || player.x > 760)
 		{
 			game.state.start('load5')
@@ -413,23 +445,32 @@ level5.prototype = {
 		},
 	update: function() {
 		var cursors = game.input.keyboard.createCursorKeys();
-		
-		if(cursors.up.isDown && player.body.onFloor()){ //press up to make jump sfx
 			
-			jumping.play();
-		}
-		
-		if (cursors.left.isDown || cursors.right.isDown){
-			//  Play walk sound
-			walking.resume();
-			
-		}
-		
-		else {
-			//  Pause music/sfx
-			 walking.pause();
-			
-		}
+			if(cursors.up.isDown && player.body.onFloor()){ //press up to make jump sfx
+				
+				jumping.play();
+				
+				
+				//pause walking sound when jumping
+				if(walking.play()){
+					walking.pause();
+				}
+			}
+			if(player.body.onFloor() != true)
+			{
+				walking.pause();
+
+			}
+			if (cursors.left.isDown || cursors.right.isDown){
+				if(player.body.onFloor()){ //play sound when player is moving on the ground (taken from phaser.io exmaple code)
+					//  Play walk sound
+					walking.resume();
+				}
+			}
+			else {
+				//  Pause music/sfx
+				 walking.pause();
+			}
 		if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) || player.body.collide) //collide with button
 		{
 			game.state.start('endLoad')
