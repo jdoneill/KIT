@@ -5,16 +5,22 @@ var playerV = 10; //changable for each level
 var player;
 var cutscene;
 var size;
+var falling = false;
 
 // O B S T A C L E S
 var buttons;
 
 // S O U N D S
 var music;
+var music2;
+var music3;
+var music4;
+var music5;
 var walking;
 var fallSFX;
 var jumping;
 var buttonPressed;
+var thud;
 
 // L E V E L  O N E 
 var level1 = function(game) {};
@@ -27,6 +33,11 @@ level1.prototype = {
 		// L O A D  A U D I O
 		game.load.audio('walkNoise', 'assets/audio/rub.mp3');
 		game.load.audio('claireDeLune', 'assets/audio/Clair De lune.mp3');
+		game.load.audio('glitch1', 'assets/audio/glitch2.mp3');
+		game.load.audio('glitch2', 'assets/audio/glitch3.mp3');
+		game.load.audio('glitch3', 'assets/audio/glitch4.mp3');
+		game.load.audio('thudSFX', 'assets/audio/paperTapTable.mp3');
+
 		game.load.audio('paperTap', 'assets/audio/jumpSFX.mp3');
 
 		},
@@ -41,6 +52,11 @@ level1.prototype = {
 		// Assigns the audio to a global variable
 		walking = game.add.audio('walkNoise', 1, true); // add walk sfx, vol 1, looping true
 		music = game.add.audio('claireDeLune',2,true);
+		music2 = game.add.audio('glitch1',0,true);
+		music3 = game.add.audio('glitch2',0,true);
+		music4 = game.add.audio('glitch3',0,true);
+		
+		thud = game.add.audio('thudSFX', 1, false);
 		jumping = game.add.audio('paperTap',1,false);
 		
 
@@ -49,12 +65,31 @@ level1.prototype = {
 
 		walking.play();
 		music.play();
+		music2.play();
+		music3.play();
+		music4.play();
+
 		size = 1;
 		
 
 		},
 	update: function() {
 		var cursors = game.input.keyboard.createCursorKeys();
+		
+		// Figures out if the player is falling then adds a landing sfx.
+		if(player.body.velocity.y > 0)
+		{
+			falling = true;
+			
+			
+		}
+		
+		if (player.body.onFloor() && falling == true)
+		{
+			thud.play();
+			falling = false;
+			console.log('Landed');
+		}
 			
 			if(cursors.up.isDown && player.body.onFloor()){ //press up to make jump sfx
 				
@@ -149,6 +184,24 @@ level2.prototype = {
 		},
 	update: function() {
 		var cursors = game.input.keyboard.createCursorKeys();
+			
+			music.destroy();
+			music2.volume = 2;
+			
+					// Figures out if the player is falling then adds a landing sfx.
+		if(player.body.velocity.y > 0)
+		{
+			falling = true;
+			
+			
+		}
+		
+		if (player.body.onFloor() && falling == true)
+		{
+			thud.play();
+			falling = false;
+			console.log('Landed');
+		}
 			
 			if(cursors.up.isDown && player.body.onFloor()){ //press up to make jump sfx
 				
@@ -246,6 +299,26 @@ level3.prototype = {
 	update: function() {
 		var cursors = game.input.keyboard.createCursorKeys();
 			
+			music2.destroy();
+			music3.volume = 2;
+			
+					// Figures out if the player is falling then adds a landing sfx.
+		if(player.body.velocity.y > 0)
+		{
+			falling = true;
+			
+			
+		}
+		
+		if (player.body.onFloor() && falling == true)
+		{
+			thud.play();
+			falling = false;
+			console.log('Landed');
+		}
+			
+			music2.destroy();
+			music3.volume = 2;
 			if(cursors.up.isDown && player.body.onFloor()){ //press up to make jump sfx
 				
 				jumping.play();
@@ -341,6 +414,24 @@ level4.prototype = {
 	update: function() {
 		var cursors = game.input.keyboard.createCursorKeys();
 			
+			music3.destroy();
+			music4.volume = 2;
+			
+					// Figures out if the player is falling then adds a landing sfx.
+		if(player.body.velocity.y > 0)
+		{
+			falling = true;
+			
+			
+		}
+		
+		if (player.body.onFloor() && falling == true)
+		{
+			thud.play();
+			falling = false;
+			console.log('Landed');
+		}
+			
 			if(cursors.up.isDown && player.body.onFloor()){ //press up to make jump sfx
 				
 				jumping.play();
@@ -420,7 +511,9 @@ level5.prototype = {
 		game.load.atlas('back', 'assets/img/Backgrounds.png', 'assets/img/Backgrounds.json'); // load the stuff
 		game.load.atlas('puzzle', 'assets/img/puzzles.png', 'assets/img/puzzles.json'); // load the stuff
 		game.load.audio('pressed', 'assets/audio/sadTrombone.mp3');
+		game.load.audio('glitchF', 'assets/audio/glitch sfx.mp3');
 
+		
 
 		},
 	create: function() {
@@ -441,10 +534,30 @@ level5.prototype = {
         player = new Player(game, 'guy', 'Body');	
         game.add.existing(player);
 		size = 1;
+		
+		music5 = game.add.audio('glitchF',2,true);
+		music5.play();
 
 		},
 	update: function() {
 		var cursors = game.input.keyboard.createCursorKeys();
+			
+			music4.destroy();
+			
+					// Figures out if the player is falling then adds a landing sfx.
+		if(player.body.velocity.y > 0)
+		{
+			falling = true;
+			
+			
+		}
+		
+		if (player.body.onFloor() && falling == true)
+		{
+			thud.play();
+			falling = false;
+			console.log('Landed');
+		}
 			
 			if(cursors.up.isDown && player.body.onFloor()){ //press up to make jump sfx
 				
@@ -478,7 +591,7 @@ level5.prototype = {
 		function buttonPress (player, buttons) {//press the button to "win"
 			game.state.start('endLoad')
 //add sfx
-			buttonPressed.play();
+		//	buttonPressed.play();
 
 	}
 		game.physics.arcade.collide(player, buttons, buttonPress, null, this);
@@ -558,6 +671,11 @@ GameOver.prototype = {
 		console.log('GameOver: create');
 		game.add.sprite(0, 0, 'back', 'Background5'); // add da background
 		music.destroy();
+		music2.destroy();
+		music3.destroy();
+		music4.destroy();
+
+		music5.destroy();
 		game.add.text(280, 200, 'Game Over', { fontSize: '50px', fill: '#000' });
 		},
 	update: function() {
