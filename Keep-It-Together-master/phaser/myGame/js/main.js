@@ -9,13 +9,13 @@ var cutscene;
 var size;
 var falling = false;
 var rArm;
-var rArmOn = true;
+var rArmOn;
 var lArm;
-var lArmOn = true;
+var lArmOn;
 var rLeg;
-var rLegOn = true;
+var rLegOn;
 var lLeg;
-var lLegOn = true;
+var lLegOn;
 
 var level;
 
@@ -57,7 +57,10 @@ level1.prototype = {
 		console.log('First level: create');
 		
 		game.physics.startSystem(Phaser.Physics.ARCADE); // stole this from the tutorial to add physics
-		
+		rArmOn = true;
+		lArmOn = true;
+		rLegOn = true;
+		lLegOn = true;
 		game.add.sprite(0, 0, 'back', 'Background1'); // add da background
 		game.add.text(0, 0, 'Oh, you got here early...\n We still need to build most of the puzzles,\n but feel free to look around. -> \n...Oh and use the arrow keys to move\n If you want to skip to any stage press space', { fontSize: '30px', fill: '#000' });
 
@@ -83,6 +86,10 @@ level1.prototype = {
 
 		size = 1;
 		level = 1;
+		rArmOn = true;
+		lArmOn = true;
+		rLegOn = true;
+		lLegOn = true;
 		
 
 		},
