@@ -137,7 +137,14 @@ level1.prototype = {
 				rArmOn = false;
 				level = level +1;
 			}
-	}
+	},
+	/*
+	render: function() {
+		// setup debug rendering
+			game.debug.bodyInfo(player, 32, 32);
+			game.debug.body(player);
+	},
+	*/
 
 }
 
@@ -621,7 +628,15 @@ level5.prototype = {
 	}
 		game.physics.arcade.collide(player, buttons, buttonPress, null, this);
 
-	}
+	},
+	/*
+		render: function() {
+		// setup debug rendering
+			game.debug.bodyInfo(player, 32, 32);
+			game.debug.body(player);
+	},
+	*/
+	
 	}
 
 //travel cutscene---------------------------------------------------------------------------

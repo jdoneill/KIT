@@ -25,10 +25,10 @@ function Player (game, key, frame) {
 	if(lLegOn == true){
 	lLeg = limbs.create(this.body.x - 50, this.body.y + 40, 'guy', 'legL'); // make some platforms
     lLeg.scale.setTo(1, 1.5);
-	this.body.setSize(40,67,-5,0);
+	this.body.setSize(43,67,-6,0);
 	}
 	else{
-	this.body.setSize(40,53,-5,0);
+	this.body.setSize(32,53,0,0);
 	}
 	
 		game.physics.arcade.enable(this); // add physics to the playa
