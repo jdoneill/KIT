@@ -8,30 +8,29 @@ function Player (game, key, frame) {
 	this.body.immovable = false;
 
 	var canJump = false;
+	var noArms = false;
 	
 	limbs = game.add.group(); // gotta have a ground to stand on
 	limbs.enableBody = true; // gotta make the ground stand on-able
 	
 	if(rArmOn == true){
-    rArm = limbs.create(this.body.x, this.body.y, 'guy', 'armR'); // make some platforms
+    rArm = limbs.create(this.body.x, this.body.y, 'guy', 'armR'); //add right armL
     rArm.scale.setTo(1, 1.5);
 	}
 	if(lArmOn == true){
-	lArm = limbs.create(this.body.x - 77, this.body.y, 'guy', 'armL'); // make some platforms
-    lArm.scale.setTo(1, 1.5);
+	lArm = limbs.create(this.body.x - 77, this.body.y, 'guy', 'armL'); //add left armL
+	lArm.scale.setTo(1, 1.5);
 	}
 	if(rLegOn == true){
-	rLeg = limbs.create(this.body.x - 20, this.body.y + 40, 'guy', 'legR'); // make some platforms
+	rLeg = limbs.create(this.body.x - 20, this.body.y + 40, 'guy', 'legR'); //add right legL
     rLeg.scale.setTo(1, 1.5);
 	}
 	if(lLegOn == true){
-	lLeg = limbs.create(this.body.x - 50, this.body.y + 40, 'guy', 'legL'); // make some platforms
+	lLeg = limbs.create(this.body.x - 50, this.body.y + 40, 'guy', 'legL'); //add left leg
     lLeg.scale.setTo(1, 1.5);
-	this.body.setSize(43,67,-6,0);
 	}
-	else{
-	this.body.setSize(32,53,0,0);
-	}
+
+
 	
 		game.physics.arcade.enable(this); // add physics to the playa
 		this.body.gravity.y = 450; // succumb to gravity mortal fool
@@ -54,10 +53,39 @@ Player.prototype.update = function(){
 	
 	else{
 		*/
-		limbs.x = player.x - 367;
-		limbs.y = player.y;
+		rArm.x = player.x + 32;
+		rArm.y = player.y;
+		lArm.x = player.x - 41;
+		lArm.y = player.y;
+		rLeg.x = player.x + 17;
+		rLeg.y = player.y + 42;
+		lLeg.x = player.x - 24;
+		lLeg.y = player.y + 42;
 	//}
 
+	if(lLegOn != true){//no limbs
+		this.body.setSize(32,53,0,0);
+		//decrease velocity
+	}
+	else if(rLegOn != true){//no right legL
+		this.body.setSize(32,67,0,0);//same as no arms
+		//decrease velocity
+	}
+	else if(lArmOn != true){// no arms
+		this.body.setSize(32,67,0,0);
+		//decrease velocity
+	}
+	else if(rArmOn != true){// no right armL
+		this.body.setSize(38,67,-6,0);
+		//decrease velocity
+	}
+	else{//all limbs
+		this.body.setSize(43,67,-6,0);
+		//set velocity
+	}
+	
+	
+	
 	if(cursors.up.isDown && player.body.onFloor())
     { //press up to jump (taken from phaser.io example code)
     if(canJump == true)
