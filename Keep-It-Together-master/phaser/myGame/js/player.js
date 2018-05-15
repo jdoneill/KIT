@@ -10,28 +10,26 @@ function Player (game, key, frame) {
 	limbs = game.add.group(); // gotta have a ground to stand on
 	limbs.enableBody = true; // gotta make the ground stand on-able
 	
+	if(rArmOn == true){
     rArm = limbs.create(this.body.x, this.body.y, 'guy', 'armR'); // make some platforms
     rArm.scale.setTo(1, 1.5);
+	}
+	if(lArmOn == true){
 	lArm = limbs.create(this.body.x - 77, this.body.y, 'guy', 'armL'); // make some platforms
     lArm.scale.setTo(1, 1.5);
+	}
+	if(rLegOn == true){
 	rLeg = limbs.create(this.body.x - 20, this.body.y + 40, 'guy', 'legR'); // make some platforms
     rLeg.scale.setTo(1, 1.5);
+	}
+	if(lLegOn == true){
 	lLeg = limbs.create(this.body.x - 50, this.body.y + 40, 'guy', 'legL'); // make some platforms
     lLeg.scale.setTo(1, 1.5);
 	this.body.setSize(40,67,-5,0);
-	/*
-	ledge = platforms.create(-50, 200, 'ground');
-    ledge.body.immovable = true;
-    ledge = platforms.create(50, 530, 'ground');
-	ledge.scale.setTo(.5, .5);
-    ledge.body.immovable = true;
-    ledge = platforms.create(423, 175, 'ground');
-	ledge.scale.setTo(1, 1.5);
-    ledge.body.immovable = true;
-    ledge = platforms.create(250, 300, 'ground');
-	ledge.scale.setTo(.5, 1);
-    ledge.body.immovable = true;
-	*/
+	}
+	else{
+	this.body.setSize(40,53,-5,0);
+	}
 	
 		game.physics.arcade.enable(this); // add physics to the playa
 		this.body.gravity.y = 450; // succumb to gravity mortal fool
