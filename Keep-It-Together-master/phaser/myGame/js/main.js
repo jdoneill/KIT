@@ -8,6 +8,7 @@ var player;
 var cutscene;
 var size;
 var falling = false;
+var yesJump = true; 
 var rArm;
 var rArmOn;
 var lArm;
@@ -102,6 +103,11 @@ level1.prototype = {
 			falling = true;
 		}
 		
+		if(cursors.up.isUp)
+			{
+				yesJump = true;
+			}
+		
 		if (player.body.onFloor() && falling == true)
 		{
 			thud.play();
@@ -109,13 +115,19 @@ level1.prototype = {
 			console.log('Landed');
 		}
 			
-			if(cursors.up.isDown && player.body.onFloor()){ //press up to make jump sfx
-				jumping.play();
-				
-				if(walking.play()){//pause walking sound when jumping
-					walking.pause();
+			if(cursors.up.isDown && player.body.onFloor())
+			{ //press up to make jump sfx
+				if(yesJump == true)
+				{
+					jumping.play();
+					yesJump = false;
+					if(walking.play())
+					{//pause walking sound when jumping
+						walking.pause();
+					}
 				}
 			}
+			
 			if(player.body.onFloor() != true)
 			{
 				walking.pause();
@@ -213,13 +225,16 @@ level2.prototype = {
 			music.destroy();
 			music2.volume = 2;
 			
-					// Figures out if the player is falling then adds a landing sfx.
+		// Figures out if the player is falling then adds a landing sfx.
 		if(player.body.velocity.y > 0)
 		{
 			falling = true;
-			
-			
 		}
+		
+		if(cursors.up.isUp)
+			{
+				yesJump = true;
+			}
 		
 		if (player.body.onFloor() && falling == true)
 		{
@@ -228,16 +243,19 @@ level2.prototype = {
 			console.log('Landed');
 		}
 			
-			if(cursors.up.isDown && player.body.onFloor()){ //press up to make jump sfx
-				
-				jumping.play();
-				
-				
-				//pause walking sound when jumping
-				if(walking.play()){
-					walking.pause();
+			if(cursors.up.isDown && player.body.onFloor())
+			{ //press up to make jump sfx
+				if(yesJump == true)
+				{
+					jumping.play();
+					yesJump = false;
+					if(walking.play())
+					{//pause walking sound when jumping
+						walking.pause();
+					}
 				}
 			}
+
 			if(player.body.onFloor() != true)
 			{
 				walking.pause();
@@ -330,12 +348,16 @@ level3.prototype = {
 			music3.volume = 2;
 			
 					// Figures out if the player is falling then adds a landing sfx.
+		// Figures out if the player is falling then adds a landing sfx.
 		if(player.body.velocity.y > 0)
 		{
 			falling = true;
-			
-			
 		}
+		
+		if(cursors.up.isUp)
+			{
+				yesJump = true;
+			}
 		
 		if (player.body.onFloor() && falling == true)
 		{
@@ -344,18 +366,21 @@ level3.prototype = {
 			console.log('Landed');
 		}
 			
-			music2.destroy();
-			music3.volume = 2;
-			if(cursors.up.isDown && player.body.onFloor()){ //press up to make jump sfx
-				
-				jumping.play();
-				
-				
-				//pause walking sound when jumping
-				if(walking.play()){
-					walking.pause();
+			if(cursors.up.isDown && player.body.onFloor())
+			{ //press up to make jump sfx
+				if(yesJump == true)
+				{
+					jumping.play();
+					yesJump = false;
+					if(walking.play())
+					{//pause walking sound when jumping
+						walking.pause();
+					}
 				}
 			}
+			
+			music2.destroy();
+			music3.volume = 2;
 			if(player.body.onFloor() != true)
 			{
 				walking.pause();
@@ -447,12 +472,16 @@ level4.prototype = {
 			music4.volume = 2;
 			
 					// Figures out if the player is falling then adds a landing sfx.
+		// Figures out if the player is falling then adds a landing sfx.
 		if(player.body.velocity.y > 0)
 		{
 			falling = true;
-			
-			
 		}
+		
+		if(cursors.up.isUp)
+			{
+				yesJump = true;
+			}
 		
 		if (player.body.onFloor() && falling == true)
 		{
@@ -461,16 +490,19 @@ level4.prototype = {
 			console.log('Landed');
 		}
 			
-			if(cursors.up.isDown && player.body.onFloor()){ //press up to make jump sfx
-				
-				jumping.play();
-				
-				
-				//pause walking sound when jumping
-				if(walking.play()){
-					walking.pause();
+			if(cursors.up.isDown && player.body.onFloor())
+			{ //press up to make jump sfx
+				if(yesJump == true)
+				{
+					jumping.play();
+					yesJump = false;
+					if(walking.play())
+					{//pause walking sound when jumping
+						walking.pause();
+					}
 				}
 			}
+
 			if(player.body.onFloor() != true)
 			{
 				walking.pause();
@@ -574,14 +606,16 @@ level5.prototype = {
 		var cursors = game.input.keyboard.createCursorKeys();
 			
 			music4.destroy();
-			
-					// Figures out if the player is falling then adds a landing sfx.
+		// Figures out if the player is falling then adds a landing sfx.
 		if(player.body.velocity.y > 0)
 		{
 			falling = true;
-			
-			
 		}
+		
+		if(cursors.up.isUp)
+			{
+				yesJump = true;
+			}
 		
 		if (player.body.onFloor() && falling == true)
 		{
@@ -590,16 +624,19 @@ level5.prototype = {
 			console.log('Landed');
 		}
 			
-			if(cursors.up.isDown && player.body.onFloor()){ //press up to make jump sfx
-				
-				jumping.play();
-				
-				
-				//pause walking sound when jumping
-				if(walking.play()){
-					walking.pause();
+			if(cursors.up.isDown && player.body.onFloor())
+			{ //press up to make jump sfx
+				if(yesJump == true)
+				{
+					jumping.play();
+					yesJump = false;
+					if(walking.play())
+					{//pause walking sound when jumping
+						walking.pause();
+					}
 				}
 			}
+
 			if(player.body.onFloor() != true)
 			{
 				walking.pause();

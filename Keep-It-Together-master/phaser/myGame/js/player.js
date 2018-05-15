@@ -7,6 +7,8 @@ function Player (game, key, frame) {
 	game.physics.enable(this);
 	this.body.immovable = false;
 
+	var canJump = false;
+	
 	limbs = game.add.group(); // gotta have a ground to stand on
 	limbs.enableBody = true; // gotta make the ground stand on-able
 	
@@ -55,11 +57,24 @@ Player.prototype.update = function(){
 		limbs.x = player.x - 367;
 		limbs.y = player.y;
 	//}
+
+	if(cursors.up.isDown && player.body.onFloor())
+    { //press up to jump (taken from phaser.io example code)
+    if(canJump == true)
+        {
+        player.body.velocity.y = -250;
+        console.log('jump');
+        canJump = false;
+        }
+    }
+
+    // makes it so you have to press up each time you want to jump
+    if(cursors.up.isUp)
+    {
+        canJump = true;
+
+    }
 	
-	if(cursors.up.isDown && player.body.onFloor()){ //press up to jump (taken from phaser.io example code)
-		player.body.velocity.y = -250;
-		console.log('jump');
-	}
 	
 	if (cursors.left.isDown){
 		//  go left
