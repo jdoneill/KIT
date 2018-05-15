@@ -19,7 +19,7 @@ Cutscene.prototype = Object.create(Phaser.Sprite.prototype);
 Cutscene.prototype.constructor = Cutscene;
 
 Cutscene.prototype.update = function(){
-	
+
 	cutscene.angle +=5;
 	size -= .01;
 

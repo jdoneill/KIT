@@ -1,11 +1,23 @@
 var game = new Phaser.Game(800, 500, Phaser.AUTO);
 
+//var game = new Phaser.Game(800, 500, Phaser.AUTO, 'Keep It Together', { preload: preload, create: create, update: update, render: render });
+
 // P L A Y E R
 var playerV = 10; //changable for each level
 var player;
 var cutscene;
 var size;
 var falling = false;
+var rArm;
+var rArmOn = true;
+var lArm;
+var lArmOn = true;
+var rLeg;
+var rLegOn = true;
+var lLeg;
+var lLegOn = true;
+
+var level;
 
 // O B S T A C L E S
 var buttons;
@@ -70,6 +82,7 @@ level1.prototype = {
 		music4.play();
 
 		size = 1;
+		level = 1;
 		
 
 		},
@@ -80,8 +93,6 @@ level1.prototype = {
 		if(player.body.velocity.y > 0)
 		{
 			falling = true;
-			
-			
 		}
 		
 		if (player.body.onFloor() && falling == true)
@@ -92,12 +103,9 @@ level1.prototype = {
 		}
 			
 			if(cursors.up.isDown && player.body.onFloor()){ //press up to make jump sfx
-				
 				jumping.play();
 				
-				
-				//pause walking sound when jumping
-				if(walking.play()){
+				if(walking.play()){//pause walking sound when jumping
 					walking.pause();
 				}
 			}
@@ -119,8 +127,11 @@ level1.prototype = {
 			if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) || player.x > 760)
 			{
 				game.state.start('load2')
+				rArmOn = false;
+				level = level +1;
 			}
 	}
+
 }
 
 
@@ -129,7 +140,7 @@ var load2 = function(game) {};
 load2.prototype = {
 	preload: function() { // pre game loop
 		console.log('load2: preload');
-		game.load.atlas('guy', 'assets/img/Player.png', 'assets/img/Player.json'); // load the stuff
+		game.load.atlas('scene', 'assets/img/cutscenes.png', 'assets/img/cutscenes.json'); // load the stuff
 		game.load.atlas('back', 'assets/img/Backgrounds.png', 'assets/img/Backgrounds.json'); // load the stuff
 		game.load.audio('flip', 'assets/audio/flip.mp3');
 
@@ -137,7 +148,7 @@ load2.prototype = {
 	create: function() {
 		console.log('load2: create');
 		game.add.sprite(0, 0, 'back', 'BackgroundCutscene'); // add da background
-		cutscene = new Cutscene(game, 'guy', 'Body');
+		cutscene = new Cutscene(game, 'scene', 'cuscenePlayer1');
         game.add.existing(cutscene);
 
 		fallSFX = game.add.audio('flip', 1, false);
@@ -231,6 +242,8 @@ level2.prototype = {
 		if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) || player.x > 760)
 		{
 			game.state.start('load3')
+			lArmOn = false;
+			level = level +1;
 		}
 
 		
@@ -251,7 +264,7 @@ load3.prototype = {
 	create: function() {
 		console.log('load2: create');
 		game.add.sprite(0, 0, 'back', 'BackgroundCutscene'); // add da background
-		cutscene = new Cutscene(game, 'guy', 'Body');
+		cutscene = new Cutscene(game, 'scene', 'cuscenePlayer2');
         game.add.existing(cutscene);
 		
 		// Restarts falling noise
@@ -347,6 +360,8 @@ level3.prototype = {
 			if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) || player.x > 760)
 			{
 				game.state.start('load4')
+				rLegOn = false;
+				level = level +1;
 			}
 
 
@@ -366,7 +381,7 @@ load4.prototype = {
 	create: function() {
 		console.log('load2: create');
 		game.add.sprite(0, 0, 'back', 'BackgroundCutscene'); // add da background
-		cutscene = new Cutscene(game, 'guy', 'Body');
+		cutscene = new Cutscene(game, 'scene', 'cuscenePlayer3');
         game.add.existing(cutscene);
 
 		// Restarts falling noise
@@ -460,6 +475,8 @@ level4.prototype = {
 		if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) || player.x > 760)
 		{
 			game.state.start('load5')
+			lLegOn = false;
+			level = level +1;
 		}
 
 		
@@ -479,9 +496,9 @@ load5.prototype = {
 	create: function() {
 		console.log('load2: create');
 		game.add.sprite(0, 0, 'back', 'BackgroundCutscene'); // add da background
-		cutscene = new Cutscene(game, 'guy', 'Body');
+		cutscene = new Cutscene(game, 'scene', 'cuscenePlayer4');
         game.add.existing(cutscene);
-
+		
 		// Restarts falling noise
 		fallSFX.restart();
 		},
@@ -587,6 +604,7 @@ level5.prototype = {
 		if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) || player.body.collide) //collide with button
 		{
 			game.state.start('endLoad')
+			level = level +1;
 		}
 		function buttonPress (player, buttons) {//press the button to "win"
 			game.state.start('endLoad')
@@ -612,9 +630,9 @@ endLoad.prototype = {
 	create: function() {
 		console.log('load2: create');
 		game.add.sprite(0, 0, 'back', 'BackgroundCutscene'); // add da background
-		cutscene = new Cutscene(game, 'guy', 'Body');
+		cutscene = new Cutscene(game, 'scene', 'cuscenePlayer4');
         game.add.existing(cutscene);
-
+		
 		// Restarts falling noise
 		fallSFX.restart();
 		},
