@@ -3,7 +3,7 @@ var game = new Phaser.Game(800, 500, Phaser.AUTO);
 //var game = new Phaser.Game(800, 500, Phaser.AUTO, 'Keep It Together', { preload: preload, create: create, update: update, render: render });
 
 // P L A Y E R
-var playerV = 10; //changable for each level
+var playerVel = 150;
 var player;
 var cutscene;
 var size;
@@ -18,6 +18,7 @@ var rLegOn;
 var lLeg;
 var lLegOn;
 
+// L E V E L  T R A C K E R 
 var level;
 
 // O B S T A C L E S
@@ -71,11 +72,9 @@ level1.prototype = {
 		music2 = game.add.audio('glitch1',0,true);
 		music3 = game.add.audio('glitch2',0,true);
 		music4 = game.add.audio('glitch3',0,true);
-		
 		thud = game.add.audio('thudSFX', 1, false);
 		jumping = game.add.audio('paperTap',1,false);
 		
-
         player = new Player(game, 'guy', 'Body');	
         game.add.existing(player);
 
@@ -143,7 +142,7 @@ level1.prototype = {
 				//  Pause music/sfx
 				 walking.pause();
 			}
-			if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) || player.x > 760)
+			if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) || player.x > 735)
 			{
 				game.state.start('load2')
 				rArmOn = false;
@@ -151,11 +150,11 @@ level1.prototype = {
 			}
 	},
 	
-	render: function() {
+/* 	render: function() {
 		// setup debug rendering
 			game.debug.bodyInfo(player, 32, 32);
 			game.debug.body(player);
-	},
+	}, */
 	
 
 }
@@ -281,11 +280,11 @@ level2.prototype = {
 		
 
 	},
-		render: function() {
+/* 		render: function() {
 		// setup debug rendering
 			game.debug.bodyInfo(player, 32, 32);
 			game.debug.body(player);
-	},
+	}, */
 	}
 
 
@@ -408,11 +407,11 @@ level3.prototype = {
 				level = level +1;
 			}
 	},
-			render: function() {
+/* 			render: function() {
 		// setup debug rendering
 			game.debug.bodyInfo(player, 32, 32);
 			game.debug.body(player);
-	},
+	}, */
 	}
 
 
@@ -536,11 +535,11 @@ level4.prototype = {
 		
 
 	},
-			render: function() {
+/* 			render: function() {
 		// setup debug rendering
 			game.debug.bodyInfo(player, 32, 32);
 			game.debug.body(player);
-	},
+	}, */
 	}
 
 //travel cutscene---------------------------------------------------------------------------
@@ -680,12 +679,12 @@ level5.prototype = {
 
 	},
 	
-		render: function() {
+/* 		render: function() {
 		// setup debug rendering
 			game.debug.bodyInfo(player, 32, 32);
 			game.debug.body(player);
 	},
-	
+	 */
 	
 	}
 

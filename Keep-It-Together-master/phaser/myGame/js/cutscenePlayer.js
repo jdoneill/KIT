@@ -13,7 +13,6 @@ function Cutscene (game, key, frame) {
 		this.body.gravity.y = 175; // succumb to gravity mortal fool
 		this.body.collideWorldBounds = false; // don't fall through the earth
 
-	
 	}
 Cutscene.prototype = Object.create(Phaser.Sprite.prototype);
 Cutscene.prototype.constructor = Cutscene;

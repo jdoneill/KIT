@@ -8,7 +8,6 @@ function Player (game, key, frame) {
 	this.body.immovable = false;
 
 	var canJump = false;
-	var noArms = false;
 	
 	limbs = game.add.group(); // gotta have a ground to stand on
 	limbs.enableBody = true; // gotta make the ground stand on-able
@@ -30,13 +29,10 @@ function Player (game, key, frame) {
     lLeg.scale.setTo(1, 1.5);
 	}
 
-
-	
 		game.physics.arcade.enable(this); // add physics to the playa
-		this.body.gravity.y = 450; // succumb to gravity mortal fool
+		this.body.gravity.y = 450; // change this to a var for water level gravity change
 		this.body.collideWorldBounds = true; // don't fall through the earth
 
-	
 	}
 Player.prototype = Object.create(Phaser.Sprite.prototype);
 Player.prototype.constructor = Player;
@@ -45,47 +41,49 @@ Player.prototype.update = function(){
 	
 	var cursors = game.input.keyboard.createCursorKeys();
 	
-	/*
-	if(cursors.){
-	//spacebar is pressed remove limb
-	
+/* 	if(level == 1 && rArmOn == true){
+		if(Phaser.Keyboard.SPACEBAR.isDown){//spacebar is pressed remove limb
+			rArmOn = false;
+		}
 	}
-	
-	else{
-		*/
+	else{ */
 		rArm.x = player.x + 32;
 		rArm.y = player.y;
+	//}
+		
 		lArm.x = player.x - 41;
 		lArm.y = player.y;
+		
 		rLeg.x = player.x + 17;
 		rLeg.y = player.y + 42;
+		
 		lLeg.x = player.x - 24;
 		lLeg.y = player.y + 42;
 	//}
 
 	if(lLegOn != true){//no limbs
 		this.body.setSize(32,53,0,0);
-		//decrease velocity
+		playerVel = 50; //decrease velocity
 	}
 	else if(rLegOn != true){//no right legL
 		this.body.setSize(32,67,0,0);//same as no arms
-		//decrease velocity
+		playerVel = 70; //decrease velocity
 	}
 	else if(lArmOn != true){// no arms
 		this.body.setSize(32,67,0,0);
-		//decrease velocity
+		playerVel = 90; //decrease velocity
 	}
 	else if(rArmOn != true){// no right armL
 		this.body.setSize(38,67,-6,0);
-		//decrease velocity
+		playerVel = 110; //decrease velocity
 	}
 	else{//all limbs
 		this.body.setSize(43,67,-6,0);
-		//set velocity
+		playerVel = 150 //set velocity
 	}
 	
-	
-	
+	// P L A Y E R  M O V E M E N T
+	// J U M P
 	if(cursors.up.isDown && player.body.onFloor())
     { //press up to jump (taken from phaser.io example code)
     if(canJump == true)
@@ -95,30 +93,26 @@ Player.prototype.update = function(){
         canJump = false;
         }
     }
-
     // makes it so you have to press up each time you want to jump
     if(cursors.up.isUp)
     {
         canJump = true;
-
     }
 	
-	
+	// W A L K I N G
 	if (cursors.left.isDown){
 		//  go left
-		player.body.velocity.x = -150;
+		player.body.velocity.x = -playerVel;
 	}
 	
 	else if (cursors.right.isDown){
 		//  go right
-		player.body.velocity.x = 150;
+		player.body.velocity.x = playerVel;
 	}
 	
 	else {
-		//  go right
+		//  don't move
 		player.body.velocity.x = 0;
 	}
 	
 }
-
-
