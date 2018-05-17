@@ -65,7 +65,7 @@ level1.prototype = {
 		rLegOn = true;
 		lLegOn = true;
 		var bg = game.add.sprite(0, 0, 'back', 'Background1'); // add da background
-		bg.scale.setTo(1.25, 1.4);
+		bg.scale.setTo(1.25, 1.4); //scale the background
 
 		//game.add.text(0, 0, 'Oh, you got here early...\n We still need to build most of the puzzles,\n but feel free to look around. -> \n...Oh and use the arrow keys to move\n If you want to skip to any stage press space', { fontSize: '30px', fill: '#000' });
 
@@ -82,9 +82,10 @@ level1.prototype = {
 		this.platforms = game.add.group(); //create platforms group
 		this.platforms.enableBody = true; //enable physics to for platforms
 
+		//create platforms and stuff
 		var ledge = this.platforms.create(500, 0, 'plat', 'bigBox');
-		ledge.body.immovable = true;
-		ledge.scale.setTo(1.5, 1.05);
+		ledge.body.immovable = true; //prevent platform from getting pushed around
+		ledge.scale.setTo(1.5, 1.05); //scale the platform right
 		ledge = this.platforms.create(0, 665, 'plat', 'lilBox');
 		ledge.body.immovable = true;
 		ledge = this.platforms.create(155, 665, 'plat', 'lilBox');
@@ -98,7 +99,12 @@ level1.prototype = {
 		ledge.scale.setTo(2.3, 2);
 		ledge = this.platforms.create(200, 485, 'plat', 'lilBox');
 		ledge.body.immovable = true;
-		ledge.scale.setTo(1.5, 1);
+		//ledge.scale.setTo(1.1, 1);
+		ledge = this.platforms.create(0, 335, 'plat', 'lilBox');
+		ledge.body.immovable = true;
+		//ledge.scale.setTo(1.25, 1);
+		ledge = this.platforms.create(180, 150, 'plat', 'lilBox');
+		ledge.body.immovable = true;
 
         	player = new Player(game, 'guy', 'Body');	
         	game.add.existing(player);
@@ -238,7 +244,9 @@ level2.prototype = {
 		
 		game.physics.startSystem(Phaser.Physics.ARCADE); // stole this from the tutorial to add physics
 		
-		game.add.sprite(0, 0, 'back', 'Background2'); // add da background
+		var bg2 = game.add.sprite(0, 0, 'back', 'Background2'); // add da background
+		bg2.scale.setTo(1.25, 1.4); //scale the background
+
 
         player = new Player(game, 'guy', 'Body');	
         game.add.existing(player);
@@ -365,7 +373,8 @@ level3.prototype = {
 		
 		game.physics.startSystem(Phaser.Physics.ARCADE); // stole this from the tutorial to add physics
 		
-		game.add.sprite(0, 0, 'back', 'Background3'); // add da background
+		var bg3 = game.add.sprite(0, 0, 'back', 'Background3'); // add da background
+		bg3.scale.setTo(1.25, 1.4); //scale the background
 
         player = new Player(game, 'guy', 'Body');	
         game.add.existing(player);
@@ -492,7 +501,8 @@ level4.prototype = {
 		
 		game.physics.startSystem(Phaser.Physics.ARCADE); // stole this from the tutorial to add physics
 		
-		game.add.sprite(0, 0, 'back', 'Background4'); // add da background
+		var bg4 = game.add.sprite(0, 0, 'back', 'Background4'); // add da background
+		bg4.scale.setTo(1.25, 1.4); //scale the background
 
         player = new Player(game, 'guy', 'Body');	
         game.add.existing(player);
@@ -623,8 +633,9 @@ level5.prototype = {
 		
 		game.physics.startSystem(Phaser.Physics.ARCADE); // stole this from the tutorial to add physics
 		
-		game.add.sprite(0, 0, 'back', 'Background5'); // add da background
-				
+		var bg5 = game.add.sprite(0, 0, 'back', 'Background5'); // add da background
+		bg5.scale.setTo(1.25, 1.4);
+
 		buttons = game.add.sprite(700, 480, 'puzzle', 'buttonUp'); // add da background
 		game.physics.enable(buttons, Phaser.Physics.ARCADE);
 		buttons.body.immovable = true;
@@ -762,7 +773,8 @@ endCutscene.prototype = {
 		},
 	create: function() {
 		console.log('endCutscene: create');
-		game.add.sprite(0, 0, 'back', 'Background5'); // add da background
+		var bgEnd = game.add.sprite(0, 0, 'back', 'Background5'); // add da background
+		bgEnd.scale.setTo(1.25, 1.4); //scale the background
 		game.add.sprite(390, 450, 'guy', 'Body');
 		
 		},
@@ -785,14 +797,15 @@ GameOver.prototype = {
 		},
 	create: function() {
 		console.log('GameOver: create');
-		game.add.sprite(0, 0, 'back', 'Background5'); // add da background
+		var bgGO = game.add.sprite(0, 0, 'back', 'Background5'); // add da background
+		bgGO.scale.setTo(1.25, 1.4); //scale the background
 		music.destroy();
 		music2.destroy();
 		music3.destroy();
 		music4.destroy();
 
 		music5.destroy();
-		game.add.text(280, 200, 'Game Over', { fontSize: '50px', fill: '#000' });
+		game.add.text(380, 300, 'Game Over', { fontSize: '50px', fill: '#000' });
 		},
 	update: function() {
 		// main menu logic
