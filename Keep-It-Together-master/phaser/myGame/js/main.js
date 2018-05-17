@@ -43,7 +43,8 @@ level1.prototype = {
 		console.log('First level: preload');
 		game.load.atlas('guy', 'assets/img/Player.png', 'assets/img/Player.json'); // load the stuff
 		game.load.atlas('back', 'assets/img/Backgrounds.png', 'assets/img/Backgrounds.json'); // load the stuff
-		
+		game.load.atlas('plat', 'assets/img/platforms.png', 'assets/img/platforms.json'); //load platforms
+
 		// L O A D  A U D I O
 		game.load.audio('walkNoise', 'assets/audio/rub.mp3');
 		game.load.audio('claireDeLune', 'assets/audio/Clair De lune.mp3');
@@ -74,7 +75,20 @@ level1.prototype = {
 		music4 = game.add.audio('glitch3',0,true);
 		thud = game.add.audio('thudSFX', 1, false);
 		jumping = game.add.audio('paperTap',1,false);
-		
+	
+		//adds the platforms to level 1
+		this.platforms = game.add.group(); //create platforms group
+		this.platforms.enableBody = true; //enable physics to for platforms
+
+		var ledge = this.platforms.create(400, 0, 'plat', 'bigBox');
+		ledge.body.immovable = true;
+		ledge.scale.setTo(1.25, 0.75);
+		ledge = this.platforms.create(0, 465, 'plat', 'lilBox');
+		ledge.body.immovable = true;
+		ledge = this.platforms.create(155, 465, 'plat', 'lilBox');
+		ledge.body.immovable = true;
+		ledge.scale.setTo(4.5, 1);
+
         player = new Player(game, 'guy', 'Body');	
         game.add.existing(player);
 
@@ -96,6 +110,8 @@ level1.prototype = {
 	update: function() {
 		var cursors = game.input.keyboard.createCursorKeys();
 		
+		game.physics.arcade.collide(player, this.platforms); //allows player to collide with walls and platforms and stuff
+
 		// Figures out if the player is falling then adds a landing sfx.
 		if(player.body.velocity.y > 0)
 		{
