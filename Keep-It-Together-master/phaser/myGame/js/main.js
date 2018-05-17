@@ -206,7 +206,7 @@ load2.prototype = {
 	create: function() {
 		console.log('load2: create');
 		var bgC1 = game.add.sprite(0, 0, 'back', 'BackgroundCutscene'); // add da background
-		bgc1.scale.setTo(1.25, 1.4); //scale cutscene background
+		bgC1.scale.setTo(1.25, 1.4); //scale cutscene background
 		cutscene = new Cutscene(game, 'scene', 'cuscenePlayer1');
         	game.add.existing(cutscene);
 
