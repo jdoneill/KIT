@@ -205,9 +205,10 @@ load2.prototype = {
 		},
 	create: function() {
 		console.log('load2: create');
-		game.add.sprite(0, 0, 'back', 'BackgroundCutscene'); // add da background
+		var bgC1 = game.add.sprite(0, 0, 'back', 'BackgroundCutscene'); // add da background
+		bgc1.scale.setTo(1.25, 1.4); //scale cutscene background
 		cutscene = new Cutscene(game, 'scene', 'cuscenePlayer1');
-        game.add.existing(cutscene);
+        	game.add.existing(cutscene);
 
 		fallSFX = game.add.audio('flip', 1, false);
 		fallSFX.play();
@@ -334,7 +335,8 @@ load3.prototype = {
 		},
 	create: function() {
 		console.log('load2: create');
-		game.add.sprite(0, 0, 'back', 'BackgroundCutscene'); // add da background
+		var bgC2 = game.add.sprite(0, 0, 'back', 'BackgroundCutscene'); // add da background
+		bgC2.scale.setTo(1.25, 1.4); //scale cutscene background
 		cutscene = new Cutscene(game, 'scene', 'cuscenePlayer2');
         game.add.existing(cutscene);
 		
@@ -462,7 +464,8 @@ load4.prototype = {
 		},
 	create: function() {
 		console.log('load2: create');
-		game.add.sprite(0, 0, 'back', 'BackgroundCutscene'); // add da background
+		var bgC3 = game.add.sprite(0, 0, 'back', 'BackgroundCutscene'); // add da background
+		bgC3.scale.setTo(1.25, 1.4); //scale cutscene background
 		cutscene = new Cutscene(game, 'scene', 'cuscenePlayer3');
         game.add.existing(cutscene);
 
@@ -590,7 +593,8 @@ load5.prototype = {
 		},
 	create: function() {
 		console.log('load2: create');
-		game.add.sprite(0, 0, 'back', 'BackgroundCutscene'); // add da background
+		var bgC4 = game.add.sprite(0, 0, 'back', 'BackgroundCutscene'); // add da background
+		bgC4.scale.setTo(1.25, 1.4); //scale cutscene background
 		cutscene = new Cutscene(game, 'scene', 'cuscenePlayer4');
         game.add.existing(cutscene);
 		
@@ -634,7 +638,7 @@ level5.prototype = {
 		game.physics.startSystem(Phaser.Physics.ARCADE); // stole this from the tutorial to add physics
 		
 		var bg5 = game.add.sprite(0, 0, 'back', 'Background5'); // add da background
-		bg5.scale.setTo(1.25, 1.4);
+		bg5.scale.setTo(1.25, 1.4); //scale the background
 
 		buttons = game.add.sprite(700, 480, 'puzzle', 'buttonUp'); // add da background
 		game.physics.enable(buttons, Phaser.Physics.ARCADE);
@@ -738,7 +742,8 @@ endLoad.prototype = {
 		},
 	create: function() {
 		console.log('load2: create');
-		game.add.sprite(0, 0, 'back', 'BackgroundCutscene'); // add da background
+		var bgCEnd = game.add.sprite(0, 0, 'back', 'BackgroundCutscene'); // add da background
+		bgCEnd.scale.setTo(1.25, 1.4); //scale cutscene background
 		cutscene = new Cutscene(game, 'scene', 'cuscenePlayer4');
         game.add.existing(cutscene);
 		
