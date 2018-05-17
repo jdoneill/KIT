@@ -1,4 +1,4 @@
-var game = new Phaser.Game(800, 500, Phaser.AUTO);
+var game = new Phaser.Game(1000, 700, Phaser.AUTO);
 
 //var game = new Phaser.Game(800, 500, Phaser.AUTO, 'Keep It Together', { preload: preload, create: create, update: update, render: render });
 
@@ -64,8 +64,10 @@ level1.prototype = {
 		lArmOn = true;
 		rLegOn = true;
 		lLegOn = true;
-		game.add.sprite(0, 0, 'back', 'Background1'); // add da background
-		game.add.text(0, 0, 'Oh, you got here early...\n We still need to build most of the puzzles,\n but feel free to look around. -> \n...Oh and use the arrow keys to move\n If you want to skip to any stage press space', { fontSize: '30px', fill: '#000' });
+		var bg = game.add.sprite(0, 0, 'back', 'Background1'); // add da background
+		bg.scale.setTo(1.25, 1.4);
+
+		//game.add.text(0, 0, 'Oh, you got here early...\n We still need to build most of the puzzles,\n but feel free to look around. -> \n...Oh and use the arrow keys to move\n If you want to skip to any stage press space', { fontSize: '30px', fill: '#000' });
 
 		// Assigns the audio to a global variable
 		walking = game.add.audio('walkNoise', 1, true); // add walk sfx, vol 1, looping true
@@ -80,17 +82,24 @@ level1.prototype = {
 		this.platforms = game.add.group(); //create platforms group
 		this.platforms.enableBody = true; //enable physics to for platforms
 
-		var ledge = this.platforms.create(400, 0, 'plat', 'bigBox');
+		var ledge = this.platforms.create(500, 0, 'plat', 'bigBox');
 		ledge.body.immovable = true;
-		ledge.scale.setTo(1.25, 0.75);
-		ledge = this.platforms.create(0, 465, 'plat', 'lilBox');
+		ledge.scale.setTo(1.5, 1.05);
+		ledge = this.platforms.create(0, 665, 'plat', 'lilBox');
 		ledge.body.immovable = true;
-		ledge = this.platforms.create(155, 465, 'plat', 'lilBox');
+		ledge = this.platforms.create(155, 665, 'plat', 'lilBox');
 		ledge.body.immovable = true;
-		ledge.scale.setTo(4.5, 1);
+		ledge.scale.setTo(5.5, 1);
+		ledge = this.platforms.create(960, 0, 'plat', 'lilBoxUziVertical');
+		ledge.body.immovable = true;
+		ledge.scale.setTo(1.2, 5);
+		ledge = this.platforms.create(500, 285, 'plat', 'midBox');
+		ledge.body.immovable = true;
+		ledge.scale.setTo(2.3, 2);
 
-        player = new Player(game, 'guy', 'Body');	
-        game.add.existing(player);
+
+        	player = new Player(game, 'guy', 'Body');	
+        	game.add.existing(player);
 
 		walking.play();
 		music.play();
@@ -110,7 +119,7 @@ level1.prototype = {
 	update: function() {
 		var cursors = game.input.keyboard.createCursorKeys();
 		
-		game.physics.arcade.collide(player, this.platforms); //allows player to collide with walls and platforms and stuff
+		var touching = game.physics.arcade.collide(player, this.platforms); //allows player to collide with walls and platforms and stuff
 
 		// Figures out if the player is falling then adds a landing sfx.
 		if(player.body.velocity.y > 0)
@@ -123,14 +132,14 @@ level1.prototype = {
 				yesJump = true;
 			}
 		
-		if (player.body.onFloor() && falling == true)
+		if (touching == true && falling == true)
 		{
 			thud.play();
 			falling = false;
 			console.log('Landed');
 		}
 			
-			if(cursors.up.isDown && player.body.onFloor())
+			if(cursors.up.isDown && touching == true)
 			{ //press up to make jump sfx
 				if(yesJump == true)
 				{
@@ -149,7 +158,7 @@ level1.prototype = {
 
 			}
 			if (cursors.left.isDown || cursors.right.isDown){
-				if(player.body.onFloor()){ //play sound when player is moving on the ground (taken from phaser.io exmaple code)
+				if(touching == true){ //play sound when player is moving on the ground (taken from phaser.io exmaple code)
 					//  Play walk sound
 					walking.resume();
 				}
