@@ -96,7 +96,9 @@ level1.prototype = {
 		ledge = this.platforms.create(500, 285, 'plat', 'midBox');
 		ledge.body.immovable = true;
 		ledge.scale.setTo(2.3, 2);
-
+		ledge = this.platforms.create(200, 485, 'plat', 'lilBox');
+		ledge.body.immovable = true;
+		ledge.scale.setTo(1.5, 1);
 
         	player = new Player(game, 'guy', 'Body');	
         	game.add.existing(player);

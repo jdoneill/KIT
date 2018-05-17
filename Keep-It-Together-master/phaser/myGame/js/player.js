@@ -84,20 +84,20 @@ Player.prototype.update = function(){
 	
 	// P L A Y E R  M O V E M E N T
 	// J U M P
-	if(cursors.up.isDown && player.body.onFloor())
-    { //press up to jump (taken from phaser.io example code)
-    if(canJump == true)
-        {
-        player.body.velocity.y = -250;
-        console.log('jump');
-        canJump = false;
-        }
-    }
-    // makes it so you have to press up each time you want to jump
-    if(cursors.up.isUp)
-    {
-        canJump = true;
-    }
+	if(cursors.up.isDown && player.body.touching.down)
+    	{ //press up to jump (taken from phaser.io example code)
+    		if(canJump == true)
+        	{
+        		player.body.velocity.y = -420;
+        		console.log('jump');
+			canJump = false;
+			}
+    	}
+    	// makes it so you have to press up each time you want to jump
+    	if(cursors.up.isUp)
+    	{
+        	canJump = true;
+    	}
 	
 	// W A L K I N G
 	if (cursors.left.isDown){
