@@ -98,7 +98,16 @@ level1.prototype = {
 		lLegOn = true;
 		
 		// Camera
+		game.world.setBounds(0, 0, 2200, 2000);
+		// player.body.fixedRotation = true;
+		// new Camera(game, id, 100, 100, 200, 200);
+		// game.camera.follow(player);
+	
+		// game.camera.deadzone = new Phaser.Rectangle(player.x,player.y, 200, 200);
 		game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, 0.6, 0.6);
+		
+		// The shake function is at the bottom
+		// game.input.onDown.add(shake, this);
 
 		},
 	update: function() {
@@ -795,6 +804,13 @@ GameOver.prototype = {
 		}
 		}
 	}
+function shake() 
+	{
+
+		//  You can set your own intensity and duration
+		game.camera.shake(0.05, 500);
+	}
+
 
 game.state.add('level1', level1);
 game.state.add('load2', load2);
