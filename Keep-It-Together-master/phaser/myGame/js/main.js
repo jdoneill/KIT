@@ -1,4 +1,4 @@
-var game = new Phaser.Game(1000, 700, Phaser.AUTO);
+var game = new Phaser.Game(1920, 1500, Phaser.AUTO);
 
 //var game = new Phaser.Game(800, 500, Phaser.AUTO, 'Keep It Together', { preload: preload, create: create, update: update, render: render });
 
@@ -17,12 +17,15 @@ var rLeg;
 var rLegOn;
 var lLeg;
 var lLegOn;
+var touching;
 
 // L E V E L  T R A C K E R 
 var level;
+var currentLevel;
 
 // O B S T A C L E S
 var buttons;
+var platforms;
 
 // S O U N D S
 var music;
@@ -54,7 +57,7 @@ level1.prototype = {
 		game.load.audio('thudSFX', 'assets/audio/paperTapTable.mp3');
 
 		game.load.audio('paperTap', 'assets/audio/jumpSFX.mp3');
-
+		
 		},
 	create: function() {
 		console.log('First level: create');
@@ -64,8 +67,6 @@ level1.prototype = {
 		lArmOn = true;
 		rLegOn = true;
 		lLegOn = true;
-		var bg = game.add.sprite(0, 0, 'back', 'Background1'); // add da background
-		bg.scale.setTo(1.25, 1.4); //scale the background
 
 		//game.add.text(0, 0, 'Oh, you got here early...\n We still need to build most of the puzzles,\n but feel free to look around. -> \n...Oh and use the arrow keys to move\n If you want to skip to any stage press space', { fontSize: '30px', fill: '#000' });
 
@@ -78,33 +79,7 @@ level1.prototype = {
 		thud = game.add.audio('thudSFX', 1, false);
 		jumping = game.add.audio('paperTap',1,false);
 	
-		//adds the platforms to level 1
-		this.platforms = game.add.group(); //create platforms group
-		this.platforms.enableBody = true; //enable physics to for platforms
-
-		//create platforms and stuff
-		var ledge = this.platforms.create(500, 0, 'plat', 'bigBox');
-		ledge.body.immovable = true; //prevent platform from getting pushed around
-		ledge.scale.setTo(1.5, 1.05); //scale the platform right
-		ledge = this.platforms.create(0, 665, 'plat', 'lilBox');
-		ledge.body.immovable = true;
-		ledge = this.platforms.create(155, 665, 'plat', 'lilBox');
-		ledge.body.immovable = true;
-		ledge.scale.setTo(5.5, 1);
-		ledge = this.platforms.create(960, 0, 'plat', 'lilBoxUziVertical');
-		ledge.body.immovable = true;
-		ledge.scale.setTo(1.2, 5);
-		ledge = this.platforms.create(500, 285, 'plat', 'midBox');
-		ledge.body.immovable = true;
-		ledge.scale.setTo(2.3, 2);
-		ledge = this.platforms.create(200, 485, 'plat', 'lilBox');
-		ledge.body.immovable = true;
-		//ledge.scale.setTo(1.1, 1);
-		ledge = this.platforms.create(0, 335, 'plat', 'lilBox');
-		ledge.body.immovable = true;
-		//ledge.scale.setTo(1.25, 1);
-		ledge = this.platforms.create(180, 150, 'plat', 'lilBox');
-		ledge.body.immovable = true;
+        	currentLevel = new level1(game);	
 
         	player = new Player(game, 'guy', 'Body');	
         	game.add.existing(player);
@@ -127,8 +102,6 @@ level1.prototype = {
 	update: function() {
 		var cursors = game.input.keyboard.createCursorKeys();
 		
-		var touching = game.physics.arcade.collide(player, this.platforms); //allows player to collide with walls and platforms and stuff
-
 		// Figures out if the player is falling then adds a landing sfx.
 		if(player.body.velocity.y > 0)
 		{
@@ -175,7 +148,7 @@ level1.prototype = {
 				//  Pause music/sfx
 				 walking.pause();
 			}
-			if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) || player.x > 735)
+			if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR))
 			{
 				game.state.start('load2')
 				rArmOn = false;
