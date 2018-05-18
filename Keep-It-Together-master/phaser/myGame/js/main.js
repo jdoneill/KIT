@@ -97,6 +97,8 @@ level1.prototype = {
 		rLegOn = true;
 		lLegOn = true;
 		
+		// Camera
+		game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, 0.6, 0.6);
 
 		},
 	update: function() {
