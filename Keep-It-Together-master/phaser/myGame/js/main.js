@@ -170,6 +170,8 @@ level1.prototype = {
 			rArm.destroy();
 			limb.x = player.x + 40;
 			limb.y = player.y;
+			game.camera.follow(limb, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
+
 		}
 		
 		if(player.body.velocity.y > 0)
@@ -191,6 +193,7 @@ level1.prototype = {
 			
 			if(cursors.up.isDown && touching == true)
 			{ //press up to make jump sfx
+				game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
 				if(yesJump == true)
 				{
 					jumping.play();
@@ -211,6 +214,7 @@ level1.prototype = {
 				if(touching == true){ //play sound when player is moving on the ground (taken from phaser.io exmaple code)
 					//  Play walk sound
 					walking.resume();
+					game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
 				}
 			}
 			else {
@@ -224,11 +228,13 @@ level1.prototype = {
  	if (game.input.keyboard.isDown(Phaser.Keyboard.A)){
 		//  go left
 		limb.body.velocity.x = -playerVel;
+		game.camera.follow(limb, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
 	}
 	
 	else if (game.input.keyboard.isDown(Phaser.Keyboard.D)){
 		//  go right
 		limb.body.velocity.x = playerVel;
+		game.camera.follow(limb, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
 	 } 
 	
 	else {
