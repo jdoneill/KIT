@@ -97,6 +97,7 @@ level1.prototype = {
 		rLegOn = true;
 		lLegOn = true;
 		
+<<<<<<< HEAD
 		//create the limb here and put it way far away ----------------------------------------------------
 		limb = game.add.sprite(1920, 400, 'rightArm');
 	    game.physics.arcade.enable(limb); // add physics to the playa
@@ -106,6 +107,19 @@ level1.prototype = {
 		// Camera
 	//	game.camera.follow(player); //fix the camera to the player
 	//	game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, 0.6, 0.6);
+=======
+		// Camera
+		game.world.setBounds(0, 0, 2200, 2000);
+		// player.body.fixedRotation = true;
+		// new Camera(game, id, 100, 100, 200, 200);
+		// game.camera.follow(player);
+	
+		// game.camera.deadzone = new Phaser.Rectangle(player.x,player.y, 200, 200);
+		game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, 0.6, 0.6);
+		
+		// The shake function is at the bottom
+		// game.input.onDown.add(shake, this);
+>>>>>>> 6a917c1d1c2d58e4ad82b4b51556ccee62bf1956
 
 		},
 	update: function() {
@@ -826,6 +840,13 @@ GameOver.prototype = {
 		}
 		}
 	}
+function shake() 
+	{
+
+		//  You can set your own intensity and duration
+		game.camera.shake(0.05, 500);
+	}
+
 
 game.state.add('level1', level1);
 game.state.add('load2', load2);
