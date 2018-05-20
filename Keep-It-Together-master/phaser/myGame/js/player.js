@@ -31,7 +31,9 @@ function Player (game, key, frame) {
 
 		game.physics.arcade.enable(this); // add physics to the playa
 		this.body.gravity.y = 450; // change this to a var for water level gravity change
-		this.body.collideWorldBounds = true; // don't fall through the earth
+		this.body.collideWorldBounds = true; // don't fall through the earth (changing this after we get platform collision)
+
+	game.camera.follow(player, 800, 500);
 
 	}
 Player.prototype = Object.create(Phaser.Sprite.prototype);
@@ -41,15 +43,8 @@ Player.prototype.update = function(){
 	
 	var cursors = game.input.keyboard.createCursorKeys();
 	
-/* 	if(level == 1 && rArmOn == true){
-		if(Phaser.Keyboard.SPACEBAR.isDown){//spacebar is pressed remove limb
-			rArmOn = false;
-		}
-	}
-	else{ */
 		rArm.x = player.x + 32;
 		rArm.y = player.y;
-	//}
 		
 		lArm.x = player.x - 41;
 		lArm.y = player.y;
@@ -59,7 +54,6 @@ Player.prototype.update = function(){
 		
 		lLeg.x = player.x - 24;
 		lLeg.y = player.y + 42;
-	//}
 
 	if(lLegOn != true){//no limbs
 		this.body.setSize(32,53,0,0);
@@ -115,4 +109,35 @@ Player.prototype.update = function(){
 		player.body.velocity.x = 0;
 	}
 	
+	//game.physics.arcade.overlap(player, diamonds, collectDiamond, null, this);
+	
+	// L I M B  C O N T R O L
+	/* if (Phaser.Keyboard.A.isDown){
+		//  go left
+		limb.body.velocity.x = -playerVel;
+	}
+	
+	else if (Phaser.Keyboard.D.isDown){
+		//  go right
+		limb.body.velocity.x = playerVel;
+	}
+	
+	else {
+		//  don't move
+		limb.body.velocity.x = 0;
+	} */
+	
 }
+
+// outside of the update loop
+	function limbDetach (player, limb, limbOn) {
+	//detach limbs
+	limbOn = false;
+	limb.body.gravity.y = 450;
+	
+	
+}
+
+
+
+

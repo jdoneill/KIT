@@ -1,6 +1,5 @@
 function level1 (game) {
 	
-	
 		var bg = game.add.sprite(0, 0, 'back', 'Background1'); // add da background
 		bg.scale.setTo(3, 3); //scale the background
 	

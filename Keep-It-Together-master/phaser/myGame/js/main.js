@@ -1,7 +1,5 @@
 var game = new Phaser.Game(1920, 1500, Phaser.AUTO);
 
-//var game = new Phaser.Game(800, 500, Phaser.AUTO, 'Keep It Together', { preload: preload, create: create, update: update, render: render });
-
 // P L A Y E R
 var playerVel = 150;
 var player;
@@ -18,6 +16,7 @@ var rLegOn;
 var lLeg;
 var lLegOn;
 var touching;
+var limb;
 
 // L E V E L  T R A C K E R 
 var level;
@@ -47,7 +46,8 @@ level1.prototype = {
 		game.load.atlas('guy', 'assets/img/Player.png', 'assets/img/Player.json'); // load the stuff
 		game.load.atlas('back', 'assets/img/Backgrounds.png', 'assets/img/Backgrounds.json'); // load the stuff
 		game.load.atlas('plat', 'assets/img/platforms.png', 'assets/img/platforms.json'); //load platforms
-
+		game.load.image('rightArm', 'assets/img/armRside.png');
+		
 		// L O A D  A U D I O
 		game.load.audio('walkNoise', 'assets/audio/rub.mp3');
 		game.load.audio('claireDeLune', 'assets/audio/Clair De lune.mp3');
@@ -72,7 +72,7 @@ level1.prototype = {
 
 		// Assigns the audio to a global variable
 		walking = game.add.audio('walkNoise', 1, true); // add walk sfx, vol 1, looping true
-		music = game.add.audio('claireDeLune',2,true);
+		music = game.add.audio('claireDeLune',1,true);
 		music2 = game.add.audio('glitch1',0,true);
 		music3 = game.add.audio('glitch2',0,true);
 		music4 = game.add.audio('glitch3',0,true);
@@ -97,12 +97,30 @@ level1.prototype = {
 		rLegOn = true;
 		lLegOn = true;
 		
+		//create the limb here and put it way far away ----------------------------------------------------
+		limb = game.add.sprite(1920, 400, 'rightArm');
+	    game.physics.arcade.enable(limb); // add physics to the playa
+		limb.body.gravity.y = 450; // succumb to gravity mortal fool
+		limb.body.collideWorldBounds = true; // don't fall through the earth
+
+		// Camera
+	//	game.camera.follow(player); //fix the camera to the player
+	//	game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, 0.6, 0.6);
 
 		},
 	update: function() {
 		var cursors = game.input.keyboard.createCursorKeys();
 		
 		// Figures out if the player is falling then adds a landing sfx.
+		
+		if (game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR) && rArmOn == true){//press space to remove limbs
+			console.log('arm off');
+			rArmOn = false;
+			rArm.destroy();
+			limb.x = player.x + 40;
+			limb.y = player.y;
+		}
+		
 		if(player.body.velocity.y > 0)
 		{
 			falling = true;
@@ -148,19 +166,38 @@ level1.prototype = {
 				//  Pause music/sfx
 				 walking.pause();
 			}
-			if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR))
+			
+	// L I M B ------------------------------------
+	
+		// W A L K I N G
+/* 	if (game.input.Phaser.keyboard.A.isDown){
+		//  go left
+		limb.body.velocity.x = -playerVel;
+	}
+	
+	else if (cursors.D.isDown){
+		//  go right
+		limb.body.velocity.x = playerVel;
+	}
+	
+	else {
+		//  don't move
+		limb.body.velocity.x = 0;
+	} */
+			
+		/* 	if())
 			{
 				game.state.start('load2')
 				rArmOn = false;
 				level = level +1;
-			}
+			} */
 	},
 	
-/* 	render: function() {
+	render: function() {
 		// setup debug rendering
-			game.debug.bodyInfo(player, 32, 32);
-			game.debug.body(player);
-	}, */
+			game.debug.bodyInfo(limb, 32, 32);
+			game.debug.body(limb);
+	},
 	
 
 }
@@ -231,7 +268,7 @@ level2.prototype = {
 		var cursors = game.input.keyboard.createCursorKeys();
 			
 			music.destroy();
-			music2.volume = 2;
+			music2.volume = 1;
 			
 		// Figures out if the player is falling then adds a landing sfx.
 		if(player.body.velocity.y > 0)
@@ -360,7 +397,7 @@ level3.prototype = {
 		var cursors = game.input.keyboard.createCursorKeys();
 			
 			music2.destroy();
-			music3.volume = 2;
+			music3.volume = 1;
 			
 					// Figures out if the player is falling then adds a landing sfx.
 		// Figures out if the player is falling then adds a landing sfx.
@@ -393,9 +430,7 @@ level3.prototype = {
 					}
 				}
 			}
-			
-			music2.destroy();
-			music3.volume = 2;
+
 			if(player.body.onFloor() != true)
 			{
 				walking.pause();
@@ -489,7 +524,7 @@ level4.prototype = {
 		var cursors = game.input.keyboard.createCursorKeys();
 			
 			music3.destroy();
-			music4.volume = 2;
+			music4.volume = 1;
 			
 					// Figures out if the player is falling then adds a landing sfx.
 		// Figures out if the player is falling then adds a landing sfx.
@@ -625,7 +660,7 @@ level5.prototype = {
         game.add.existing(player);
 		size = 1;
 		
-		music5 = game.add.audio('glitchF',2,true);
+		music5 = game.add.audio('glitchF',1,true);
 		music5.play();
 
 		},
@@ -686,8 +721,6 @@ level5.prototype = {
 		}
 		function buttonPress (player, buttons) {//press the button to "win"
 			game.state.start('endLoad')
-//add sfx
-		//	buttonPressed.play();
 
 	}
 		game.physics.arcade.collide(player, buttons, buttonPress, null, this);
@@ -711,8 +744,8 @@ endLoad.prototype = {
 		game.load.atlas('guy', 'assets/img/Player.png', 'assets/img/Player.json'); // load the stuff
 		game.load.atlas('back', 'assets/img/Backgrounds.png', 'assets/img/Backgrounds.json'); // load the stuff
 
-
 		},
+		
 	create: function() {
 		console.log('load2: create');
 		var bgCEnd = game.add.sprite(0, 0, 'back', 'BackgroundCutscene'); // add da background
