@@ -218,23 +218,23 @@ level1.prototype = {
 				 walking.pause();
 			}
 			
-	// L I M B ------------------------------------
+	// L I M B ---------------------------------------------------------------------------------
 	
 		// W A L K I N G
-/* 	if (game.input.Phaser.keyboard.A.isDown){
+ 	if (game.input.keyboard.isDown(Phaser.Keyboard.A)){
 		//  go left
 		limb.body.velocity.x = -playerVel;
 	}
 	
-	else if (cursors.D.isDown){
+	else if (game.input.keyboard.isDown(Phaser.Keyboard.D)){
 		//  go right
 		limb.body.velocity.x = playerVel;
-	}
+	 } 
 	
 	else {
 		//  don't move
 		limb.body.velocity.x = 0;
-	} */
+	} 
 			
 	if (cursors.down.isDown)
 			{
