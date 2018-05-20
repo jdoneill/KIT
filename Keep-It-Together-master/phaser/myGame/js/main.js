@@ -1,4 +1,5 @@
-var game = new Phaser.Game(1920, 1500, Phaser.AUTO);
+var game = new Phaser.Game(800, 500, Phaser.AUTO);
+//var game = new Phaser.Game(1920, 1500, Phaser.AUTO);
 
 // P L A Y E R
 var playerVel = 150;
@@ -17,6 +18,7 @@ var lLeg;
 var lLegOn;
 var touching;
 var limb;
+var touchingLimb;
 
 // L E V E L  T R A C K E R 
 var level;
@@ -25,6 +27,7 @@ var currentLevel;
 // O B S T A C L E S
 var buttons;
 var platforms;
+var door;
 
 // S O U N D S
 var music;
@@ -46,6 +49,7 @@ level1.prototype = {
 		game.load.atlas('guy', 'assets/img/Player.png', 'assets/img/Player.json'); // load the stuff
 		game.load.atlas('back', 'assets/img/Backgrounds.png', 'assets/img/Backgrounds.json'); // load the stuff
 		game.load.atlas('plat', 'assets/img/platforms.png', 'assets/img/platforms.json'); //load platforms
+		game.load.atlas('puzzles', 'assets/img/puzzles.png', 'assets/img/puzzles.json'); //load platforms
 		game.load.image('rightArm', 'assets/img/armRside.png');
 		
 		// L O A D  A U D I O
@@ -61,7 +65,10 @@ level1.prototype = {
 		},
 	create: function() {
 		console.log('First level: create');
-		
+
+		var bg = game.add.sprite(0, 0, 'back', 'Background1'); // add da background
+		bg.scale.setTo(3, 3); //scale the background		
+
 		game.physics.startSystem(Phaser.Physics.ARCADE); // stole this from the tutorial to add physics
 		rArmOn = true;
 		lArmOn = true;
@@ -79,8 +86,6 @@ level1.prototype = {
 		thud = game.add.audio('thudSFX', 1, false);
 		jumping = game.add.audio('paperTap',1,false);
 	
-        	currentLevel = new level1(game);	
-
         	player = new Player(game, 'guy', 'Body');	
         	game.add.existing(player);
 
@@ -97,37 +102,69 @@ level1.prototype = {
 		rLegOn = true;
 		lLegOn = true;
 		
-<<<<<<< HEAD
-		//create the limb here and put it way far away ----------------------------------------------------
 		limb = game.add.sprite(1920, 400, 'rightArm');
 	    game.physics.arcade.enable(limb); // add physics to the playa
+		limb.scale.setTo(1.5, 1);
 		limb.body.gravity.y = 450; // succumb to gravity mortal fool
 		limb.body.collideWorldBounds = true; // don't fall through the earth
 
-		// Camera
-	//	game.camera.follow(player); //fix the camera to the player
-	//	game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, 0.6, 0.6);
-=======
-		// Camera
-		game.world.setBounds(0, 0, 2200, 2000);
-		// player.body.fixedRotation = true;
-		// new Camera(game, id, 100, 100, 200, 200);
-		// game.camera.follow(player);
-	
-		// game.camera.deadzone = new Phaser.Rectangle(player.x,player.y, 200, 200);
-		game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, 0.6, 0.6);
-		
-		// The shake function is at the bottom
-		// game.input.onDown.add(shake, this);
->>>>>>> 6a917c1d1c2d58e4ad82b4b51556ccee62bf1956
+		//level layout
+			//adds the platforms to level 1
+		this.platforms = game.add.group(); //create platforms group
+		this.platforms.enableBody = true; //enable physics to for platforms
 
+		//create platforms and stuff
+		
+		var ledge = this.platforms.create(1375, 800, 'plat', 'bigBox'); // puzzle roof
+		ledge.body.immovable = true;
+		ledge.scale.setTo(1.5, 1.05);
+		ledge = this.platforms.create(1375, 1100, 'plat', 'midBox'); // puzzle wall
+		ledge.body.immovable = true;
+		ledge.scale.setTo(2, 2);
+		//add a movable floor for puzzle solving
+		ledge = this.platforms.create(30, 1427, 'plat', 'lilBox'); //floor left
+		ledge.body.immovable = true;
+		ledge.scale.setTo(2, 2);
+		door = this.platforms.create(337, 1427, 'puzzles', 'puzzleDoor'); //door
+		door.body.immovable = true;
+		door.scale.setTo(2, 2);
+		ledge = this.platforms.create(620, 1427, 'plat', 'lilBox'); //floor right
+		ledge.body.immovable = true;
+		ledge.scale.setTo(8, 2);
+ 		ledge = this.platforms.create(1850, 0, 'plat', 'lilBoxUziVertical'); // right wall
+		ledge.body.immovable = true;
+		ledge.scale.setTo(2, 10); 
+		ledge = this.platforms.create(0, 0, 'plat', 'lilBoxUziVertical'); // left wall
+		ledge.body.immovable = true;
+		ledge.scale.setTo(2, 10); 
+		ledge = this.platforms.create(1220, 1170, 'plat', 'lilBox'); // upper step
+		ledge.body.immovable = true;
+		ledge = this.platforms.create(780, 1330, 'plat', 'lilBox'); // lower step
+		ledge.body.immovable = true;
+		ledge = this.platforms.create(1000, 1250, 'plat', 'lilBox'); // middle step
+		ledge.body.immovable = true;
+		
+		//Puzzle for level 1
+		buttons = game.add.sprite(1690, 1395, 'puzzles', 'buttonUp');
+		buttons.scale.setTo(1.9, 2);
+		indicator = game.add.sprite(610, 1400, 'puzzles', 'indicatorRed');
+		indicator.scale.setTo(.95, .7);
+
+			// C A M E R A  S T U F F
+		game.world.setBounds(0,0,1920, 1500);
+		game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, 0.6, 0.6);
+		// game.input.onDown.add(shake, this);
 		},
 	update: function() {
 		var cursors = game.input.keyboard.createCursorKeys();
+		       
+		touching = game.physics.arcade.collide(player, this.platforms); //allows player to collide with walls and platforms and stuff
+		touchingLimb = game.physics.arcade.collide(limb, this.platforms); //allows player to collide with walls and platforms and stuff
+
 		
 		// Figures out if the player is falling then adds a landing sfx.
-		
-		if (game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR) && rArmOn == true){//press space to remove limbs
+		// C H A NG E  T H I S  A F T E R  T E S T I N G
+		if (game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR) /*&& rArmOn == true*/){//press space to remove limbs
 			console.log('arm off');
 			rArmOn = false;
 			rArm.destroy();
@@ -199,12 +236,12 @@ level1.prototype = {
 		limb.body.velocity.x = 0;
 	} */
 			
-		/* 	if())
+	if (cursors.down.isDown)
 			{
 				game.state.start('load2')
 				rArmOn = false;
 				level = level +1;
-			} */
+			}
 	},
 	
 	render: function() {
@@ -276,7 +313,10 @@ level2.prototype = {
         player = new Player(game, 'guy', 'Body');	
         game.add.existing(player);
 		size = 1;
-
+			// C A M E R A  S T U F F
+		game.world.setBounds(0,0,1920, 1500);
+		game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, 0.6, 0.6);
+		// game.input.onDown.add(shake, this);
 		},
 	update: function() {
 		var cursors = game.input.keyboard.createCursorKeys();
@@ -330,7 +370,7 @@ level2.prototype = {
 				//  Pause music/sfx
 				 walking.pause();
 			}
-		if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) || player.x > 760)
+		if (cursors.down.isDown)
 		{
 			game.state.start('load3')
 			lArmOn = false;
@@ -406,6 +446,10 @@ level3.prototype = {
         game.add.existing(player);
 		size = 1;
 
+		// C A M E R A  S T U F F
+		game.world.setBounds(0,0,1920, 1500);
+		game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, 0.6, 0.6);
+		// game.input.onDown.add(shake, this);
 		},
 	update: function() {
 		var cursors = game.input.keyboard.createCursorKeys();
@@ -460,7 +504,7 @@ level3.prototype = {
 				//  Pause music/sfx
 				 walking.pause();
 			}
-			if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) || player.x > 760)
+	if (cursors.down.isDown)
 			{
 				game.state.start('load4')
 				rLegOn = false;
@@ -532,7 +576,12 @@ level4.prototype = {
         player = new Player(game, 'guy', 'Body');	
         game.add.existing(player);
 		size = 1;
-
+		
+			// C A M E R A  S T U F F
+		game.world.setBounds(0,0,1920, 1500);
+		game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, 0.6, 0.6);
+		// game.input.onDown.add(shake, this);
+		
 		},
 	update: function() {
 		var cursors = game.input.keyboard.createCursorKeys();
@@ -587,7 +636,7 @@ level4.prototype = {
 				//  Pause music/sfx
 				 walking.pause();
 			}
-		if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) || player.x > 760)
+	if (cursors.down.isDown)
 		{
 			game.state.start('load5')
 			lLegOn = false;
@@ -647,8 +696,6 @@ level5.prototype = {
 		console.log('First level: preload');
 		game.load.atlas('guy', 'assets/img/Player.png', 'assets/img/Player.json'); // load the stuff
 		game.load.atlas('back', 'assets/img/Backgrounds.png', 'assets/img/Backgrounds.json'); // load the stuff
-		game.load.atlas('puzzle', 'assets/img/puzzles.png', 'assets/img/puzzles.json'); // load the stuff
-		game.load.audio('pressed', 'assets/audio/sadTrombone.mp3');
 		game.load.audio('glitchF', 'assets/audio/glitch sfx.mp3');
 
 		
@@ -662,7 +709,7 @@ level5.prototype = {
 		var bg5 = game.add.sprite(0, 0, 'back', 'Background5'); // add da background
 		bg5.scale.setTo(1.25, 1.4); //scale the background
 
-		buttons = game.add.sprite(700, 480, 'puzzle', 'buttonUp'); // add da background
+		buttons = game.add.sprite(700, 480, 'puzzles', 'buttonUp'); // add da background
 		game.physics.enable(buttons, Phaser.Physics.ARCADE);
 		buttons.body.immovable = true;
 		buttons.collideWorldBounds = true;
@@ -677,6 +724,11 @@ level5.prototype = {
 		music5 = game.add.audio('glitchF',1,true);
 		music5.play();
 
+		// C A M E R A  S T U F F
+		game.world.setBounds(0,0,1920, 1500);
+		game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, 0.6, 0.6);
+		// game.input.onDown.add(shake, this);
+		
 		},
 	update: function() {
 		var cursors = game.input.keyboard.createCursorKeys();
@@ -728,7 +780,7 @@ level5.prototype = {
 				//  Pause music/sfx
 				 walking.pause();
 			}
-		if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) || player.body.collide) //collide with button
+	if (cursors.down.isDown)
 		{
 			game.state.start('endLoad')
 			level = level +1;
@@ -840,14 +892,11 @@ GameOver.prototype = {
 		}
 		}
 	}
-function shake() 
-	{
-
-		//  You can set your own intensity and duration
-		game.camera.shake(0.05, 500);
-	}
-
-
+function shake()
+{
+	// Sets intensity and duration
+	game.camera.shake(0.05 , 500)
+}
 game.state.add('level1', level1);
 game.state.add('load2', load2);
 game.state.add('level2', level2);

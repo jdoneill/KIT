@@ -31,7 +31,7 @@ function Player (game, key, frame) {
 
 		game.physics.arcade.enable(this); // add physics to the playa
 		this.body.gravity.y = 450; // change this to a var for water level gravity change
-		this.body.collideWorldBounds = true; // don't fall through the earth (changing this after we get platform collision)
+		this.body.collideWorldBounds = false; // don't fall through the earth (changing this after we get platform collision)
 
 	game.camera.follow(player, 800, 500);
 
@@ -82,7 +82,7 @@ Player.prototype.update = function(){
     	{ //press up to jump (taken from phaser.io example code)
     		if(canJump == true)
         	{
-        		player.body.velocity.y = -420;
+        		player.body.velocity.y = -330;
         		console.log('jump');
 			canJump = false;
 			}
