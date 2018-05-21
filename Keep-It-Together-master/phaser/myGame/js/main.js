@@ -38,7 +38,6 @@ var music5;
 var walking;
 var fallSFX;
 var jumping;
-var buttonPressed;
 var thud;
 
 // L E V E L  O N E 
@@ -144,9 +143,12 @@ level1.prototype = {
 		ledge = this.platforms.create(1000, 1250, 'plat', 'lilBox'); // middle step
 		ledge.body.immovable = true;
 		
-		//Puzzle for level 1
+		// P U Z Z L E 
 		buttons = game.add.sprite(1690, 1395, 'puzzles', 'buttonUp');
 		buttons.scale.setTo(1.9, 2);
+	    game.physics.arcade.enable(buttons); // add physics to the button
+		buttons.body.immovable = true;
+
 		indicator = game.add.sprite(610, 1400, 'puzzles', 'indicatorRed');
 		indicator.scale.setTo(.95, .7);
 
@@ -171,7 +173,6 @@ level1.prototype = {
 			limb.x = player.x + 40;
 			limb.y = player.y;
 			game.camera.follow(limb, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
-
 		}
 		
 		if(player.body.velocity.y > 0)
@@ -242,12 +243,22 @@ level1.prototype = {
 		limb.body.velocity.x = 0;
 	} 
 			
-	if (cursors.down.isDown)
+	if (player.body.y > 1970)
 			{
 				game.state.start('load2')
 				rArmOn = false;
 				level = level +1;
 			}
+			
+	
+	function buttonPressed (limbs, buttons) {
+		//press the button
+		door.destroy(); // remove door
+		indicator = game.add.sprite(610, 1400, 'puzzles', 'indicatorGreen');
+		indicator.scale.setTo(.95, .7);
+	}
+	game.physics.arcade.collide(limb, buttons, buttonPressed, null, this);
+	
 	},
 	
 	render: function() {
@@ -715,14 +726,6 @@ level5.prototype = {
 		var bg5 = game.add.sprite(0, 0, 'back', 'Background5'); // add da background
 		bg5.scale.setTo(1.25, 1.4); //scale the background
 
-		buttons = game.add.sprite(700, 480, 'puzzles', 'buttonUp'); // add da background
-		game.physics.enable(buttons, Phaser.Physics.ARCADE);
-		buttons.body.immovable = true;
-		buttons.collideWorldBounds = true;
-		buttons.body.checkCollision.up = true;
-		buttonPressed = game.add.audio('pressed',1,false);
-		buttonPressed.pause();
-		
         player = new Player(game, 'guy', 'Body');	
         game.add.existing(player);
 		size = 1;
@@ -903,6 +906,7 @@ function shake()
 	// Sets intensity and duration
 	game.camera.shake(0.05 , 500)
 }
+
 game.state.add('level1', level1);
 game.state.add('load2', load2);
 game.state.add('level2', level2);
