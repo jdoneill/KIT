@@ -31,9 +31,13 @@ function Player (game, key, frame) {
 
 		game.physics.arcade.enable(this); // add physics to the playa
 		this.body.gravity.y = 450; // change this to a var for water level gravity change
+<<<<<<< HEAD
 		this.body.collideWorldBounds = false; // don't fall through the earth (changing this after we get platform collision)
 
 	game.camera.follow(player, 800, 500);
+=======
+		this.body.collideWorldBounds = true; // don't fall through the earth
+>>>>>>> 7db71082a24919c728b061c1b5dd61826128a84d
 
 	}
 Player.prototype = Object.create(Phaser.Sprite.prototype);
@@ -43,8 +47,20 @@ Player.prototype.update = function(){
 	
 	var cursors = game.input.keyboard.createCursorKeys();
 	
+<<<<<<< HEAD
 		rArm.x = player.x + 32;
 		rArm.y = player.y;
+=======
+/* 	if(level == 1 && rArmOn == true){
+		if(Phaser.Keyboard.SPACEBAR.isDown){//spacebar is pressed remove limb
+			rArmOn = false;
+		}
+	}
+	else{ */
+		rArm.x = player.x + 32;
+		rArm.y = player.y;
+	//}
+>>>>>>> 7db71082a24919c728b061c1b5dd61826128a84d
 		
 		lArm.x = player.x - 41;
 		lArm.y = player.y;
@@ -54,6 +70,10 @@ Player.prototype.update = function(){
 		
 		lLeg.x = player.x - 24;
 		lLeg.y = player.y + 42;
+<<<<<<< HEAD
+=======
+	//}
+>>>>>>> 7db71082a24919c728b061c1b5dd61826128a84d
 
 	if(lLegOn != true){//no limbs
 		this.body.setSize(32,53,0,0);
@@ -82,7 +102,11 @@ Player.prototype.update = function(){
     	{ //press up to jump (taken from phaser.io example code)
     		if(canJump == true)
         	{
+<<<<<<< HEAD
         		player.body.velocity.y = -330;
+=======
+        		player.body.velocity.y = -420;
+>>>>>>> 7db71082a24919c728b061c1b5dd61826128a84d
         		console.log('jump');
 			canJump = false;
 			}
@@ -109,6 +133,7 @@ Player.prototype.update = function(){
 		player.body.velocity.x = 0;
 	}
 	
+<<<<<<< HEAD
 	//game.physics.arcade.overlap(player, diamonds, collectDiamond, null, this);
 	
 	// L I M B  C O N T R O L
@@ -141,3 +166,6 @@ Player.prototype.update = function(){
 
 
 
+=======
+}
+>>>>>>> 7db71082a24919c728b061c1b5dd61826128a84d
