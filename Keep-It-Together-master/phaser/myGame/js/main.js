@@ -249,23 +249,34 @@ level1.prototype = {
 				rArmOn = false;
 				level = level +1;
 			}
-			
+	if (game.input.keyboard.isDown(Phaser.Keyboard.R)){ //R to restart
+		game.state.start('level1')
+		music.destroy();
+		music2.destroy();
+		music3.destroy();
+		music4.destroy();
+	}		
 	
 	function buttonPressed (limbs, buttons) {
 		//press the button
 		door.destroy(); // remove door
+		buttons.destroy();
+		buttons = game.add.sprite(1690, 1397, 'puzzles', 'buttonDown');
+		buttons.scale.setTo(1.9, 2);
+	    game.physics.arcade.enable(buttons); // add physics to the button
+		buttons.body.immovable = true;
 		indicator = game.add.sprite(610, 1400, 'puzzles', 'indicatorGreen');
 		indicator.scale.setTo(.95, .7);
 	}
 	game.physics.arcade.collide(limb, buttons, buttonPressed, null, this);
 	
 	},
-	
+/* 	
 	render: function() {
 		// setup debug rendering
 			game.debug.bodyInfo(limb, 32, 32);
 			game.debug.body(limb);
-	},
+	}, */
 	
 
 }
