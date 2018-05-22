@@ -109,35 +109,4 @@ Player.prototype.update = function(){
 		player.body.velocity.x = 0;
 	}
 	
-	//game.physics.arcade.overlap(player, diamonds, collectDiamond, null, this);
-	
-	// L I M B  C O N T R O L
-	/* if (Phaser.Keyboard.A.isDown){
-		//  go left
-		limb.body.velocity.x = -playerVel;
-	}
-	
-	else if (Phaser.Keyboard.D.isDown){
-		//  go right
-		limb.body.velocity.x = playerVel;
-	}
-	
-	else {
-		//  don't move
-		limb.body.velocity.x = 0;
-	} */
-	
 }
-
-// outside of the update loop
-	function limbDetach (player, limb, limbOn) {
-	//detach limbs
-	limbOn = false;
-	limb.body.gravity.y = 450;
-	
-	
-}
-
-
-
-

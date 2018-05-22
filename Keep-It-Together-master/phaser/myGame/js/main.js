@@ -39,6 +39,8 @@ var walking;
 var fallSFX;
 var jumping;
 var thud;
+var limbRip;
+var levelRip;
 
 //---------------------------------------------------------------------------
 // L E V E L  O N E 
@@ -62,7 +64,8 @@ level1.prototype = {
 		game.load.audio('glitch3', 'assets/audio/glitch4.mp3');
 		game.load.audio('thudSFX', 'assets/audio/paperTapTable.mp3');
 		game.load.audio('paperTap', 'assets/audio/jumpSFX.mp3');
-
+		game.load.audio('limbSound', 'assets/audio/rip.mp3');
+		game.load.audio('levelShift', 'assets/audio/tear.mp3');
 		},
 	create: function() { //make the game world
 		console.log('First level: create');
@@ -82,6 +85,8 @@ level1.prototype = {
 		music4 = game.add.audio('glitch3',0,true);
 		thud = game.add.audio('thudSFX', 1, false);
 		jumping = game.add.audio('paperTap',1,false);
+		limbRip = game.add.audio('limbSound', 1, false);
+		levelRip = game.add.audio('levelShift', 1, false);
 	
         player = new Player(game, 'guy', 'Body');// add player from prefab
         game.add.existing(player);
@@ -157,6 +162,7 @@ level1.prototype = {
 		// C H A N G E  T H I S  A F T E R  T E S T I N G -------------v
 		if (game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR) /*&& rArmOn == true*/){//press space to remove limbs
 			console.log('arm off');
+			limbRip.play();
 			rArmOn = false;
 			rArm.destroy();
 			limb.x = player.x + 40; // teleport controllable limb to player
@@ -234,6 +240,9 @@ level1.prototype = {
 		buttons.body.immovable = true;
 		indicator = game.add.sprite(610, 1400, 'puzzles', 'indicatorGreen'); //show the player that something has happened
 		indicator.scale.setTo(.95, .7);
+		
+		// Make a sound to let the player know something has changed
+		levelRip.play();
 	}
 	game.physics.arcade.collide(limb, buttons, buttonPressed, null, this);// check for buttonPressed
 	},
