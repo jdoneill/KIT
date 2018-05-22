@@ -1,5 +1,5 @@
-var game = new Phaser.Game(800, 500, Phaser.AUTO);
-//var game = new Phaser.Game(1920, 1500, Phaser.AUTO);
+//var game = new Phaser.Game(800, 500, Phaser.AUTO);
+var game = new Phaser.Game(1920, 1500, Phaser.AUTO);
 
 // P L A Y E R
 var playerVel = 150;
@@ -150,7 +150,7 @@ level1.prototype = {
 
 		// C A M E R A  S T U F F
 		game.world.setBounds(0,0,1920, 1500);
-		game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, 0.6, 0.6);
+		//game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, 0.6, 0.6);
 		// game.input.onDown.add(shake, this);
 		},
 	update: function() {
@@ -312,10 +312,6 @@ level2.prototype = {
 				//Do we need to reassign these vars?
 		// Assigns the audio to a global variable
 		walking = game.add.audio('walkNoise', 1, true); // add walk sfx, vol 1, looping true
-		music = game.add.audio('claireDeLune',1,true);
-		music2 = game.add.audio('glitch1',0,true);
-		music3 = game.add.audio('glitch2',0,true);
-		music4 = game.add.audio('glitch3',0,true);
 		thud = game.add.audio('thudSFX', 1, false);
 		jumping = game.add.audio('paperTap',1,false);
 		limbRip = game.add.audio('limbSound', 1, false);
@@ -349,33 +345,30 @@ level2.prototype = {
 		parkour platforms x4
 		breakable rock
 		*/
-		var ledge = this.platforms.create(1375, 800, 'plat', 'bigBox'); // puzzle roof
+		var ledge = this.platforms.create(30, 1427, 'plat', 'lilBox'); //floor left
 		ledge.body.immovable = true;
-		ledge.scale.setTo(1.5, 1.05);
-		ledge = this.platforms.create(1375, 1100, 'plat', 'midBox'); // puzzle wall
-		ledge.body.immovable = true;
-		ledge.scale.setTo(2, 2);
-		ledge = this.platforms.create(30, 1427, 'plat', 'lilBox'); //floor left
-		ledge.body.immovable = true;
-		ledge.scale.setTo(2, 2);
-		//add a movable floor for puzzle solving
-		door = this.platforms.create(337, 1427, 'puzzles', 'puzzleDoor'); //door
+		ledge.scale.setTo(5.4, 2);
+		//add a breakable rock floor for puzzle solving
+		door = this.platforms.create(850, 1427, 'puzzles', 'puzzleDoor'); //Rock (make it look like a rock)
+		game.physics.enable(door);
 		door.body.immovable = true;
 		door.scale.setTo(2, 2);
-		ledge = this.platforms.create(620, 1427, 'plat', 'lilBox'); //floor right
+		ledge = this.platforms.create(1100, 1427, 'plat', 'lilBox'); //floor right
 		ledge.body.immovable = true;
-		ledge.scale.setTo(8, 2);
+		ledge.scale.setTo(5, 2);
  		ledge = this.platforms.create(1850, 0, 'plat', 'lilBoxUziVertical'); // right wall
 		ledge.body.immovable = true;
 		ledge.scale.setTo(2, 10); 
 		ledge = this.platforms.create(0, 0, 'plat', 'lilBoxUziVertical'); // left wall
 		ledge.body.immovable = true;
-		ledge.scale.setTo(2, 10); 
-		ledge = this.platforms.create(1220, 1170, 'plat', 'lilBox'); // upper step
+		ledge.scale.setTo(2, 10);
+		//add some platforms to jump on
+		ledge = this.platforms.create(1650, 1310, 'plat', 'lilBox'); //floor right
 		ledge.body.immovable = true;
-		ledge = this.platforms.create(780, 1330, 'plat', 'lilBox'); // lower step
+	//	ledge.scale.setTo(2, 2);
+		ledge = this.platforms.create(1400, 1200, 'plat', 'lilBox'); //floor right
 		ledge.body.immovable = true;
-		ledge = this.platforms.create(1000, 1250, 'plat', 'lilBox'); // middle step
+		ledge = this.platforms.create(1150, 1090, 'plat', 'lilBox'); //floor right
 		ledge.body.immovable = true;
 		
 		// P U Z Z L E 
@@ -462,21 +455,15 @@ level2.prototype = {
 		music4.destroy();
 	}		
 
-	function buttonPressed (limbs, buttons) {//press the button
+	function rockBounce (player, door) {//jump on rocks
 		door.destroy(); // remove door
 		//A D D  S F X  H E R E
-		buttons.destroy();
-		buttons = game.add.sprite(1690, 1397, 'puzzles', 'buttonDown');//replace with button pressed sprite
-		buttons.scale.setTo(1.9, 2);
-	    game.physics.arcade.enable(buttons); // add physics to the button (line might be unnecessary)
-		buttons.body.immovable = true;
-		indicator = game.add.sprite(610, 1400, 'puzzles', 'indicatorGreen'); //show the player that something has happened
-		indicator.scale.setTo(.95, .7);
+		
 		
 		// Make a sound to let the player know something has changed
-		levelRip.play();
+		// paper crumple
 	}
-	game.physics.arcade.collide(limb, buttons, buttonPressed, null, this);// check for buttonPressed
+	game.physics.arcade.collide(player, door, rockBounce, null, this);// check for rockBounce
 	},
 /* 	render: function() {// setup debug rendering (comment out when not debugging)
 			game.debug.bodyInfo(limb, 32, 32);
@@ -547,10 +534,6 @@ level3.prototype = {
 				//Do we need to reassign these vars?
 		// Assigns the audio to a global variable
 		walking = game.add.audio('walkNoise', 1, true); // add walk sfx, vol 1, looping true
-		music = game.add.audio('claireDeLune',1,true);
-		music2 = game.add.audio('glitch1',0,true);
-		music3 = game.add.audio('glitch2',0,true);
-		music4 = game.add.audio('glitch3',0,true);
 		thud = game.add.audio('thudSFX', 1, false);
 		jumping = game.add.audio('paperTap',1,false);
 		limbRip = game.add.audio('limbSound', 1, false);
@@ -782,10 +765,6 @@ level4.prototype = {
 				//Do we need to reassign these vars?
 		// Assigns the audio to a global variable
 		walking = game.add.audio('walkNoise', 1, true); // add walk sfx, vol 1, looping true
-		music = game.add.audio('claireDeLune',1,true);
-		music2 = game.add.audio('glitch1',0,true);
-		music3 = game.add.audio('glitch2',0,true);
-		music4 = game.add.audio('glitch3',0,true);
 		thud = game.add.audio('thudSFX', 1, false);
 		jumping = game.add.audio('paperTap',1,false);
 		limbRip = game.add.audio('limbSound', 1, false);
@@ -1209,7 +1188,6 @@ GameOver.prototype = {
 		music2.destroy();
 		music3.destroy();
 		music4.destroy();
-
 		music5.destroy();
 		game.add.text(380, 300, 'Game Over', { fontSize: '50px', fill: '#000' });
 		},
@@ -1245,3 +1223,4 @@ game.state.add('endLoad', endLoad);
 game.state.add('endCutscene', endCutscene);
 game.state.add('GameOver', GameOver);
 game.state.start('level1');
+
