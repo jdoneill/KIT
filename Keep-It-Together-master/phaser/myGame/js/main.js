@@ -1000,106 +1000,127 @@ load5.prototype = {
 var level5 = function(game) {};
 level5.prototype = {
 	preload: function() { // pre game loop
-		console.log('First level: preload');
-		game.load.atlas('guy', 'assets/img/Player.png', 'assets/img/Player.json'); // load the stuff
-		game.load.atlas('back', 'assets/img/Backgrounds.png', 'assets/img/Backgrounds.json'); // load the stuff
-		game.load.audio('glitchF', 'assets/audio/glitch sfx.mp3');
-
+		console.log('last level: preload');
+		//nothing to load rn
 		
-
 		},
-	create: function() {
+	create: function() { //make the game world
 		console.log('First level: create');
-		
-		game.physics.startSystem(Phaser.Physics.ARCADE); // stole this from the tutorial to add physics
-		
-		var bg5 = game.add.sprite(0, 0, 'back', 'Background5'); // add da background
-		bg5.scale.setTo(1.25, 1.4); //scale the background
-
-        player = new Player(game, 'guy', 'Body');	
+		var bg = game.add.sprite(0, 0, 'back', 'Background5'); // add background, level 1 green for right arm
+		bg.scale.setTo(3, 3); //scale the background		
+		game.physics.startSystem(Phaser.Physics.ARCADE); // add physics
+		rArmOn = false; //reset limb variables in case of restart
+		lArmOn = false;
+		rLegOn = false;
+		lLegOn = false;
+				//Do we need to reassign these vars?
+		// Assigns the audio to a global variable
+		walking = game.add.audio('walkNoise', 1, true); // add walk sfx, vol 1, looping true
+		thud = game.add.audio('thudSFX', 1, false);
+		jumping = game.add.audio('paperTap',1,false);
+		limbRip = game.add.audio('limbSound', 1, false);
+		levelRip = game.add.audio('levelShift', 1, false);
+	
+        player = new Player(game, 'guy', 'Body');// add player from prefab
         game.add.existing(player);
-		size = 1;
+
+		walking.play(); //play the music so it lines up across all levels (excluding final level)
+
+		size = 1; //N O T E : figure out what this is for
+		level = 5; // set first level
+
+		//level layout
+		this.platforms = game.add.group(); //create platforms group
+		this.platforms.enableBody = true; //enable physics to for platforms
+
+		// Add platforms for world bounds
+		/*
+		floor right
+		floor left
+		roof
+		*/
+		var ledge = this.platforms.create(1375, 800, 'plat', 'bigBox'); // puzzle roof
+		ledge.body.immovable = true;
+		ledge.scale.setTo(1.5, 1.05);
+		ledge = this.platforms.create(1375, 1100, 'plat', 'midBox'); // puzzle wall
+		ledge.body.immovable = true;
+		ledge.scale.setTo(2, 2);
+		ledge = this.platforms.create(30, 1427, 'plat', 'lilBox'); //floor left
+		ledge.body.immovable = true;
+		ledge.scale.setTo(2, 2);
+		//add a movable floor for puzzle solving
+		door = this.platforms.create(337, 1427, 'puzzles', 'puzzleDoor'); //door
+		door.body.immovable = true;
+		door.scale.setTo(2, 2);
+		ledge = this.platforms.create(620, 1427, 'plat', 'lilBox'); //floor right
+		ledge.body.immovable = true;
+		ledge.scale.setTo(8, 2);
+ 		ledge = this.platforms.create(1850, 0, 'plat', 'lilBoxUziVertical'); // right wall
+		ledge.body.immovable = true;
+		ledge.scale.setTo(2, 10); 
+		ledge = this.platforms.create(0, 0, 'plat', 'lilBoxUziVertical'); // left wall
+		ledge.body.immovable = true;
+		ledge.scale.setTo(2, 10); 
+		ledge = this.platforms.create(1220, 1170, 'plat', 'lilBox'); // upper step
+		ledge.body.immovable = true;
+		ledge = this.platforms.create(780, 1330, 'plat', 'lilBox'); // lower step
+		ledge.body.immovable = true;
+		ledge = this.platforms.create(1000, 1250, 'plat', 'lilBox'); // middle step
+		ledge.body.immovable = true;
 		
-		music5 = game.add.audio('glitchF',1,true);
-		music5.play();
+		// P U Z Z L E 
+		//comtemplation
 
 		// C A M E R A  S T U F F
 		game.world.setBounds(0,0,1920, 1500);
 		game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, 0.6, 0.6);
 		// game.input.onDown.add(shake, this);
-		
 		},
 	update: function() {
 		var cursors = game.input.keyboard.createCursorKeys();
-			
-			music4.destroy();
+		touching = game.physics.arcade.collide(player, this.platforms); //allows player to collide with walls and platforms and stuff
+		touchingLimb = game.physics.arcade.collide(limb, this.platforms); //allows limb to collide with walls and platforms and stuff
+
 		// Figures out if the player is falling then adds a landing sfx.
-		if(player.body.velocity.y > 0)
-		{
+		if(player.body.velocity.y > 0){ // check for falling
 			falling = true;
 		}
-		
-		if(cursors.up.isUp)
-			{
+		if(cursors.up.isUp){// check for jumping			{
 				yesJump = true;
 			}
-		
-		if (player.body.onFloor() && falling == true)
-		{
+		if (touching == true && falling == true){ // landing sound effect (100% polish)
 			thud.play();
 			falling = false;
 			console.log('Landed');
 		}
-			
-			if(cursors.up.isDown && player.body.onFloor())
-			{ //press up to make jump sfx
-				if(yesJump == true)
-				{
-					jumping.play();
-					yesJump = false;
-					if(walking.play())
-					{//pause walking sound when jumping
-						walking.pause();
-					}
+		if(cursors.up.isDown && touching == true){ //press up to make jump sfx
+			game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
+			if(yesJump == true){
+				jumping.play();
+				yesJump = false; // player can't hold up to jump
+				if(walking.play()){//pause walking sound when jumping
+					walking.pause();
 				}
 			}
-
-			if(player.body.onFloor() != true)
-			{
-				walking.pause();
-
-			}
-			if (cursors.left.isDown || cursors.right.isDown){
-				if(player.body.onFloor()){ //play sound when player is moving on the ground (taken from phaser.io exmaple code)
-					//  Play walk sound
-					walking.resume();
-				}
-			}
-			else {
-				//  Pause music/sfx
-				 walking.pause();
-			}
-	if (cursors.down.isDown)
-		{
-			game.state.start('endLoad')
-			level = level +1;
 		}
-		function buttonPress (player, buttons) {//press the button to "win"
-			game.state.start('endLoad')
-
-	}
-		game.physics.arcade.collide(player, buttons, buttonPress, null, this);
-
+		if(player.body.onFloor() != true){// pause walking sound when not on ground
+			walking.pause();
+		}
+		if (cursors.left.isDown || cursors.right.isDown){
+			if(touching == true){ //play sound when player is moving on the ground (taken from phaser.io exmaple code)
+				walking.resume();//  Play walk sound
+				game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
+			}
+		}
+		else {//  Pause music/sfx
+			 walking.pause();
+		}
 	},
-	
-/* 		render: function() {
-		// setup debug rendering
-			game.debug.bodyInfo(player, 32, 32);
-			game.debug.body(player);
-	},
-	 */
-	
-	}
+/* 	render: function() {// setup debug rendering (comment out when not debugging)
+			game.debug.bodyInfo(limb, 32, 32);
+			game.debug.body(limb);
+	}, */
+}
 
 //---------------------------------------------------------------------------
 //travel cutscene
