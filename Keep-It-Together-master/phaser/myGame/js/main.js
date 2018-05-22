@@ -205,21 +205,20 @@ level1.prototype = {
 			
 	// L I M B	
 		// W A L K I N G
- 	if (game.input.keyboard.isDown(Phaser.Keyboard.A)){// go left
+ 	if (game.input.keyboard.isDown(Phaser.Keyboard.A) && rArmOn == false){// go left
 		limb.body.velocity.x = -playerVel;
 		game.camera.follow(limb, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
 	}
-	else if (game.input.keyboard.isDown(Phaser.Keyboard.D)){// go right
+	else if (game.input.keyboard.isDown(Phaser.Keyboard.D) && rArmOn == false){// go right
 		limb.body.velocity.x = playerVel;
 		game.camera.follow(limb, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
 	} 
 	else {//  don't move
 		limb.body.velocity.x = 0;
 	} 
-
-	if (player.body.y > 1970){//next state
+						//remove after testing v
+	if (player.body.y > 1970 || cursors.down.isDown){//next state
 		rArmOn = false;
-		level = level +1;
 		game.state.start('load2')
 	}
 	if (game.input.keyboard.isDown(Phaser.Keyboard.R)){ //R to restart
@@ -261,7 +260,7 @@ load2.prototype = {
 	preload: function() { // pre game loop
 		console.log('load2: preload');
 		game.load.atlas('scene', 'assets/img/cutscenes.png', 'assets/img/cutscenes.json'); // load the stuff
-		game.load.atlas('back', 'assets/img/Backgrounds.png', 'assets/img/Backgrounds.json'); // load the stuff
+
 		game.load.audio('flip', 'assets/audio/flip.mp3');
 		},
 	create: function() {
@@ -275,7 +274,7 @@ load2.prototype = {
 	},
 	update: function() {
 		// main menu logic
-		
+		// leftArm
 		// Pauses SFX
 		walking.pause();
 		
@@ -297,96 +296,193 @@ var level2 = function(game) {};
 level2.prototype = {
 	preload: function() { // pre game loop
 		console.log('First level: preload');
-		game.load.atlas('guy', 'assets/img/Player.png', 'assets/img/Player.json'); // load the stuff
-		game.load.atlas('back', 'assets/img/Backgrounds.png', 'assets/img/Backgrounds.json'); // load the stuff
-
+		//nothing to load rn
+		game.load.image('leftArm', 'assets/img/armLside.png');
 
 		},
-	create: function() {
+	create: function() { //make the game world
 		console.log('First level: create');
-		
-		game.physics.startSystem(Phaser.Physics.ARCADE); // stole this from the tutorial to add physics
-		
-		var bg2 = game.add.sprite(0, 0, 'back', 'Background2'); // add da background
-		bg2.scale.setTo(1.25, 1.4); //scale the background
-
-
-        player = new Player(game, 'guy', 'Body');	
+		var bg = game.add.sprite(0, 0, 'back', 'Background2'); // add background, level 1 green for right arm
+		bg.scale.setTo(3, 3); //scale the background		
+		game.physics.startSystem(Phaser.Physics.ARCADE); // add physics
+		rArmOn = false; //reset limb variables in case of restart
+		lArmOn = true;
+		rLegOn = true;
+		lLegOn = true;
+				//Do we need to reassign these vars?
+		// Assigns the audio to a global variable
+		walking = game.add.audio('walkNoise', 1, true); // add walk sfx, vol 1, looping true
+		music = game.add.audio('claireDeLune',1,true);
+		music2 = game.add.audio('glitch1',0,true);
+		music3 = game.add.audio('glitch2',0,true);
+		music4 = game.add.audio('glitch3',0,true);
+		thud = game.add.audio('thudSFX', 1, false);
+		jumping = game.add.audio('paperTap',1,false);
+		limbRip = game.add.audio('limbSound', 1, false);
+		levelRip = game.add.audio('levelShift', 1, false);
+	
+        player = new Player(game, 'guy', 'Body');// add player from prefab
         game.add.existing(player);
-		size = 1;
-			// C A M E R A  S T U F F
+
+		walking.play(); //play the music so it lines up across all levels (excluding final level)
+
+		size = 1; //N O T E : figure out what this is for
+		level = 2; // set first level
+		
+		limb = game.add.sprite(1920, 400, 'leftArm'); //add the controlable limb in where the player can't see
+	    game.physics.arcade.enable(limb);
+		limb.scale.setTo(1.5, 1);
+		limb.body.gravity.y = 450; // same physics as player
+		limb.body.collideWorldBounds = true; // don't fall through the earth
+
+		//level layout
+		this.platforms = game.add.group(); //create platforms group
+		this.platforms.enableBody = true; //enable physics to for platforms
+
+		// Add platforms for world bounds
+		/*
+		floor right
+		floor left
+		roof
+		wall right
+		wall left
+		parkour platforms x4
+		breakable rock
+		*/
+		var ledge = this.platforms.create(1375, 800, 'plat', 'bigBox'); // puzzle roof
+		ledge.body.immovable = true;
+		ledge.scale.setTo(1.5, 1.05);
+		ledge = this.platforms.create(1375, 1100, 'plat', 'midBox'); // puzzle wall
+		ledge.body.immovable = true;
+		ledge.scale.setTo(2, 2);
+		ledge = this.platforms.create(30, 1427, 'plat', 'lilBox'); //floor left
+		ledge.body.immovable = true;
+		ledge.scale.setTo(2, 2);
+		//add a movable floor for puzzle solving
+		door = this.platforms.create(337, 1427, 'puzzles', 'puzzleDoor'); //door
+		door.body.immovable = true;
+		door.scale.setTo(2, 2);
+		ledge = this.platforms.create(620, 1427, 'plat', 'lilBox'); //floor right
+		ledge.body.immovable = true;
+		ledge.scale.setTo(8, 2);
+ 		ledge = this.platforms.create(1850, 0, 'plat', 'lilBoxUziVertical'); // right wall
+		ledge.body.immovable = true;
+		ledge.scale.setTo(2, 10); 
+		ledge = this.platforms.create(0, 0, 'plat', 'lilBoxUziVertical'); // left wall
+		ledge.body.immovable = true;
+		ledge.scale.setTo(2, 10); 
+		ledge = this.platforms.create(1220, 1170, 'plat', 'lilBox'); // upper step
+		ledge.body.immovable = true;
+		ledge = this.platforms.create(780, 1330, 'plat', 'lilBox'); // lower step
+		ledge.body.immovable = true;
+		ledge = this.platforms.create(1000, 1250, 'plat', 'lilBox'); // middle step
+		ledge.body.immovable = true;
+		
+		// P U Z Z L E 
+		//rock floor
+
+		// C A M E R A  S T U F F
 		game.world.setBounds(0,0,1920, 1500);
 		game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, 0.6, 0.6);
 		// game.input.onDown.add(shake, this);
 		},
 	update: function() {
 		var cursors = game.input.keyboard.createCursorKeys();
-			
-			music.destroy();
-			music2.volume = 1;
-			
+		touching = game.physics.arcade.collide(player, this.platforms); //allows player to collide with walls and platforms and stuff
+		touchingLimb = game.physics.arcade.collide(limb, this.platforms); //allows limb to collide with walls and platforms and stuff
+
 		// Figures out if the player is falling then adds a landing sfx.
-		if(player.body.velocity.y > 0)
-		{
+		// C H A N G E  T H I S  A F T E R  T E S T I N G -------------v
+		if (game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR) /*&& lArmOn == true*/){//press space to remove limbs
+			console.log('arm off');
+			limbRip.play();
+			lArmOn = false;
+			lArm.destroy();
+			limb.x = player.x - 40; // teleport controllable limb to player
+			limb.y = player.y;
+			game.camera.follow(limb, Phaser.Camera.FOLLOW_LOCKON, .6, .6); //follow the limb with the camera
+		}
+		if(player.body.velocity.y > 0){ // check for falling
 			falling = true;
 		}
-		
-		if(cursors.up.isUp)
-			{
+		if(cursors.up.isUp){// check for jumping			{
 				yesJump = true;
 			}
-		
-		if (player.body.onFloor() && falling == true)
-		{
+		if (touching == true && falling == true){ // landing sound effect (100% polish)
 			thud.play();
 			falling = false;
 			console.log('Landed');
 		}
-			
-			if(cursors.up.isDown && player.body.onFloor())
-			{ //press up to make jump sfx
-				if(yesJump == true)
-				{
-					jumping.play();
-					yesJump = false;
-					if(walking.play())
-					{//pause walking sound when jumping
-						walking.pause();
-					}
+		if(cursors.up.isDown && touching == true){ //press up to make jump sfx
+			game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
+			if(yesJump == true){
+				jumping.play();
+				yesJump = false; // player can't hold up to jump
+				if(walking.play()){//pause walking sound when jumping
+					walking.pause();
 				}
 			}
-
-			if(player.body.onFloor() != true)
-			{
-				walking.pause();
-
-			}
-			if (cursors.left.isDown || cursors.right.isDown){
-				if(player.body.onFloor()){ //play sound when player is moving on the ground (taken from phaser.io exmaple code)
-					//  Play walk sound
-					walking.resume();
-				}
-			}
-			else {
-				//  Pause music/sfx
-				 walking.pause();
-			}
-		if (cursors.down.isDown)
-		{
-			game.state.start('load3')
-			lArmOn = false;
-			level = level +1;
 		}
-
-		
-
-	},
-/* 		render: function() {
-		// setup debug rendering
-			game.debug.bodyInfo(player, 32, 32);
-			game.debug.body(player);
-	}, */
+		if(player.body.onFloor() != true){// pause walking sound when not on ground
+			walking.pause();
+		}
+		if (cursors.left.isDown || cursors.right.isDown){
+			if(touching == true){ //play sound when player is moving on the ground (taken from phaser.io exmaple code)
+				walking.resume();//  Play walk sound
+				game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
+			}
+		}
+		else {//  Pause music/sfx
+			 walking.pause();
+		}
+			
+	// L I M B	
+		// W A L K I N G
+ 	if (game.input.keyboard.isDown(Phaser.Keyboard.A) && lArmOn == false){// go left
+		limb.body.velocity.x = -playerVel;
+		game.camera.follow(limb, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
 	}
+	else if (game.input.keyboard.isDown(Phaser.Keyboard.D) && lArmOn == false){// go right
+		limb.body.velocity.x = playerVel;
+		game.camera.follow(limb, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
+	} 
+	else {//  don't move
+		limb.body.velocity.x = 0;
+	} 
+
+	if (player.body.y > 1970 || cursors.down.isDown){//next state
+		lArmOn = false;
+		game.state.start('load3')
+	}
+	if (game.input.keyboard.isDown(Phaser.Keyboard.R)){ //R to restart
+		game.state.start('level2')
+		music.destroy(); //so the music doesn't overlap
+		music2.destroy();
+		music3.destroy();
+		music4.destroy();
+	}		
+
+	function buttonPressed (limbs, buttons) {//press the button
+		door.destroy(); // remove door
+		//A D D  S F X  H E R E
+		buttons.destroy();
+		buttons = game.add.sprite(1690, 1397, 'puzzles', 'buttonDown');//replace with button pressed sprite
+		buttons.scale.setTo(1.9, 2);
+	    game.physics.arcade.enable(buttons); // add physics to the button (line might be unnecessary)
+		buttons.body.immovable = true;
+		indicator = game.add.sprite(610, 1400, 'puzzles', 'indicatorGreen'); //show the player that something has happened
+		indicator.scale.setTo(.95, .7);
+		
+		// Make a sound to let the player know something has changed
+		levelRip.play();
+	}
+	game.physics.arcade.collide(limb, buttons, buttonPressed, null, this);// check for buttonPressed
+	},
+/* 	render: function() {// setup debug rendering (comment out when not debugging)
+			game.debug.bodyInfo(limb, 32, 32);
+			game.debug.body(limb);
+	}, */
+}
 
 //---------------------------------------------------------------------------
 //travel cutscene
@@ -435,22 +531,90 @@ var level3 = function(game) {};
 level3.prototype = {
 	preload: function() { // pre game loop
 		console.log('First level: preload');
-		game.load.atlas('guy', 'assets/img/Player.png', 'assets/img/Player.json'); // load the stuff
-		game.load.atlas('back', 'assets/img/Backgrounds.png', 'assets/img/Backgrounds.json'); // load the stuff
-
+		//nothing to load rn
+		game.load.image('rightLeg', 'assets/img/legRside.png');
 
 		},
-	create: function() {
+	create: function() { //make the game world
 		console.log('First level: create');
-		
-		game.physics.startSystem(Phaser.Physics.ARCADE); // stole this from the tutorial to add physics
-		
-		var bg3 = game.add.sprite(0, 0, 'back', 'Background3'); // add da background
-		bg3.scale.setTo(1.25, 1.4); //scale the background
-
-        player = new Player(game, 'guy', 'Body');	
+		var bg = game.add.sprite(0, 0, 'back', 'Background3'); // add background, level 1 green for right arm
+		bg.scale.setTo(3, 3); //scale the background		
+		game.physics.startSystem(Phaser.Physics.ARCADE); // add physics
+		rArmOn = false; //reset limb variables in case of restart
+		lArmOn = false;
+		rLegOn = true;
+		lLegOn = true;
+				//Do we need to reassign these vars?
+		// Assigns the audio to a global variable
+		walking = game.add.audio('walkNoise', 1, true); // add walk sfx, vol 1, looping true
+		music = game.add.audio('claireDeLune',1,true);
+		music2 = game.add.audio('glitch1',0,true);
+		music3 = game.add.audio('glitch2',0,true);
+		music4 = game.add.audio('glitch3',0,true);
+		thud = game.add.audio('thudSFX', 1, false);
+		jumping = game.add.audio('paperTap',1,false);
+		limbRip = game.add.audio('limbSound', 1, false);
+		levelRip = game.add.audio('levelShift', 1, false);
+	
+        player = new Player(game, 'guy', 'Body');// add player from prefab
         game.add.existing(player);
-		size = 1;
+
+		walking.play(); //play the music so it lines up across all levels (excluding final level)
+
+		size = 1; //N O T E : figure out what this is for
+		level = 3; // set first level
+		
+		limb = game.add.sprite(1920, 400, 'rightLeg'); //add the controlable limb in where the player can't see
+	    game.physics.arcade.enable(limb);
+		limb.scale.setTo(1.5, 1);
+		limb.body.gravity.y = 450; // same physics as player
+		limb.body.collideWorldBounds = true; // don't fall through the earth
+
+		//level layout
+		this.platforms = game.add.group(); //create platforms group
+		this.platforms.enableBody = true; //enable physics to for platforms
+
+		// Add platforms for world bounds
+		/*
+		floor right
+		floor left
+		roof
+		wall right
+		wall left
+		parkour platforms x4
+		breakable rock
+		*/
+		var ledge = this.platforms.create(1375, 800, 'plat', 'bigBox'); // puzzle roof
+		ledge.body.immovable = true;
+		ledge.scale.setTo(1.5, 1.05);
+		ledge = this.platforms.create(1375, 1100, 'plat', 'midBox'); // puzzle wall
+		ledge.body.immovable = true;
+		ledge.scale.setTo(2, 2);
+		ledge = this.platforms.create(30, 1427, 'plat', 'lilBox'); //floor left
+		ledge.body.immovable = true;
+		ledge.scale.setTo(2, 2);
+		//add a movable floor for puzzle solving
+		door = this.platforms.create(337, 1427, 'puzzles', 'puzzleDoor'); //door
+		door.body.immovable = true;
+		door.scale.setTo(2, 2);
+		ledge = this.platforms.create(620, 1427, 'plat', 'lilBox'); //floor right
+		ledge.body.immovable = true;
+		ledge.scale.setTo(8, 2);
+ 		ledge = this.platforms.create(1850, 0, 'plat', 'lilBoxUziVertical'); // right wall
+		ledge.body.immovable = true;
+		ledge.scale.setTo(2, 10); 
+		ledge = this.platforms.create(0, 0, 'plat', 'lilBoxUziVertical'); // left wall
+		ledge.body.immovable = true;
+		ledge.scale.setTo(2, 10); 
+		ledge = this.platforms.create(1220, 1170, 'plat', 'lilBox'); // upper step
+		ledge.body.immovable = true;
+		ledge = this.platforms.create(780, 1330, 'plat', 'lilBox'); // lower step
+		ledge.body.immovable = true;
+		ledge = this.platforms.create(1000, 1250, 'plat', 'lilBox'); // middle step
+		ledge.body.immovable = true;
+		
+		// P U Z Z L E 
+		//Octopus
 
 		// C A M E R A  S T U F F
 		game.world.setBounds(0,0,1920, 1500);
@@ -459,70 +623,101 @@ level3.prototype = {
 		},
 	update: function() {
 		var cursors = game.input.keyboard.createCursorKeys();
-			
-			music2.destroy();
-			music3.volume = 1;
-			
-					// Figures out if the player is falling then adds a landing sfx.
+		touching = game.physics.arcade.collide(player, this.platforms); //allows player to collide with walls and platforms and stuff
+		touchingLimb = game.physics.arcade.collide(limb, this.platforms); //allows limb to collide with walls and platforms and stuff
+
 		// Figures out if the player is falling then adds a landing sfx.
-		if(player.body.velocity.y > 0)
-		{
+		// C H A N G E  T H I S  A F T E R  T E S T I N G -------------v
+		if (game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR) /*&& rLegOn == true*/){//press space to remove limbs
+			console.log('arm off');
+			limbRip.play();
+			rLegOn = false;
+			rLeg.destroy();
+			limb.x = player.x + 20; // teleport controllable limb to player
+			limb.y = player.y + 20;
+			game.camera.follow(limb, Phaser.Camera.FOLLOW_LOCKON, .6, .6); //follow the limb with the camera
+		}
+		if(player.body.velocity.y > 0){ // check for falling
 			falling = true;
 		}
-		
-		if(cursors.up.isUp)
-			{
+		if(cursors.up.isUp){// check for jumping			{
 				yesJump = true;
 			}
-		
-		if (player.body.onFloor() && falling == true)
-		{
+		if (touching == true && falling == true){ // landing sound effect (100% polish)
 			thud.play();
 			falling = false;
 			console.log('Landed');
 		}
+		if(cursors.up.isDown && touching == true){ //press up to make jump sfx
+			game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
+			if(yesJump == true){
+				jumping.play();
+				yesJump = false; // player can't hold up to jump
+				if(walking.play()){//pause walking sound when jumping
+					walking.pause();
+				}
+			}
+		}
+		if(player.body.onFloor() != true){// pause walking sound when not on ground
+			walking.pause();
+		}
+		if (cursors.left.isDown || cursors.right.isDown){
+			if(touching == true){ //play sound when player is moving on the ground (taken from phaser.io exmaple code)
+				walking.resume();//  Play walk sound
+				game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
+			}
+		}
+		else {//  Pause music/sfx
+			 walking.pause();
+		}
 			
-			if(cursors.up.isDown && player.body.onFloor())
-			{ //press up to make jump sfx
-				if(yesJump == true)
-				{
-					jumping.play();
-					yesJump = false;
-					if(walking.play())
-					{//pause walking sound when jumping
-						walking.pause();
-					}
-				}
-			}
-
-			if(player.body.onFloor() != true)
-			{
-				walking.pause();
-
-			}
-			if (cursors.left.isDown || cursors.right.isDown){
-				if(player.body.onFloor()){ //play sound when player is moving on the ground (taken from phaser.io exmaple code)
-					//  Play walk sound
-					walking.resume();
-				}
-			}
-			else {
-				//  Pause music/sfx
-				 walking.pause();
-			}
-	if (cursors.down.isDown)
-			{
-				game.state.start('load4')
-				rLegOn = false;
-				level = level +1;
-			}
-	},
-/* 			render: function() {
-		// setup debug rendering
-			game.debug.bodyInfo(player, 32, 32);
-			game.debug.body(player);
-	}, */
+	// L I M B	
+		// W A L K I N G
+ 	if (game.input.keyboard.isDown(Phaser.Keyboard.A) && rLegOn == false){// go left
+		limb.body.velocity.x = -playerVel;
+		game.camera.follow(limb, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
 	}
+	else if (game.input.keyboard.isDown(Phaser.Keyboard.D) && rLegOn == false){// go right
+		limb.body.velocity.x = playerVel;
+		game.camera.follow(limb, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
+	} 
+	else {//  don't move
+		limb.body.velocity.x = 0;
+	} 
+
+	if (player.body.y > 1970 || cursors.down.isDown){//next state
+		rLegOn = false;
+		game.state.start('load4')
+	}
+	if (game.input.keyboard.isDown(Phaser.Keyboard.R)){ //R to restart
+		game.state.start('level3')
+		music.destroy(); //so the music doesn't overlap
+		music2.destroy();
+		music3.destroy();
+		music4.destroy();
+	}		
+
+	function buttonPressed (limbs, buttons) {//press the button
+		door.destroy(); // remove door
+		//A D D  S F X  H E R E
+		buttons.destroy();
+		buttons = game.add.sprite(1690, 1397, 'puzzles', 'buttonDown');//replace with button pressed sprite
+		buttons.scale.setTo(1.9, 2);
+	    game.physics.arcade.enable(buttons); // add physics to the button (line might be unnecessary)
+		buttons.body.immovable = true;
+		indicator = game.add.sprite(610, 1400, 'puzzles', 'indicatorGreen'); //show the player that something has happened
+		indicator.scale.setTo(.95, .7);
+		
+		// Make a sound to let the player know something has changed
+		levelRip.play();
+	}
+	game.physics.arcade.collide(limb, buttons, buttonPressed, null, this);// check for buttonPressed
+	},
+/* 	render: function() {// setup debug rendering (comment out when not debugging)
+			game.debug.bodyInfo(limb, 32, 32);
+			game.debug.body(limb);
+	}, */
+}
 
 //---------------------------------------------------------------------------
 //travel cutscene
@@ -571,98 +766,193 @@ var level4 = function(game) {};
 level4.prototype = {
 	preload: function() { // pre game loop
 		console.log('First level: preload');
-		game.load.atlas('guy', 'assets/img/Player.png', 'assets/img/Player.json'); // load the stuff
-		game.load.atlas('back', 'assets/img/Backgrounds.png', 'assets/img/Backgrounds.json'); // load the stuff
-
+		//nothing to load rn
+		game.load.image('leftLeg', 'assets/img/legLside.png');
 
 		},
-	create: function() {
+	create: function() { //make the game world
 		console.log('First level: create');
-		
-		game.physics.startSystem(Phaser.Physics.ARCADE); // stole this from the tutorial to add physics
-		
-		var bg4 = game.add.sprite(0, 0, 'back', 'Background4'); // add da background
-		bg4.scale.setTo(1.25, 1.4); //scale the background
-
-        player = new Player(game, 'guy', 'Body');	
+		var bg = game.add.sprite(0, 0, 'back', 'Background4'); // add background, level 1 green for right arm
+		bg.scale.setTo(3, 3); //scale the background		
+		game.physics.startSystem(Phaser.Physics.ARCADE); // add physics
+		rArmOn = false; //reset limb variables in case of restart
+		lArmOn = false;
+		rLegOn = false;
+		lLegOn = true;
+				//Do we need to reassign these vars?
+		// Assigns the audio to a global variable
+		walking = game.add.audio('walkNoise', 1, true); // add walk sfx, vol 1, looping true
+		music = game.add.audio('claireDeLune',1,true);
+		music2 = game.add.audio('glitch1',0,true);
+		music3 = game.add.audio('glitch2',0,true);
+		music4 = game.add.audio('glitch3',0,true);
+		thud = game.add.audio('thudSFX', 1, false);
+		jumping = game.add.audio('paperTap',1,false);
+		limbRip = game.add.audio('limbSound', 1, false);
+		levelRip = game.add.audio('levelShift', 1, false);
+	
+        player = new Player(game, 'guy', 'Body');// add player from prefab
         game.add.existing(player);
-		size = 1;
+
+		walking.play(); //play the music so it lines up across all levels (excluding final level)
+
+		size = 1; //N O T E : figure out what this is for
+		level = 4; // set first level
 		
-			// C A M E R A  S T U F F
+		limb = game.add.sprite(1920, 400, 'leftLeg'); //add the controlable limb in where the player can't see
+	    game.physics.arcade.enable(limb);
+		limb.scale.setTo(1.5, 1);
+		limb.body.gravity.y = 450; // same physics as player
+		limb.body.collideWorldBounds = true; // don't fall through the earth
+
+		//level layout
+		this.platforms = game.add.group(); //create platforms group
+		this.platforms.enableBody = true; //enable physics to for platforms
+
+		// Add platforms for world bounds
+		/*
+		floor right
+		floor left
+		roof
+		wall right
+		wall left
+		parkour platforms x4
+		breakable rock
+		*/
+		var ledge = this.platforms.create(1375, 800, 'plat', 'bigBox'); // puzzle roof
+		ledge.body.immovable = true;
+		ledge.scale.setTo(1.5, 1.05);
+		ledge = this.platforms.create(1375, 1100, 'plat', 'midBox'); // puzzle wall
+		ledge.body.immovable = true;
+		ledge.scale.setTo(2, 2);
+		ledge = this.platforms.create(30, 1427, 'plat', 'lilBox'); //floor left
+		ledge.body.immovable = true;
+		ledge.scale.setTo(2, 2);
+		//add a movable floor for puzzle solving
+		door = this.platforms.create(337, 1427, 'puzzles', 'puzzleDoor'); //door
+		door.body.immovable = true;
+		door.scale.setTo(2, 2);
+		ledge = this.platforms.create(620, 1427, 'plat', 'lilBox'); //floor right
+		ledge.body.immovable = true;
+		ledge.scale.setTo(8, 2);
+ 		ledge = this.platforms.create(1850, 0, 'plat', 'lilBoxUziVertical'); // right wall
+		ledge.body.immovable = true;
+		ledge.scale.setTo(2, 10); 
+		ledge = this.platforms.create(0, 0, 'plat', 'lilBoxUziVertical'); // left wall
+		ledge.body.immovable = true;
+		ledge.scale.setTo(2, 10); 
+		ledge = this.platforms.create(1220, 1170, 'plat', 'lilBox'); // upper step
+		ledge.body.immovable = true;
+		ledge = this.platforms.create(780, 1330, 'plat', 'lilBox'); // lower step
+		ledge.body.immovable = true;
+		ledge = this.platforms.create(1000, 1250, 'plat', 'lilBox'); // middle step
+		ledge.body.immovable = true;
+		
+		// P U Z Z L E 
+		//buttons part 2
+
+		// C A M E R A  S T U F F
 		game.world.setBounds(0,0,1920, 1500);
 		game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, 0.6, 0.6);
 		// game.input.onDown.add(shake, this);
-		
 		},
 	update: function() {
 		var cursors = game.input.keyboard.createCursorKeys();
-			
-			music3.destroy();
-			music4.volume = 1;
-			
-					// Figures out if the player is falling then adds a landing sfx.
+		touching = game.physics.arcade.collide(player, this.platforms); //allows player to collide with walls and platforms and stuff
+		touchingLimb = game.physics.arcade.collide(limb, this.platforms); //allows limb to collide with walls and platforms and stuff
+
 		// Figures out if the player is falling then adds a landing sfx.
-		if(player.body.velocity.y > 0)
-		{
+		// C H A N G E  T H I S  A F T E R  T E S T I N G -------------v
+		if (game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR) /*&& lLegOn == true*/){//press space to remove limbs
+			console.log('arm off');
+			limbRip.play();
+			lLegOn = false;
+			lLeg.destroy();
+			limb.x = player.x + 20; // teleport controllable limb to player
+			limb.y = player.y + 20;
+			game.camera.follow(limb, Phaser.Camera.FOLLOW_LOCKON, .6, .6); //follow the limb with the camera
+		}
+		if(player.body.velocity.y > 0){ // check for falling
 			falling = true;
 		}
-		
-		if(cursors.up.isUp)
-			{
+		if(cursors.up.isUp){// check for jumping			{
 				yesJump = true;
 			}
-		
-		if (player.body.onFloor() && falling == true)
-		{
+		if (touching == true && falling == true){ // landing sound effect (100% polish)
 			thud.play();
 			falling = false;
 			console.log('Landed');
 		}
-			
-			if(cursors.up.isDown && player.body.onFloor())
-			{ //press up to make jump sfx
-				if(yesJump == true)
-				{
-					jumping.play();
-					yesJump = false;
-					if(walking.play())
-					{//pause walking sound when jumping
-						walking.pause();
-					}
+		if(cursors.up.isDown && touching == true){ //press up to make jump sfx
+			game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
+			if(yesJump == true){
+				jumping.play();
+				yesJump = false; // player can't hold up to jump
+				if(walking.play()){//pause walking sound when jumping
+					walking.pause();
 				}
 			}
-
-			if(player.body.onFloor() != true)
-			{
-				walking.pause();
-
-			}
-			if (cursors.left.isDown || cursors.right.isDown){
-				if(player.body.onFloor()){ //play sound when player is moving on the ground (taken from phaser.io exmaple code)
-					//  Play walk sound
-					walking.resume();
-				}
-			}
-			else {
-				//  Pause music/sfx
-				 walking.pause();
-			}
-	if (cursors.down.isDown)
-		{
-			game.state.start('load5')
-			lLegOn = false;
-			level = level +1;
 		}
-
-		
-
-	},
-/* 			render: function() {
-		// setup debug rendering
-			game.debug.bodyInfo(player, 32, 32);
-			game.debug.body(player);
-	}, */
+		if(player.body.onFloor() != true){// pause walking sound when not on ground
+			walking.pause();
+		}
+		if (cursors.left.isDown || cursors.right.isDown){
+			if(touching == true){ //play sound when player is moving on the ground (taken from phaser.io exmaple code)
+				walking.resume();//  Play walk sound
+				game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
+			}
+		}
+		else {//  Pause music/sfx
+			 walking.pause();
+		}
+			
+	// L I M B	
+		// W A L K I N G
+ 	if (game.input.keyboard.isDown(Phaser.Keyboard.A) && lLegOn == false){// go left
+		limb.body.velocity.x = -playerVel;
+		game.camera.follow(limb, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
 	}
+	else if (game.input.keyboard.isDown(Phaser.Keyboard.D) && lLegOn == false){// go right
+		limb.body.velocity.x = playerVel;
+		game.camera.follow(limb, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
+	} 
+	else {//  don't move
+		limb.body.velocity.x = 0;
+	} 
+
+	if (player.body.y > 1970 || cursors.down.isDown){//next state
+		rLegOn = false;
+		game.state.start('load5')
+	}
+	if (game.input.keyboard.isDown(Phaser.Keyboard.R)){ //R to restart
+		game.state.start('level4')
+		music.destroy(); //so the music doesn't overlap
+		music2.destroy();
+		music3.destroy();
+		music4.destroy();
+	}		
+
+	function buttonPressed (limbs, buttons) {//press the button
+		door.destroy(); // remove door
+		//A D D  S F X  H E R E
+		buttons.destroy();
+		buttons = game.add.sprite(1690, 1397, 'puzzles', 'buttonDown');//replace with button pressed sprite
+		buttons.scale.setTo(1.9, 2);
+	    game.physics.arcade.enable(buttons); // add physics to the button (line might be unnecessary)
+		buttons.body.immovable = true;
+		indicator = game.add.sprite(610, 1400, 'puzzles', 'indicatorGreen'); //show the player that something has happened
+		indicator.scale.setTo(.95, .7);
+		
+		// Make a sound to let the player know something has changed
+		levelRip.play();
+	}
+	game.physics.arcade.collide(limb, buttons, buttonPressed, null, this);// check for buttonPressed
+	},
+/* 	render: function() {// setup debug rendering (comment out when not debugging)
+			game.debug.bodyInfo(limb, 32, 32);
+			game.debug.body(limb);
+	}, */
+}
 
 //---------------------------------------------------------------------------
 //travel cutscene
