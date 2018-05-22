@@ -1,5 +1,5 @@
-//var game = new Phaser.Game(800, 500, Phaser.AUTO);
-var game = new Phaser.Game(1920, 1500, Phaser.AUTO); //rffv
+var game = new Phaser.Game(800, 500, Phaser.AUTO);
+//var game = new Phaser.Game(1920, 1500, Phaser.AUTO); //rffv
 //rffv means remove from final version (word search through document to find these before the final push)
 
 // P L A Y E R
@@ -151,7 +151,7 @@ level1.prototype = {
 
 		// C A M E R A  S T U F F
 		game.world.setBounds(0,0,1920, 1500);
-		//game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, 0.6, 0.6);
+		game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, 0.6, 0.6);
 		// game.input.onDown.add(shake, this);
 		},
 	update: function() {

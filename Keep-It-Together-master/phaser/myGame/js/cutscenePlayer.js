@@ -1,5 +1,5 @@
 function Cutscene (game, key, frame) {
-	Phaser.Sprite.call(this, game, 500, -20, key, frame);
+	Phaser.Sprite.call(this, game, 400, -20, key, frame);
 	
 	size = 1;
 	
