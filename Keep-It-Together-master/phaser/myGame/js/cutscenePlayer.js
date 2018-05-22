@@ -1,7 +1,7 @@
 function Cutscene (game, key, frame) {
 	Phaser.Sprite.call(this, game, 400, -20, key, frame);
 	
-	size = 1;
+	size = 1;//rffv
 	
 	this.anchor.set(0.5);
 	this.scale.setTo(size, size);
@@ -20,6 +20,6 @@ Cutscene.prototype.constructor = Cutscene;
 Cutscene.prototype.update = function(){
 
 	cutscene.angle +=5;
-	size -= .01;
+	size -= .01; //rffv
 
 }

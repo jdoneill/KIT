@@ -1,5 +1,5 @@
-function Player (game, key, frame) {
-	Phaser.Sprite.call(this, game, 400, 0, key, frame);
+function Player (game, key, frame, playerX, playerY) {
+	Phaser.Sprite.call(this, game, playerX, playerY, key, frame);
 	
 	this.anchor.set(0.5);
 	this.scale.setTo(2, 2);
