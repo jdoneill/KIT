@@ -1,5 +1,6 @@
 //var game = new Phaser.Game(800, 500, Phaser.AUTO);
-var game = new Phaser.Game(1920, 1500, Phaser.AUTO);
+var game = new Phaser.Game(1920, 1500, Phaser.AUTO); //rffv
+//rffv means remove from final version (word search through document to find these before the final push)
 
 // P L A Y E R
 var playerVel = 150;
@@ -55,7 +56,7 @@ level1.prototype = {
 		game.load.atlas('back', 'assets/img/Backgrounds.png', 'assets/img/Backgrounds.json'); // load the stuff
 		game.load.atlas('plat', 'assets/img/platforms.png', 'assets/img/platforms.json'); //load platforms
 		game.load.atlas('puzzles', 'assets/img/puzzles.png', 'assets/img/puzzles.json'); //load platforms
-		game.load.image('rightArm', 'assets/img/armRside.png');
+		game.load.image('rightArm', 'assets/img/armRside.png'); //rffv make a texture atlas
 		// L O A D  A U D I O
 		game.load.audio('walkNoise', 'assets/audio/rub.mp3');
 		game.load.audio('claireDeLune', 'assets/audio/Clair De lune.mp3');
@@ -159,7 +160,7 @@ level1.prototype = {
 		touchingLimb = game.physics.arcade.collide(limb, this.platforms); //allows limb to collide with walls and platforms and stuff
 
 		// Figures out if the player is falling then adds a landing sfx.
-		// C H A N G E  T H I S  A F T E R  T E S T I N G -------------v
+		// C H A N G E  T H I S  A F T E R  T E S T I N G -------------v 			//rffv remove commet block
 		if (game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR) /*&& rArmOn == true*/){//press space to remove limbs
 			console.log('arm off');
 			limbRip.play();
@@ -215,9 +216,9 @@ level1.prototype = {
 	} 
 	else {//  don't move
 		limb.body.velocity.x = 0;
-	} 
-						//remove after testing v
-	if (player.body.y > 1970 || cursors.down.isDown){//next state
+	}
+	//L E V E L  L O G I C
+	if (player.body.y > 1970){//next state
 		rArmOn = false;
 		game.state.start('load2')
 	}
@@ -231,21 +232,34 @@ level1.prototype = {
 
 	function buttonPressed (limbs, buttons) {//press the button
 		door.destroy(); // remove door
-		//A D D  S F X  H E R E
+		levelRip.play(); // play an indicator noise
 		buttons.destroy();
 		buttons = game.add.sprite(1690, 1397, 'puzzles', 'buttonDown');//replace with button pressed sprite
 		buttons.scale.setTo(1.9, 2);
-	    game.physics.arcade.enable(buttons); // add physics to the button (line might be unnecessary)
+	    game.physics.arcade.enable(buttons); // add physics to the button (line might be unnecessary) //rffv
 		buttons.body.immovable = true;
 		indicator = game.add.sprite(610, 1400, 'puzzles', 'indicatorGreen'); //show the player that something has happened
 		indicator.scale.setTo(.95, .7);
 		
-		// Make a sound to let the player know something has changed
-		levelRip.play();
 	}
 	game.physics.arcade.collide(limb, buttons, buttonPressed, null, this);// check for buttonPressed
+	
+	//state shifts for level development //rffv
+		if (game.input.keyboard.isDown(Phaser.Keyboard.TWO)){
+			game.state.start('level2')
+		}
+		if (game.input.keyboard.isDown(Phaser.Keyboard.THREE)){
+			game.state.start('level3')
+		}
+		if (game.input.keyboard.isDown(Phaser.Keyboard.FOUR)){
+			game.state.start('level4')
+		}
+		if (game.input.keyboard.isDown(Phaser.Keyboard.FIVE)){
+			game.state.start('level5')
+		}
+	
 	},
-/* 	render: function() {// setup debug rendering (comment out when not debugging)
+/* 	render: function() {// setup debug rendering (comment out when not debugging) //rffv
 			game.debug.bodyInfo(limb, 32, 32);
 			game.debug.body(limb);
 	}, */
@@ -260,7 +274,6 @@ load2.prototype = {
 	preload: function() { // pre game loop
 		console.log('load2: preload');
 		game.load.atlas('scene', 'assets/img/cutscenes.png', 'assets/img/cutscenes.json'); // load the stuff
-
 		game.load.audio('flip', 'assets/audio/flip.mp3');
 		},
 	create: function() {
@@ -373,6 +386,7 @@ level2.prototype = {
 		
 		// P U Z Z L E 
 		//rock floor
+		//add hook
 
 		// C A M E R A  S T U F F
 		game.world.setBounds(0,0,1920, 1500);
@@ -567,33 +581,30 @@ level3.prototype = {
 		parkour platforms x4
 		breakable rock
 		*/
-		var ledge = this.platforms.create(1375, 800, 'plat', 'bigBox'); // puzzle roof
+		var ledge = this.platforms.create(30, 1427, 'plat', 'lilBox'); //floor left
 		ledge.body.immovable = true;
-		ledge.scale.setTo(1.5, 1.05);
-		ledge = this.platforms.create(1375, 1100, 'plat', 'midBox'); // puzzle wall
-		ledge.body.immovable = true;
-		ledge.scale.setTo(2, 2);
-		ledge = this.platforms.create(30, 1427, 'plat', 'lilBox'); //floor left
-		ledge.body.immovable = true;
-		ledge.scale.setTo(2, 2);
-		//add a movable floor for puzzle solving
-		door = this.platforms.create(337, 1427, 'puzzles', 'puzzleDoor'); //door
+		ledge.scale.setTo(5.4, 2);
+		//add a breakable rock floor for puzzle solving
+/* 		door = this.platforms.create(850, 1427, 'puzzles', 'puzzleDoor'); //Rock (make it look like a rock)
+		game.physics.enable(door);
 		door.body.immovable = true;
-		door.scale.setTo(2, 2);
-		ledge = this.platforms.create(620, 1427, 'plat', 'lilBox'); //floor right
+		door.scale.setTo(2, 2); */
+		ledge = this.platforms.create(1100, 1427, 'plat', 'lilBox'); //floor right
 		ledge.body.immovable = true;
-		ledge.scale.setTo(8, 2);
+		ledge.scale.setTo(5, 2);
  		ledge = this.platforms.create(1850, 0, 'plat', 'lilBoxUziVertical'); // right wall
 		ledge.body.immovable = true;
 		ledge.scale.setTo(2, 10); 
 		ledge = this.platforms.create(0, 0, 'plat', 'lilBoxUziVertical'); // left wall
 		ledge.body.immovable = true;
-		ledge.scale.setTo(2, 10); 
-		ledge = this.platforms.create(1220, 1170, 'plat', 'lilBox'); // upper step
+		ledge.scale.setTo(2, 10);
+		//add some platforms to jump on
+		ledge = this.platforms.create(1650, 1310, 'plat', 'lilBox'); //floor right
 		ledge.body.immovable = true;
-		ledge = this.platforms.create(780, 1330, 'plat', 'lilBox'); // lower step
+	//	ledge.scale.setTo(2, 2);
+		ledge = this.platforms.create(1400, 1200, 'plat', 'lilBox'); //floor right
 		ledge.body.immovable = true;
-		ledge = this.platforms.create(1000, 1250, 'plat', 'lilBox'); // middle step
+		ledge = this.platforms.create(1150, 1090, 'plat', 'lilBox'); //floor right
 		ledge.body.immovable = true;
 		
 		// P U Z Z L E 
