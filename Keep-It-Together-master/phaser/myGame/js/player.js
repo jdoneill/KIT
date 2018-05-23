@@ -8,6 +8,9 @@ function Player (game, key, frame, playerX, playerY) {
 	this.body.immovable = false;
 
 	var canJump = false;
+	var canRight = false;
+	var canLeft = false;
+	distance = 4; 
 	
 	limbs = game.add.group(); // gotta have a ground to stand on
 	limbs.enableBody = true; // gotta make the ground stand on-able
@@ -78,6 +81,11 @@ Player.prototype.update = function(){
 	
 	// P L A Y E R  M O V E M E N T
 	// J U M P
+	
+	if( level == 5)
+	{
+		canJump = false;
+	}
 	if(cursors.up.isDown && player.body.touching.down)
     	{ //press up to jump (taken from phaser.io example code)
     		if(canJump == true)
@@ -88,20 +96,55 @@ Player.prototype.update = function(){
 			}
     	}
     	// makes it so you have to press up each time you want to jump
-    	if(cursors.up.isUp)
+    	if(cursors.up.isUp && lLegOn == true)
     	{
         	canJump = true;
     	}
 	
 	// W A L K I N G
-	if (cursors.left.isDown){
+	if (cursors.left.isDown && level !=5){
 		//  go left
 		player.body.velocity.x = -playerVel;
 	}
 	
-	else if (cursors.right.isDown){
+	else if (cursors.right.isDown && level != 5){
 		//  go right
 		player.body.velocity.x = playerVel;
+	}
+	// P L A Y E R  M O V E M E N T
+	// R I G H T
+	if(cursors.right.isDown && player.body.touching.down && lLegOn == false)
+    	{ //press right to move
+    		if(canRight == true)
+        	{
+        		player.body.x = player.body.x + distance;
+        		console.log('right');
+			canRight = false;
+			}
+    	}
+    	// makes it so you have to press up each time you want to jump
+    	if(cursors.right.isUp){
+        	canRight = true;
+    	}
+		
+	// L E F T
+	if(cursors.left.isDown && player.body.touching.down && lLegOn == false)
+    	{ //press left to move
+    		if(canLeft == true)
+        	{
+        		player.body.x = player.body.x - distance;
+        		console.log('left');
+			canLeft = false;
+			}
+    	}
+    	// makes it so you have to press up each time you want to jump
+    	if(cursors.left.isUp){
+        	canLeft = true;
+    	}
+	// Makes you move slower towards the end.
+	if(level == 5 && player.body.x >= 1400)
+	{
+		distance = 2;
 	}
 	
 	else {

@@ -1,10 +1,11 @@
-//var game = new Phaser.Game(800, 500, Phaser.AUTO);
-var game = new Phaser.Game(1920, 1500, Phaser.AUTO); //rffv
+var game = new Phaser.Game(800, 500, Phaser.AUTO);
+// var game = new Phaser.Game(1920, 1500, Phaser.AUTO); //rffv
 //rffv means remove from final version (word search through document to find these before the final push)
 
 // P L A Y E R
 var playerVel = 150;
 var player;
+var finalPlayer;
 var cutscene;
 var size;
 var falling = false;
@@ -20,6 +21,7 @@ var lLegOn;
 var touching;
 var limb;
 var touchingLimb;
+var distance;
 
 // L E V E L  T R A C K E R 
 var level;
@@ -151,7 +153,7 @@ level1.prototype = {
 
 		// C A M E R A  S T U F F
 		game.world.setBounds(0,0,1920, 1500);
-		//game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, 0.6, 0.6);
+		game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, 0.6, 0.6);
 		// game.input.onDown.add(shake, this);
 		},
 	update: function() {
@@ -329,6 +331,9 @@ level2.prototype = {
 		jumping = game.add.audio('paperTap',1,false);
 		limbRip = game.add.audio('limbSound', 1, false);
 		levelRip = game.add.audio('levelShift', 1, false);
+		
+		music.destroy();
+		music2.volume = 1;
 	
         player = new Player(game, 'guy', 'Body', 750, 0);// add player from prefab
         game.add.existing(player);
@@ -551,6 +556,11 @@ level3.prototype = {
 		jumping = game.add.audio('paperTap',1,false);
 		limbRip = game.add.audio('limbSound', 1, false);
 		levelRip = game.add.audio('levelShift', 1, false);
+		
+		// Destroy last music and unmute new track
+		music2.destroy();
+		music3.volume = 1;
+	
 	
         player = new Player(game, 'guy', 'Body', 180, 0);// add player from prefab
         game.add.existing(player);
@@ -780,6 +790,12 @@ level4.prototype = {
         game.add.existing(player);
 
 		walking.play(); //play the music so it lines up across all levels (excluding final level)
+		
+		
+		// Destroy last music and unmute new track
+		music3.destroy();
+		music4.volume = 1;
+	
 
 		size = 1; //N O T E : figure out what this is for
 		level = 4; // set first level
@@ -938,6 +954,7 @@ load5.prototype = {
 		console.log('load5: preload');
 		game.load.atlas('guy', 'assets/img/Player.png', 'assets/img/Player.json'); // load the stuff
 		game.load.atlas('back', 'assets/img/Backgrounds.png', 'assets/img/Backgrounds.json'); // load the stuff
+		game.load.audio('finalGlitch', 'assets/audio/glitchSFX.mp3');
 
 		},
 	create: function() {
@@ -995,10 +1012,18 @@ level5.prototype = {
 		limbRip = game.add.audio('limbSound', 1, false);
 		levelRip = game.add.audio('levelShift', 1, false);
 	
-        player = new Player(game, 'guy', 'Body', 100, 1350);// add player from prefab
+/*         finalPlayer = new finalP(game, 'guy', 'Body', 100, 1350);// add player from prefab
+        game.add.existing(finalP); */
+        player = new Player(game, 'guy', 'Body', 400, 0);// add player from prefab
         game.add.existing(player);
 
 		walking.play(); //play the music so it lines up across all levels (excluding final level)
+		
+		// Destroy last music and add new track
+		music4.destroy();
+		music5 = game.add.audio('finalGlitch',1,true);
+		music5.play();
+	
 
 		size = 1; //N O T E : figure out what this is for
 		level = 5; // set first level
