@@ -378,7 +378,6 @@ level2.prototype = {
 		//add some platforms to jump on
 		ledge = this.platforms.create(1650, 1310, 'plat', 'lilBox'); //floor right
 		ledge.body.immovable = true;
-	//	ledge.scale.setTo(2, 2);
 		ledge = this.platforms.create(1400, 1200, 'plat', 'lilBox'); //floor right
 		ledge.body.immovable = true;
 		ledge = this.platforms.create(1150, 1090, 'plat', 'lilBox'); //floor right
@@ -553,7 +552,7 @@ level3.prototype = {
 		limbRip = game.add.audio('limbSound', 1, false);
 		levelRip = game.add.audio('levelShift', 1, false);
 	
-        player = new Player(game, 'guy', 'Body', 400, 0);// add player from prefab
+        player = new Player(game, 'guy', 'Body', 180, 0);// add player from prefab
         game.add.existing(player);
 
 		walking.play(); //play the music so it lines up across all levels (excluding final level)
@@ -584,11 +583,6 @@ level3.prototype = {
 		var ledge = this.platforms.create(30, 1427, 'plat', 'lilBox'); //floor left
 		ledge.body.immovable = true;
 		ledge.scale.setTo(5.4, 2);
-		//add a breakable rock floor for puzzle solving
-/* 		door = this.platforms.create(850, 1427, 'puzzles', 'puzzleDoor'); //Rock (make it look like a rock)
-		game.physics.enable(door);
-		door.body.immovable = true;
-		door.scale.setTo(2, 2); */
 		ledge = this.platforms.create(1100, 1427, 'plat', 'lilBox'); //floor right
 		ledge.body.immovable = true;
 		ledge.scale.setTo(5, 2);
@@ -598,13 +592,14 @@ level3.prototype = {
 		ledge = this.platforms.create(0, 0, 'plat', 'lilBoxUziVertical'); // left wall
 		ledge.body.immovable = true;
 		ledge.scale.setTo(2, 10);
-		//add some platforms to jump on
-		ledge = this.platforms.create(1650, 1310, 'plat', 'lilBox'); //floor right
+		ledge = this.platforms.create(67, 400, 'plat', 'midBox'); // puzzle wall
 		ledge.body.immovable = true;
-	//	ledge.scale.setTo(2, 2);
-		ledge = this.platforms.create(1400, 1200, 'plat', 'lilBox'); //floor right
+		ledge.scale.setTo(3, 3);
+		ledge = this.platforms.create(1300, 400, 'plat', 'lilBox'); //upper floor left
 		ledge.body.immovable = true;
-		ledge = this.platforms.create(1150, 1090, 'plat', 'lilBox'); //floor right
+		ledge = this.platforms.create(1000, 400, 'plat', 'lilBox'); //upper floor mid
+		ledge.body.immovable = true;
+		ledge = this.platforms.create(700, 400, 'plat', 'lilBox'); //upper floor right
 		ledge.body.immovable = true;
 		
 		// P U Z Z L E 
@@ -809,34 +804,23 @@ level4.prototype = {
 		parkour platforms x4
 		breakable rock
 		*/
-		var ledge = this.platforms.create(1375, 800, 'plat', 'bigBox'); // puzzle roof
+		var ledge = this.platforms.create(30, 1427, 'plat', 'lilBox'); //floor left
 		ledge.body.immovable = true;
-		ledge.scale.setTo(1.5, 1.05);
-		ledge = this.platforms.create(1375, 1100, 'plat', 'midBox'); // puzzle wall
-		ledge.body.immovable = true;
-		ledge.scale.setTo(2, 2);
-		ledge = this.platforms.create(30, 1427, 'plat', 'lilBox'); //floor left
-		ledge.body.immovable = true;
-		ledge.scale.setTo(2, 2);
-		//add a movable floor for puzzle solving
-		door = this.platforms.create(337, 1427, 'puzzles', 'puzzleDoor'); //door
+		ledge.scale.setTo(5.4, 2);
+		//add a breakable rock floor for puzzle solving
+		door = this.platforms.create(850, 1427, 'puzzles', 'puzzleDoor'); //Rock (make it look like a rock)
+		game.physics.enable(door);
 		door.body.immovable = true;
 		door.scale.setTo(2, 2);
-		ledge = this.platforms.create(620, 1427, 'plat', 'lilBox'); //floor right
+		ledge = this.platforms.create(1100, 1427, 'plat', 'lilBox'); //floor right
 		ledge.body.immovable = true;
-		ledge.scale.setTo(8, 2);
+		ledge.scale.setTo(5, 2);
  		ledge = this.platforms.create(1850, 0, 'plat', 'lilBoxUziVertical'); // right wall
 		ledge.body.immovable = true;
 		ledge.scale.setTo(2, 10); 
 		ledge = this.platforms.create(0, 0, 'plat', 'lilBoxUziVertical'); // left wall
 		ledge.body.immovable = true;
-		ledge.scale.setTo(2, 10); 
-		ledge = this.platforms.create(1220, 1170, 'plat', 'lilBox'); // upper step
-		ledge.body.immovable = true;
-		ledge = this.platforms.create(780, 1330, 'plat', 'lilBox'); // lower step
-		ledge.body.immovable = true;
-		ledge = this.platforms.create(1000, 1250, 'plat', 'lilBox'); // middle step
-		ledge.body.immovable = true;
+		ledge.scale.setTo(2, 10);
 		
 		// P U Z Z L E 
 		//buttons part 2
@@ -1011,7 +995,7 @@ level5.prototype = {
 		limbRip = game.add.audio('limbSound', 1, false);
 		levelRip = game.add.audio('levelShift', 1, false);
 	
-        player = new Player(game, 'guy', 'Body', 400, 0);// add player from prefab
+        player = new Player(game, 'guy', 'Body', 100, 1350);// add player from prefab
         game.add.existing(player);
 
 		walking.play(); //play the music so it lines up across all levels (excluding final level)
@@ -1029,34 +1013,13 @@ level5.prototype = {
 		floor left
 		roof
 		*/
-		var ledge = this.platforms.create(1375, 800, 'plat', 'bigBox'); // puzzle roof
+		var ledge = this.platforms.create(0, 1427, 'plat', 'lilBox'); //floor left
 		ledge.body.immovable = true;
-		ledge.scale.setTo(1.5, 1.05);
-		ledge = this.platforms.create(1375, 1100, 'plat', 'midBox'); // puzzle wall
+		ledge.scale.setTo(12.4, 2);
+		ledge = this.platforms.create(-65, 0, 'plat', 'lilBoxUziVertical'); // left wall
 		ledge.body.immovable = true;
-		ledge.scale.setTo(2, 2);
-		ledge = this.platforms.create(30, 1427, 'plat', 'lilBox'); //floor left
-		ledge.body.immovable = true;
-		ledge.scale.setTo(2, 2);
-		//add a movable floor for puzzle solving
-		door = this.platforms.create(337, 1427, 'puzzles', 'puzzleDoor'); //door
-		door.body.immovable = true;
-		door.scale.setTo(2, 2);
-		ledge = this.platforms.create(620, 1427, 'plat', 'lilBox'); //floor right
-		ledge.body.immovable = true;
-		ledge.scale.setTo(8, 2);
- 		ledge = this.platforms.create(1850, 0, 'plat', 'lilBoxUziVertical'); // right wall
-		ledge.body.immovable = true;
-		ledge.scale.setTo(2, 10); 
-		ledge = this.platforms.create(0, 0, 'plat', 'lilBoxUziVertical'); // left wall
-		ledge.body.immovable = true;
-		ledge.scale.setTo(2, 10); 
-		ledge = this.platforms.create(1220, 1170, 'plat', 'lilBox'); // upper step
-		ledge.body.immovable = true;
-		ledge = this.platforms.create(780, 1330, 'plat', 'lilBox'); // lower step
-		ledge.body.immovable = true;
-		ledge = this.platforms.create(1000, 1250, 'plat', 'lilBox'); // middle step
-		ledge.body.immovable = true;
+		ledge.scale.setTo(2, 10);
+		//add some platforms to jump on
 		
 		// P U Z Z L E 
 		//comtemplation
@@ -1105,6 +1068,11 @@ level5.prototype = {
 		else {//  Pause music/sfx
 			 walking.pause();
 		}
+	if (player.body.y > 1970){//next state
+		rLegOn = false;
+		game.state.start('endCutscene')
+	}
+		
 	},
 /* 	render: function() {// setup debug rendering (comment out when not debugging)
 			game.debug.bodyInfo(limb, 32, 32);
@@ -1199,7 +1167,7 @@ GameOver.prototype = {
 		music2.destroy();
 		music3.destroy();
 		music4.destroy();
-		music5.destroy();
+		//music5.destroy(); //commented out for now
 		game.add.text(380, 300, 'Game Over', { fontSize: '50px', fill: '#000' });
 		},
 	update: function() {
