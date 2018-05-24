@@ -22,6 +22,7 @@ var touching;
 var limb;
 var touchingLimb;
 var distance;
+var trapped = 0;
 
 // L E V E L  T R A C K E R 
 var level;
@@ -32,6 +33,7 @@ var buttons;
 var platforms;
 var door;
 var doorHit = 0;
+var bvuttonTrap;
 
 // S O U N D S
 var music;
@@ -860,6 +862,12 @@ level4.prototype = {
 		
 		// P U Z Z L E 
 		//buttons part 2
+		buttonTrap = game.add.sprite(1690, 1395, 'puzzles', 'buttonUp'); //add a pressable button
+		buttonTrap.scale.setTo(1.9, 2);
+	    game.physics.arcade.enable(buttonTrap); // so the button can be pressed
+		buttonTrap.body.immovable = true;
+		indicator = game.add.sprite(1100, 1400, 'puzzles', 'indicatorRed'); //add an indicator to show the player what the button does
+		indicator.scale.setTo(.55, .7);
 
 		// C A M E R A  S T U F F
 		game.world.setBounds(0,0,1920, 1500);
@@ -878,9 +886,10 @@ level4.prototype = {
 			limbRip.play();
 			lLegOn = false;
 			lLeg.destroy();
-			limb.x = player.x + 20; // teleport controllable limb to player
-			limb.y = player.y + 20;
-			game.camera.follow(limb, Phaser.Camera.FOLLOW_LOCKON, .6, .6); //follow the limb with the camera
+			/* limb.x = player.x + 20; // teleport controllable limb to player
+			limb.y = player.y + 20; 
+			game.camera.follow(limb, Phaser.Camera.FOLLOW_LOCKON, .6, .6); //follow the limb with the camera */
+			trapped = 0;
 		}
 		if(player.body.velocity.y > 0){ // check for falling
 			falling = true;
@@ -942,21 +951,43 @@ level4.prototype = {
 		music4.destroy();
 	}		
 
-	function buttonPressed (limbs, buttons) {//press the button
-		door.destroy(); // remove door
-		//A D D  S F X  H E R E
-		buttons.destroy();
-		buttons = game.add.sprite(1690, 1397, 'puzzles', 'buttonDown');//replace with button pressed sprite
-		buttons.scale.setTo(1.9, 2);
-	    game.physics.arcade.enable(buttons); // add physics to the button (line might be unnecessary)
-		buttons.body.immovable = true;
-		indicator = game.add.sprite(610, 1400, 'puzzles', 'indicatorGreen'); //show the player that something has happened
-		indicator.scale.setTo(.95, .7);
+	function trapPressed (player, buttonTrap) {//press the button
+		buttonTrap.destroy();
+		var trapped = -1; // find a way to make the player immovable
 		
-		// Make a sound to let the player know something has changed
-		levelRip.play();
+		buttons = game.add.sprite(80, 1397, 'puzzles', 'buttonUp');//replace with trap sprite I M P O R T A N T
+		buttons.scale.setTo(1.9, 2);
+	    game.physics.arcade.enable(buttons); // so the button can be pressed
+		buttons.body.immovable = true;
+		indicator = game.add.sprite(860, 1400, 'puzzles', 'indicatorRed'); //add an indicator to show the player what the button does
+		indicator.scale.setTo(-.55, .7);
+		
+		buttonTrap = game.add.sprite(1690, 1397, 'puzzles', 'buttonDown');//replace with trap sprite I M P O R T A N T
+		buttonTrap.scale.setTo(1.9, 2);
+		indicator = game.add.sprite(1100, 1400, 'puzzles', 'indicatorGreen'); //just to tease them
+		indicator.scale.setTo(.55, .7);
+/* 	    game.physics.arcade.enable(buttonTrap); // add physics to the button (line might be unnecessary)
+		buttonTrap.body.immovable = true; */
+/* 		indicator = game.add.sprite(610, 1400, 'puzzles', 'indicatorRed'); //show the player that something has happened
+		indicator.scale.setTo(-.95, .7); */
+				
+		// Make a sound to let the player know they are trapped
 	}
-	game.physics.arcade.collide(limb, buttons, buttonPressed, null, this);// check for buttonPressed
+	function buttonPressed (player, buttons) {//press the button
+		door.destroy(); // remove door
+		levelRip.play(); // play an indicator noise
+		buttons.destroy();
+		buttons = game.add.sprite(80, 1397, 'puzzles', 'buttonDown');//replace with trap sprite I M P O R T A N T
+		buttons.scale.setTo(1.9, 2);
+	    game.physics.arcade.enable(buttons); // so the button can be pressed
+		buttons.body.immovable = true;
+		indicator = game.add.sprite(860, 1400, 'puzzles', 'indicatorGreen'); //add an indicator to show the player what the button does
+		indicator.scale.setTo(-.55, .7);
+		
+	}
+	game.physics.arcade.collide(player, buttonTrap, trapPressed, null, this);// check for buttonPressed
+	game.physics.arcade.collide(player, buttons, buttonPressed, null, this);// check for buttonPressed
+
 	},
 /* 	render: function() {// setup debug rendering (comment out when not debugging)
 			game.debug.bodyInfo(limb, 32, 32);

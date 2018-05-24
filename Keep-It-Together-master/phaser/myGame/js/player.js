@@ -159,5 +159,11 @@ Player.prototype.update = function(){
 		//  don't move
 		player.body.velocity.x = 0;
 	}
-	
+	if (trapped == -1){ // this code doesn't work
+		this.body.immovable = false;
+	}
+	if (game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR) /*&& lLegOn == true*/){ // this code doesn't do anything rn
+		trapped = 1;
+	}
+		
 }
