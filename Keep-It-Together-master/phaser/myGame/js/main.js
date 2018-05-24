@@ -31,6 +31,7 @@ var currentLevel;
 var buttons;
 var platforms;
 var door;
+var doorHit = 0;
 
 // S O U N D S
 var music;
@@ -366,11 +367,7 @@ level2.prototype = {
 		var ledge = this.platforms.create(30, 1427, 'plat', 'lilBox'); //floor left
 		ledge.body.immovable = true;
 		ledge.scale.setTo(5.4, 2);
-		//add a breakable rock floor for puzzle solving
-		door = this.platforms.create(865, 1427, 'puzzles', 'rock1'); //Rock (make it look like a rock)
-		game.physics.enable(door);
-		door.body.immovable = true;
-		door.scale.setTo(2.26, 2.2);
+
 		ledge = this.platforms.create(1150, 1427, 'plat', 'lilBox'); //floor right
 		ledge.body.immovable = true;
 		ledge.scale.setTo(5, 2);
@@ -389,6 +386,11 @@ level2.prototype = {
 		ledge.body.immovable = true;
 		
 		// P U Z Z L E 
+		//add a breakable rock floor for puzzle solving
+		door = game.add.sprite(865, 1427, 'puzzles', 'rock1'); //Rock (make it look like a rock)
+		game.physics.enable(door);
+		door.body.immovable = true;
+		door.scale.setTo(2.26, 2.2);
 		//rock floor
 		//add hook
 
@@ -474,14 +476,15 @@ level2.prototype = {
 	}		
 
 	function rockBounce (player, door) {//jump on rocks
-		door.destroy(); // remove door
+		if(player.velocity.y > 5){//if the player collides with
+			door.destroy(); // remove door
 		//A D D  S F X  H E R E
 		
-		
+		}
 		// Make a sound to let the player know something has changed
 		// paper crumple
 	}
-	game.physics.arcade.collide(player, door, rockBounce, null, this);// check for rockBounce
+	this.game.physics.arcade.collide(door, player, this.rockBounce, null, this);// check for rockBounce
 	},
 /* 	render: function() {// setup debug rendering (comment out when not debugging)
 			game.debug.bodyInfo(limb, 32, 32);
@@ -629,13 +632,18 @@ level3.prototype = {
 
 		if(player.body.y > 410 && player.body.y < 1940){ //lower the gravity so that when the player is underwater they sink slower
 			player.body.velocity.y = 100;
-			limb.body.velocity.y = 100;
 		   	if(cursors.up.isDown){
 				player.body.velocity.y = -200;
 			}
 		}
 		else{
 			player.body.gravity.y = 450;
+		}
+		if(limb.body.y > 410 && limb.body.y < 1940){ //lower the gravity so that when the player is underwater they sink slower
+			limb.body.velocity.y = 100;
+		}
+		else{
+			limb.body.gravity.y = 450;
 		}
 		// Figures out if the player is falling then adds a landing sfx.
 		// C H A N G E  T H I S  A F T E R  T E S T I N G -------------v
