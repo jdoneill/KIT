@@ -1,5 +1,5 @@
-var game = new Phaser.Game(800, 500, Phaser.AUTO);
-// var game = new Phaser.Game(1920, 1500, Phaser.AUTO); //rffv
+//var game = new Phaser.Game(800, 500, Phaser.AUTO);
+var game = new Phaser.Game(1920, 1500, Phaser.AUTO); //rffv
 //rffv means remove from final version (word search through document to find these before the final push)
 
 // P L A Y E R
@@ -367,11 +367,11 @@ level2.prototype = {
 		ledge.body.immovable = true;
 		ledge.scale.setTo(5.4, 2);
 		//add a breakable rock floor for puzzle solving
-		door = this.platforms.create(850, 1427, 'puzzles', 'puzzleDoor'); //Rock (make it look like a rock)
+		door = this.platforms.create(865, 1427, 'puzzles', 'rock1'); //Rock (make it look like a rock)
 		game.physics.enable(door);
 		door.body.immovable = true;
-		door.scale.setTo(2, 2);
-		ledge = this.platforms.create(1100, 1427, 'plat', 'lilBox'); //floor right
+		door.scale.setTo(2.26, 2.2);
+		ledge = this.platforms.create(1150, 1427, 'plat', 'lilBox'); //floor right
 		ledge.body.immovable = true;
 		ledge.scale.setTo(5, 2);
  		ledge = this.platforms.create(1850, 0, 'plat', 'lilBoxUziVertical'); // right wall
@@ -485,7 +485,7 @@ level2.prototype = {
 	},
 /* 	render: function() {// setup debug rendering (comment out when not debugging)
 			game.debug.bodyInfo(limb, 32, 32);
-			game.debug.body(limb);
+			game.debug.body(door);
 	}, */
 }
 
@@ -538,6 +538,7 @@ level3.prototype = {
 		console.log('First level: preload');
 		//nothing to load rn
 		game.load.image('rightLeg', 'assets/img/legRside.png');
+		game.load.image('water', 'assets/img/water.png');
 
 		},
 	create: function() { //make the game world
@@ -602,9 +603,9 @@ level3.prototype = {
 		ledge = this.platforms.create(0, 0, 'plat', 'lilBoxUziVertical'); // left wall
 		ledge.body.immovable = true;
 		ledge.scale.setTo(2, 10);
-		ledge = this.platforms.create(67, 400, 'plat', 'midBox'); // puzzle wall
+		ledge = this.platforms.create(67, 400, 'plat', 'midBox'); // spawn platform
 		ledge.body.immovable = true;
-		ledge.scale.setTo(3, 3);
+		ledge.scale.setTo(3, 2);
 		ledge = this.platforms.create(1300, 400, 'plat', 'lilBox'); //upper floor left
 		ledge.body.immovable = true;
 		ledge = this.platforms.create(1000, 400, 'plat', 'lilBox'); //upper floor mid
@@ -613,6 +614,7 @@ level3.prototype = {
 		ledge.body.immovable = true;
 		
 		// P U Z Z L E 
+		var Water = game.add.sprite(0, 410, 'water'); // water level
 		//Octopus
 
 		// C A M E R A  S T U F F
@@ -625,6 +627,16 @@ level3.prototype = {
 		touching = game.physics.arcade.collide(player, this.platforms); //allows player to collide with walls and platforms and stuff
 		touchingLimb = game.physics.arcade.collide(limb, this.platforms); //allows limb to collide with walls and platforms and stuff
 
+		if(player.body.y > 410 && player.body.y < 1940){ //lower the gravity so that when the player is underwater they sink slower
+			player.body.velocity.y = 100;
+			limb.body.velocity.y = 100;
+		   	if(cursors.up.isDown){
+				player.body.velocity.y = -200;
+			}
+		}
+		else{
+			player.body.gravity.y = 450;
+		}
 		// Figures out if the player is falling then adds a landing sfx.
 		// C H A N G E  T H I S  A F T E R  T E S T I N G -------------v
 		if (game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR) /*&& rLegOn == true*/){//press space to remove limbs
@@ -1040,7 +1052,26 @@ level5.prototype = {
 		*/
 		var ledge = this.platforms.create(0, 1427, 'plat', 'lilBox'); //floor left
 		ledge.body.immovable = true;
-		ledge.scale.setTo(12.4, 2);
+		ledge.scale.setTo(2, 2); //12.4, 2
+		ledge = this.platforms.create(300, 1427, 'plat', 'lilBox'); //floor left
+		ledge.body.immovable = true;
+		ledge.scale.setTo(2, 2);
+		ledge = this.platforms.create(600, 1427, 'plat', 'lilBox'); //floor left
+		ledge.body.immovable = true;
+		ledge.scale.setTo(2, 2);
+		ledge = this.platforms.create(900, 1427, 'plat', 'lilBox'); //floor left
+		ledge.body.immovable = true;
+		ledge.scale.setTo(2, 2);
+		ledge = this.platforms.create(1200, 1427, 'plat', 'lilBox'); //floor left
+		ledge.body.immovable = true;
+		ledge.scale.setTo(2, 2);
+		ledge = this.platforms.create(1500, 1427, 'plat', 'lilBox'); //floor left
+		ledge.body.immovable = true;
+		ledge.scale.setTo(2, 2);
+		ledge = this.platforms.create(1800, 1427, 'plat', 'lilBox'); //floor left
+		ledge.body.immovable = true;
+		ledge.scale.setTo(2, 2);
+		
 		ledge = this.platforms.create(-65, 0, 'plat', 'lilBoxUziVertical'); // left wall
 		ledge.body.immovable = true;
 		ledge.scale.setTo(2, 10);
@@ -1093,8 +1124,8 @@ level5.prototype = {
 		else {//  Pause music/sfx
 			 walking.pause();
 		}
-	if (player.body.y > 1970){//next state
-		rLegOn = false;
+	if (player.body.x > 1520){//next state
+		music5.destroy();
 		game.state.start('endCutscene')
 	}
 		
@@ -1192,7 +1223,7 @@ GameOver.prototype = {
 		music2.destroy();
 		music3.destroy();
 		music4.destroy();
-		//music5.destroy(); //commented out for now
+		music5.destroy();
 		game.add.text(380, 300, 'Game Over', { fontSize: '50px', fill: '#000' });
 		},
 	update: function() {

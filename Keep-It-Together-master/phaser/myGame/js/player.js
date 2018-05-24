@@ -102,7 +102,7 @@ Player.prototype.update = function(){
     	}
 	
 	// W A L K I N G
-	if (cursors.left.isDown && level !=5){
+	if (cursors.left.isDown && level != 5){
 		//  go left
 		player.body.velocity.x = -playerVel;
 	}
@@ -113,22 +113,33 @@ Player.prototype.update = function(){
 	}
 	// P L A Y E R  M O V E M E N T
 	// R I G H T
-	if(cursors.right.isDown && player.body.touching.down && lLegOn == false)
-    	{ //press right to move
-    		if(canRight == true)
-        	{
-        		player.body.x = player.body.x + distance;
-        		console.log('right');
-			canRight = false;
+
+		else if(cursors.right.isDown && player.body.touching.down && level == 5 )
+			{
+	    		{ //press right to move
+	    			if(canRight == true)
+	        		{
+	        			player.body.x = player.body.x + distance;
+	        			console.log('right');
+					canRight = false;
+					// Makes you move slower towards the end.
+					
+					
+					}
+					if(level == 5 && player.body.x >= 1400)
+					{
+						distance = 2;
+					}
+	    		}
 			}
-    	}
-    	// makes it so you have to press up each time you want to jump
-    	if(cursors.right.isUp){
+		
+    		// makes it so you have to press up each time you want to jump
+    		else if(cursors.right.isUp){
         	canRight = true;
-    	}
+    		}
 		
 	// L E F T
-	if(cursors.left.isDown && player.body.touching.down && lLegOn == false)
+	 if(cursors.left.isDown && player.body.touching.down && level == 5)
     	{ //press left to move
     		if(canLeft == true)
         	{
@@ -138,16 +149,13 @@ Player.prototype.update = function(){
 			}
     	}
     	// makes it so you have to press up each time you want to jump
-    	if(cursors.left.isUp){
+    	else if(cursors.left.isUp)
+		{
         	canLeft = true;
     	}
-	// Makes you move slower towards the end.
-	if(level == 5 && player.body.x >= 1400)
+
+	if (cursors.left.isUp && cursors.right.isUp) 
 	{
-		distance = 2;
-	}
-	
-	else {
 		//  don't move
 		player.body.velocity.x = 0;
 	}
