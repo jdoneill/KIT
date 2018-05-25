@@ -1,5 +1,5 @@
-//var game = new Phaser.Game(800, 500, Phaser.AUTO);
-var game = new Phaser.Game(1920, 1500, Phaser.AUTO); //rffv
+var game = new Phaser.Game(800, 500, Phaser.AUTO);
+//var game = new Phaser.Game(1920, 1500, Phaser.AUTO); //rffv
 //rffv means remove from final version (word search through document to find these before the final push)
 
 // P L A Y E R
@@ -22,7 +22,7 @@ var touching;
 var limb;
 var touchingLimb;
 var distance;
-var trapped = 0;
+var trapped = false;
 
 // L E V E L  T R A C K E R 
 var level;
@@ -788,7 +788,7 @@ level4.prototype = {
 	preload: function() { // pre game loop
 		console.log('First level: preload');
 		//nothing to load rn
-		game.load.image('leftLeg', 'assets/img/legLside.png');
+		//game.load.image('leftLeg', 'assets/img/legLside.png');
 
 		},
 	create: function() { //make the game world
@@ -808,11 +808,10 @@ level4.prototype = {
 		limbRip = game.add.audio('limbSound', 1, false);
 		levelRip = game.add.audio('levelShift', 1, false);
 	
-        player = new Player(game, 'guy', 'Body', 400, 0);// add player from prefab
+        player = new Player(game, 'guy', 'Body', 400, 250);// add player from prefab
         game.add.existing(player);
 
 		walking.play(); //play the music so it lines up across all levels (excluding final level)
-		
 		
 		// Destroy last music and unmute new track
 		music3.destroy();
@@ -822,26 +821,17 @@ level4.prototype = {
 		size = 1; //N O T E : figure out what this is for
 		level = 4; // set first level
 		
-		limb = game.add.sprite(1920, 400, 'leftLeg'); //add the controlable limb in where the player can't see
+/* 		limb = game.add.sprite(1920, 400, 'leftLeg'); //add the controlable limb in where the player can't see
 	    game.physics.arcade.enable(limb);
 		limb.scale.setTo(1.5, 1);
 		limb.body.gravity.y = 450; // same physics as player
-		limb.body.collideWorldBounds = true; // don't fall through the earth
+		limb.body.collideWorldBounds = true; // don't fall through the earth */
 
 		//level layout
 		this.platforms = game.add.group(); //create platforms group
 		this.platforms.enableBody = true; //enable physics to for platforms
 
 		// Add platforms for world bounds
-		/*
-		floor right
-		floor left
-		roof
-		wall right
-		wall left
-		parkour platforms x4
-		breakable rock
-		*/
 		var ledge = this.platforms.create(30, 1427, 'plat', 'lilBox'); //floor left
 		ledge.body.immovable = true;
 		ledge.scale.setTo(5.4, 2);
@@ -868,28 +858,25 @@ level4.prototype = {
 		buttonTrap.body.immovable = true;
 		indicator = game.add.sprite(1100, 1400, 'puzzles', 'indicatorRed'); //add an indicator to show the player what the button does
 		indicator.scale.setTo(.55, .7);
-
+		
 		// C A M E R A  S T U F F
 		game.world.setBounds(0,0,1920, 1500);
 		game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, 0.6, 0.6);
-		// game.input.onDown.add(shake, this);
 		},
 	update: function() {
 		var cursors = game.input.keyboard.createCursorKeys();
 		touching = game.physics.arcade.collide(player, this.platforms); //allows player to collide with walls and platforms and stuff
-		touchingLimb = game.physics.arcade.collide(limb, this.platforms); //allows limb to collide with walls and platforms and stuff
 
 		// Figures out if the player is falling then adds a landing sfx.
-		// C H A N G E  T H I S  A F T E R  T E S T I N G -------------v
-		if (game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR) /*&& lLegOn == true*/){//press space to remove limbs
+		// C H A N G E  T H I S  A F T E R  T E S T I N G ----------------------------------v
+		if (game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR) && trapped == true/*&& lLegOn == true*/){//press space to remove limbs
 			console.log('arm off');
 			limbRip.play();
 			lLegOn = false;
 			lLeg.destroy();
-			/* limb.x = player.x + 20; // teleport controllable limb to player
-			limb.y = player.y + 20; 
-			game.camera.follow(limb, Phaser.Camera.FOLLOW_LOCKON, .6, .6); //follow the limb with the camera */
-			trapped = 0;
+			trapped = false;
+			player.body.x = 1680;
+			player.body.gravity.y = 450;
 		}
 		if(player.body.velocity.y > 0){ // check for falling
 			falling = true;
@@ -902,7 +889,7 @@ level4.prototype = {
 			falling = false;
 			console.log('Landed');
 		}
-		if(cursors.up.isDown && touching == true){ //press up to make jump sfx
+		if(cursors.up.isDown && touching == true && trapped == false){ //press up to make jump sfx
 			game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
 			if(yesJump == true){
 				jumping.play();
@@ -915,7 +902,7 @@ level4.prototype = {
 		if(player.body.onFloor() != true){// pause walking sound when not on ground
 			walking.pause();
 		}
-		if (cursors.left.isDown || cursors.right.isDown){
+		if ((cursors.left.isDown && trapped == false) || (cursors.right.isDown && trapped == false)){
 			if(touching == true){ //play sound when player is moving on the ground (taken from phaser.io exmaple code)
 				walking.resume();//  Play walk sound
 				game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
@@ -927,17 +914,7 @@ level4.prototype = {
 			
 	// L I M B	
 		// W A L K I N G
- 	if (game.input.keyboard.isDown(Phaser.Keyboard.A) && lLegOn == false){// go left
-		limb.body.velocity.x = -playerVel;
-		game.camera.follow(limb, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
-	}
-	else if (game.input.keyboard.isDown(Phaser.Keyboard.D) && lLegOn == false){// go right
-		limb.body.velocity.x = playerVel;
-		game.camera.follow(limb, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
-	} 
-	else {//  don't move
-		limb.body.velocity.x = 0;
-	} 
+	// no limb movement in this level
 
 	if (player.body.y > 1970 || cursors.down.isDown){//next state
 		rLegOn = false;
@@ -949,11 +926,11 @@ level4.prototype = {
 		music2.destroy();
 		music3.destroy();
 		music4.destroy();
-	}		
-
+	}
+	
 	function trapPressed (player, buttonTrap) {//press the button
 		buttonTrap.destroy();
-		var trapped = -1; // find a way to make the player immovable
+		trapped = true; // find a way to make the player immovable
 		
 		buttons = game.add.sprite(80, 1397, 'puzzles', 'buttonUp');//replace with trap sprite I M P O R T A N T
 		buttons.scale.setTo(1.9, 2);
@@ -962,15 +939,15 @@ level4.prototype = {
 		indicator = game.add.sprite(860, 1400, 'puzzles', 'indicatorRed'); //add an indicator to show the player what the button does
 		indicator.scale.setTo(-.55, .7);
 		
-		buttonTrap = game.add.sprite(1690, 1397, 'puzzles', 'buttonDown');//replace with trap sprite I M P O R T A N T
-		buttonTrap.scale.setTo(1.9, 2);
+		buttonTrap = game.add.sprite(1690, 1240, 'puzzles', 'playerFreed');//replace with trap sprite I M P O R T A N T
 		indicator = game.add.sprite(1100, 1400, 'puzzles', 'indicatorGreen'); //just to tease them
 		indicator.scale.setTo(.55, .7);
-/* 	    game.physics.arcade.enable(buttonTrap); // add physics to the button (line might be unnecessary)
-		buttonTrap.body.immovable = true; */
-/* 		indicator = game.add.sprite(610, 1400, 'puzzles', 'indicatorRed'); //show the player that something has happened
-		indicator.scale.setTo(-.95, .7); */
-				
+		
+		player.body.y = 1250;
+		player.body.x = 1720;
+		player.body.gravity.y = 0;
+		lLegOn = false;
+		lLeg.destroy();
 		// Make a sound to let the player know they are trapped
 	}
 	function buttonPressed (player, buttons) {//press the button
@@ -1163,7 +1140,7 @@ level5.prototype = {
 		else {//  Pause music/sfx
 			 walking.pause();
 		}
-	if (player.body.x > 1520){//next state
+	if (player.body.x > 1927){//next state
 		music5.destroy();
 		game.state.start('endCutscene')
 	}
