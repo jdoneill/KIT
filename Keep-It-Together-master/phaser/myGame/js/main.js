@@ -944,7 +944,7 @@ level4.prototype = {
 		indicator.scale.setTo(.55, .7);
 		
 		player.body.y = 1250;
-		player.body.x = 1720;
+		player.body.x = 1750;
 		player.body.gravity.y = 0;
 		lLegOn = false;
 		lLeg.destroy();
