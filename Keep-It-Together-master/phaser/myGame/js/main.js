@@ -61,7 +61,6 @@ level1.prototype = {
 		game.load.atlas('back', 'assets/img/Backgrounds.png', 'assets/img/Backgrounds.json'); // load the stuff
 		game.load.atlas('plat', 'assets/img/platforms.png', 'assets/img/platforms.json'); //load platforms
 		game.load.atlas('puzzles', 'assets/img/puzzles.png', 'assets/img/puzzles.json'); //load platforms
-		game.load.image('rightArm', 'assets/img/armRside.png'); //rffv make a texture atlas
 		// L O A D  A U D I O
 		game.load.audio('walkNoise', 'assets/audio/rub.mp3');
 		game.load.audio('claireDeLune', 'assets/audio/Clair De lune.mp3');
@@ -106,7 +105,7 @@ level1.prototype = {
 		size = 1; //N O T E : figure out what this is for
 		level = 1; // set first level
 		
-		limb = game.add.sprite(1920, 400, 'rightArm'); //add the controlable limb in where the player can't see
+		limb = game.add.sprite(1920, 400, 'guy', 'armRside'); //add the controlable limb in where the player can't see
 	    game.physics.arcade.enable(limb);
 		limb.scale.setTo(1.5, 1);
 		limb.body.gravity.y = 450; // same physics as player
@@ -315,7 +314,6 @@ level2.prototype = {
 	preload: function() { // pre game loop
 		console.log('First level: preload');
 		//nothing to load rn
-		game.load.image('leftArm', 'assets/img/armLside.png');
 
 		},
 	create: function() { //make the game world
@@ -346,7 +344,7 @@ level2.prototype = {
 		size = 1; //N O T E : figure out what this is for
 		level = 2; // set first level
 		
-		limb = game.add.sprite(1920, 400, 'leftArm'); //add the controlable limb in where the player can't see
+		limb = game.add.sprite(1920, 400, 'guy', 'armLside'); //add the controlable limb in where the player can't see
 	    game.physics.arcade.enable(limb);
 		limb.scale.setTo(1.5, 1);
 		limb.body.gravity.y = 450; // same physics as player
@@ -542,8 +540,6 @@ level3.prototype = {
 	preload: function() { // pre game loop
 		console.log('First level: preload');
 		//nothing to load rn
-		game.load.image('rightLeg', 'assets/img/legRside.png');
-		game.load.image('water', 'assets/img/water.png');
 
 		},
 	create: function() { //make the game world
@@ -576,7 +572,7 @@ level3.prototype = {
 		size = 1; //N O T E : figure out what this is for
 		level = 3; // set first level
 		
-		limb = game.add.sprite(1920, 400, 'rightLeg'); //add the controlable limb in where the player can't see
+		limb = game.add.sprite(1920, 400, 'guy', 'legRside'); //add the controlable limb in where the player can't see
 	    game.physics.arcade.enable(limb);
 		limb.scale.setTo(1.5, 1);
 		limb.body.gravity.y = 450; // same physics as player
@@ -619,7 +615,7 @@ level3.prototype = {
 		ledge.body.immovable = true;
 		
 		// P U Z Z L E 
-		var Water = game.add.sprite(0, 410, 'water'); // water level
+		var Water = game.add.sprite(0, 410, 'puzzles', 'water'); // water level
 		//Octopus
 
 		// C A M E R A  S T U F F
@@ -788,7 +784,6 @@ level4.prototype = {
 	preload: function() { // pre game loop
 		console.log('First level: preload');
 		//nothing to load rn
-		//game.load.image('leftLeg', 'assets/img/legLside.png');
 
 		},
 	create: function() { //make the game world
@@ -816,16 +811,9 @@ level4.prototype = {
 		// Destroy last music and unmute new track
 		music3.destroy();
 		music4.volume = 1;
-	
 
 		size = 1; //N O T E : figure out what this is for
 		level = 4; // set first level
-		
-/* 		limb = game.add.sprite(1920, 400, 'leftLeg'); //add the controlable limb in where the player can't see
-	    game.physics.arcade.enable(limb);
-		limb.scale.setTo(1.5, 1);
-		limb.body.gravity.y = 450; // same physics as player
-		limb.body.collideWorldBounds = true; // don't fall through the earth */
 
 		//level layout
 		this.platforms = game.add.group(); //create platforms group
@@ -939,12 +927,12 @@ level4.prototype = {
 		indicator = game.add.sprite(860, 1400, 'puzzles', 'indicatorRed'); //add an indicator to show the player what the button does
 		indicator.scale.setTo(-.55, .7);
 		
-		buttonTrap = game.add.sprite(1690, 1240, 'puzzles', 'playerFreed');//replace with trap sprite I M P O R T A N T
+		buttonTrap = game.add.sprite(1690, 1240, 'puzzles', 'playerTrapped');//replace with trap sprite I M P O R T A N T
 		indicator = game.add.sprite(1100, 1400, 'puzzles', 'indicatorGreen'); //just to tease them
 		indicator.scale.setTo(.55, .7);
 		
-		player.body.y = 1250;
-		player.body.x = 1750;
+		player.body.y = 1215;
+		player.body.x = 1755;
 		player.body.gravity.y = 0;
 		lLegOn = false;
 		lLeg.destroy();
@@ -1039,10 +1027,8 @@ level5.prototype = {
 		jumping = game.add.audio('paperTap',1,false);
 		limbRip = game.add.audio('limbSound', 1, false);
 		levelRip = game.add.audio('levelShift', 1, false);
-	
-/*         finalPlayer = new finalP(game, 'guy', 'Body', 100, 1350);// add player from prefab
-        game.add.existing(finalP); */
-        player = new Player(game, 'guy', 'Body', 400, 0);// add player from prefab
+
+        player = new Player(game, 'guy', 'tearBody', 400, 0);// add player from prefab
         game.add.existing(player);
 
 		walking.play(); //play the music so it lines up across all levels (excluding final level)
@@ -1208,7 +1194,7 @@ endCutscene.prototype = {
 		console.log('endCutscene: create');
 		var bgEnd = game.add.sprite(0, 0, 'back', 'Background5'); // add da background
 		bgEnd.scale.setTo(1.25, 1.4); //scale the background
-		game.add.sprite(390, 450, 'guy', 'Body');
+		game.add.sprite(390, 450, 'guy', 'tearBody');
 		
 		},
 	update: function() {
