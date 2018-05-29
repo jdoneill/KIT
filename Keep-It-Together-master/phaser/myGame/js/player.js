@@ -88,6 +88,7 @@ Player.prototype.update = function(){
 	}
 	if(cursors.up.isDown && player.body.touching.down)
     	{ //press up to jump (taken from phaser.io example code)
+			game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
     		if(canJump == true)
         	{
         		player.body.velocity.y = -330;
@@ -104,11 +105,13 @@ Player.prototype.update = function(){
 	// W A L K I N G
 	if (cursors.left.isDown && level != 5 && trapped == false){
 		//  go left
+		game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
 		player.body.velocity.x = -playerVel;
 	}
 	
 	else if (cursors.right.isDown && level != 5 && trapped == false){
 		//  go right
+		game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
 		player.body.velocity.x = playerVel;
 	}
 	// P L A Y E R  M O V E M E N T

@@ -701,7 +701,7 @@ level3.prototype = {
 	else {//  don't move
 		limb.body.velocity.x = 0;
 	} 
-
+								//v rffv
 	if (player.body.y > 1970 || cursors.down.isDown){//next state
 		rLegOn = false;
 		game.state.start('load4')
