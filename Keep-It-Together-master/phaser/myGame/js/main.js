@@ -61,6 +61,7 @@ level1.prototype = {
 		game.load.atlas('back', 'assets/img/Backgrounds.png', 'assets/img/Backgrounds.json'); // load the stuff
 		game.load.atlas('plat', 'assets/img/platforms.png', 'assets/img/platforms.json'); //load platforms
 		game.load.atlas('puzzles', 'assets/img/puzzles.png', 'assets/img/puzzles.json'); //load platforms
+		game.load.atlas('enemies', 'assets/img/Enemies.png', 'assets/img/Enemies.json'); //load platforms
 		// L O A D  A U D I O
 		game.load.audio('walkNoise', 'assets/audio/rub.mp3');
 		game.load.audio('claireDeLune', 'assets/audio/Clair De lune.mp3');
@@ -322,9 +323,10 @@ level2.prototype = {
 		bg.scale.setTo(3, 3); //scale the background		
 		game.physics.startSystem(Phaser.Physics.ARCADE); // add physics
 		rArmOn = false; //reset limb variables in case of restart
-		lArmOn = true;
+		lArmOn = false; //setting to false cause of how I'm doing the puzzle
 		rLegOn = true;
 		lLegOn = true;
+		trapped = true;
 				//Do we need to reassign these vars?
 		// Assigns the audio to a global variable
 		walking = game.add.audio('walkNoise', 1, true); // add walk sfx, vol 1, looping true
@@ -336,20 +338,19 @@ level2.prototype = {
 		music.destroy();
 		music2.volume = 1;
 	
-        player = new Player(game, 'guy', 'Body', 750, 0);// add player from prefab
+		var hooked = game.add.sprite(865, 40, 'enemies', 'hooked'); //Rock (make it look like a rock)
+		hooked.scale.setTo(1.5, 1.5);
+	
+        player = new Player(game, 'guy', 'Body', 940, 355);// add player from prefab
         game.add.existing(player);
+		player.body.gravity.y = 0; // change this to a var for water level gravity change
+
 
 		walking.play(); //play the music so it lines up across all levels (excluding final level)
 
 		size = 1; //N O T E : figure out what this is for
 		level = 2; // set first level
 		
-		limb = game.add.sprite(1920, 400, 'guy', 'armLside'); //add the controlable limb in where the player can't see
-	    game.physics.arcade.enable(limb);
-		limb.scale.setTo(1.5, 1);
-		limb.body.gravity.y = 450; // same physics as player
-		limb.body.collideWorldBounds = true; // don't fall through the earth
-
 		//level layout
 		this.platforms = game.add.group(); //create platforms group
 		this.platforms.enableBody = true; //enable physics to for platforms
@@ -402,7 +403,6 @@ level2.prototype = {
 	update: function() {
 		var cursors = game.input.keyboard.createCursorKeys();
 		touching = game.physics.arcade.collide(player, this.platforms); //allows player to collide with walls and platforms and stuff
-		touchingLimb = game.physics.arcade.collide(limb, this.platforms); //allows limb to collide with walls and platforms and stuff
 
 		// Figures out if the player is falling then adds a landing sfx.
 		// C H A N G E  T H I S  A F T E R  T E S T I N G -------------v
@@ -410,10 +410,12 @@ level2.prototype = {
 			console.log('arm off');
 			limbRip.play();
 			lArmOn = false;
-			lArm.destroy();
-			limb.x = player.x - 40; // teleport controllable limb to player
-			limb.y = player.y;
-			game.camera.follow(limb, Phaser.Camera.FOLLOW_LOCKON, .6, .6); //follow the limb with the camera
+			player.body.gravity.y = 450; // change this to a var for water level gravity change
+			trapped = false;
+		}
+
+		else{
+			playerVel = 70;
 		}
 		if(player.body.velocity.y > 0){ // check for falling
 			falling = true;
@@ -448,20 +450,6 @@ level2.prototype = {
 		else {//  Pause music/sfx
 			 walking.pause();
 		}
-			
-	// L I M B	
-		// W A L K I N G
- 	if (game.input.keyboard.isDown(Phaser.Keyboard.A) && lArmOn == false){// go left
-		limb.body.velocity.x = -playerVel;
-		game.camera.follow(limb, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
-	}
-	else if (game.input.keyboard.isDown(Phaser.Keyboard.D) && lArmOn == false){// go right
-		limb.body.velocity.x = playerVel;
-		game.camera.follow(limb, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
-	} 
-	else {//  don't move
-		limb.body.velocity.x = 0;
-	} 
 
 	if (player.body.y > 1970 || cursors.down.isDown){//next state
 		lArmOn = false;

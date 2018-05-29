@@ -107,12 +107,14 @@ Player.prototype.update = function(){
 		//  go left
 		game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
 		player.body.velocity.x = -playerVel;
+		player.scale.setTo(-2, 2);
 	}
 	
 	else if (cursors.right.isDown && level != 5 && trapped == false){
 		//  go right
 		game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
 		player.body.velocity.x = playerVel;
+		player.scale.setTo(2, 2);
 	}
 	// P L A Y E R  M O V E M E N T
 	// R I G H T
@@ -125,8 +127,8 @@ Player.prototype.update = function(){
 	        			player.body.x = player.body.x + distance;
 	        			console.log('right');
 					canRight = false;
+					player.scale.setTo(2, 2);
 					// Makes you move slower towards the end.
-					
 					
 					}
 					if(level == 5 && player.body.x >= 1400)
@@ -149,6 +151,7 @@ Player.prototype.update = function(){
         		player.body.x = player.body.x - distance;
         		console.log('left');
 			canLeft = false;
+			player.scale.setTo(-2, 2);
 			}
     	}
     	// makes it so you have to press up each time you want to jump
