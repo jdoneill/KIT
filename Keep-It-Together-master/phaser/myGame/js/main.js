@@ -32,8 +32,8 @@ var currentLevel;
 var buttons;
 var platforms;
 var door;
-var doorHit = 0;
-var bvuttonTrap;
+var doorHit = 0; //might have to remove this
+var buttonTrap;
 
 // S O U N D S
 var music;
@@ -393,7 +393,6 @@ level2.prototype = {
 		door.body.immovable = true;
 		door.scale.setTo(2.26, 2.2);
 		//rock floor
-		//add hook
 
 		// C A M E R A  S T U F F
 		game.world.setBounds(0,0,1920, 1500);
@@ -1016,7 +1015,7 @@ level5.prototype = {
 		limbRip = game.add.audio('limbSound', 1, false);
 		levelRip = game.add.audio('levelShift', 1, false);
 
-        player = new Player(game, 'guy', 'tearBody', 400, 0);// add player from prefab
+        player = new Player(game, 'guy', 'tearBody', 100, 0);// add player from prefab
         game.add.existing(player);
 
 		walking.play(); //play the music so it lines up across all levels (excluding final level)
@@ -1062,9 +1061,35 @@ level5.prototype = {
 		ledge.body.immovable = true;
 		ledge.scale.setTo(2, 2);
 		
+		ledge = this.platforms.create(300, 0, 'plat', 'lilBoxUziVertical'); // right wall
+		ledge.body.immovable = true;
+		ledge.scale.setTo(2, 6.9);
+		
+		//  C I E L I N G
+		
+		ledge = this.platforms.create(300, 1000, 'plat', 'lilBox'); //roof left
+		ledge.body.immovable = true;
+		ledge.scale.setTo(2, 2);
+		ledge = this.platforms.create(600, 1050, 'plat', 'lilBox'); //roof left
+		ledge.body.immovable = true;
+		ledge.scale.setTo(2, 2);
+		ledge = this.platforms.create(900, 1100, 'plat', 'lilBox'); //roof left
+		ledge.body.immovable = true;
+		ledge.scale.setTo(2, 2);
+		ledge = this.platforms.create(1200, 1150, 'plat', 'lilBox'); //roof left
+		ledge.body.immovable = true;
+		ledge.scale.setTo(2, 2);
+		ledge = this.platforms.create(1500, 1200, 'plat', 'lilBox'); //roof left
+		ledge.body.immovable = true;
+		ledge.scale.setTo(2, 2);
+		ledge = this.platforms.create(1800, 1250, 'plat', 'lilBox'); //roof left
+		ledge.body.immovable = true;
+		ledge.scale.setTo(2, 2);
+		
 		ledge = this.platforms.create(-65, 0, 'plat', 'lilBoxUziVertical'); // left wall
 		ledge.body.immovable = true;
 		ledge.scale.setTo(2, 10);
+
 		//add some platforms to jump on
 		
 		// P U Z Z L E 
@@ -1235,6 +1260,9 @@ function shake()
 // S T A T E S
 //---------------------------------------------------------------------------
 
+//america
+//california
+//weast dakota
 game.state.add('level1', level1);
 game.state.add('load2', load2);
 game.state.add('level2', level2);
@@ -1248,4 +1276,3 @@ game.state.add('endLoad', endLoad);
 game.state.add('endCutscene', endCutscene);
 game.state.add('GameOver', GameOver);
 game.state.start('level1');
-
