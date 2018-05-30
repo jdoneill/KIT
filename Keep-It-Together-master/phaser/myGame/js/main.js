@@ -1,5 +1,5 @@
-var game = new Phaser.Game(800, 500, Phaser.AUTO);
-//var game = new Phaser.Game(1920, 1500, Phaser.AUTO); //rffv
+//var game = new Phaser.Game(800, 500, Phaser.AUTO);
+var game = new Phaser.Game(1920, 1500, Phaser.AUTO); //rffv
 //rffv means remove from final version (word search through document to find these before the final push)
 
 // P L A Y E R
@@ -48,6 +48,7 @@ var jumping;
 var thud;
 var limbRip;
 var levelRip;
+var bearTrap;
 
 // T I M E R  &  S H A K E
 var timer;
@@ -803,8 +804,8 @@ var level4 = function(game) {};
 level4.prototype = {
 	preload: function() { // pre game loop
 		console.log('First level: preload');
-		//nothing to load rn
-
+			game.load.audio('bearTrap', 'assets/audio/bearTrap.mp3');
+			
 		},
 	create: function() { //make the game world
 		console.log('First level: create');
@@ -822,6 +823,7 @@ level4.prototype = {
 		jumping = game.add.audio('paperTap',1,false);
 		limbRip = game.add.audio('limbSound', 1, false);
 		levelRip = game.add.audio('levelShift', 1, false);
+		bearTrap = game.add.audio('bearTrap', 2, false);
 	
         player = new Player(game, 'guy', 'Body', 400, 250);// add player from prefab
         game.add.existing(player);
@@ -956,6 +958,8 @@ level4.prototype = {
 		player.body.gravity.y = 0;
 		lLegOn = false;
 		lLeg.destroy();
+		
+		bearTrap.play();
 		// Make a sound to let the player know they are trapped
 	}
 	function buttonPressed (player, buttons) {//press the button
