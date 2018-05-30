@@ -1,5 +1,5 @@
-//var game = new Phaser.Game(800, 500, Phaser.AUTO);
-var game = new Phaser.Game(1920, 1500, Phaser.AUTO); //rffv
+var game = new Phaser.Game(800, 500, Phaser.AUTO);
+//var game = new Phaser.Game(1920, 1500, Phaser.AUTO); //rffv
 //rffv means remove from final version (word search through document to find these before the final push)
 
 // P L A Y E R
@@ -488,7 +488,7 @@ level2.prototype = {
 	}		
 
 	function rockBounce (player, door) {//jump on rocks
-		if(player.velocity.y > 5){//if the player collides with
+		 if(player.velocity.y > 5){//if the player collides with
 			door.destroy(); // remove door
 		//A D D  S F X  H E R E
 		
@@ -955,6 +955,8 @@ level4.prototype = {
 		
 		player.body.y = 1215;
 		player.body.x = 1755;
+		player.body.velocity.y = 0;
+		player.body.velocity.x = 0;
 		player.body.gravity.y = 0;
 		lLegOn = false;
 		lLeg.destroy();

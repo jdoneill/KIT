@@ -154,7 +154,7 @@ Player.prototype.update = function(){
 	// L E F T
 	 if(cursors.left.isDown && player.body.touching.down && level == 5)
     	{ //press left to move
-    		if(canLeft == true)
+    		if(canLeft == true && player.body.x > 10)
         	{
         		player.body.x = player.body.x - distance;
         		console.log('left');
