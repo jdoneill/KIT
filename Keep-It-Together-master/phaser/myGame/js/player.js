@@ -31,6 +31,7 @@ function Player (game, key, frame, playerX, playerY) {
 	lLeg = limbs.create(this.body.x - 50, this.body.y + 40, 'guy', 'legL'); //add left leg
     lLeg.scale.setTo(1, 1.5);
 	}
+	
 
 		game.physics.arcade.enable(this); // add physics to the playa
 		this.body.gravity.y = 450; // change this to a var for water level gravity change
@@ -86,9 +87,14 @@ Player.prototype.update = function(){
 	{
 		canJump = false;
 	}
+	if(lLegOn != true)
+	{
+		canJump = false;
+	}
 	if(cursors.up.isDown && player.body.touching.down)
     	{ //press up to jump (taken from phaser.io example code)
 			game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
+			
     		if(canJump == true)
         	{
         		player.body.velocity.y = -330;
@@ -99,7 +105,9 @@ Player.prototype.update = function(){
     	// makes it so you have to press up each time you want to jump
     	if(cursors.up.isUp && lLegOn == true)
     	{
+			
         	canJump = true;
+			
     	}
 	
 	// W A L K I N G

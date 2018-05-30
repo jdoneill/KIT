@@ -10,6 +10,7 @@ var cutscene;
 var size;
 var falling = false;
 var yesJump = true; 
+var yesSFX = true;
 var rArm;
 var rArmOn;
 var lArm;
@@ -32,8 +33,8 @@ var currentLevel;
 var buttons;
 var platforms;
 var door;
-var doorHit = 0; //might have to remove this
-var buttonTrap;
+var doorHit = 0;
+var bvuttonTrap;
 
 // S O U N D S
 var music;
@@ -47,6 +48,13 @@ var jumping;
 var thud;
 var limbRip;
 var levelRip;
+
+// T I M E R  &  S H A K E
+var timer;
+var timerlvl5;
+var shakeIntensity = .01;
+var shakeLength = 100;
+var time = 5000;
 
 //---------------------------------------------------------------------------
 // L E V E L  O N E 
@@ -82,6 +90,8 @@ level1.prototype = {
 		lArmOn = true;
 		rLegOn = true;
 		lLegOn = true;
+		
+	
 
 		// Assigns the audio to a global variable
 		walking = game.add.audio('walkNoise', 1, true); // add walk sfx, vol 1, looping true
@@ -188,7 +198,7 @@ level1.prototype = {
 		}
 		if(cursors.up.isDown && touching == true){ //press up to make jump sfx
 			game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
-			if(yesJump == true){
+			if(yesJump == true ){
 				jumping.play();
 				yesJump = false; // player can't hold up to jump
 				if(walking.play()){//pause walking sound when jumping
@@ -337,6 +347,16 @@ level2.prototype = {
 		
 		music.destroy();
 		music2.volume = 1;
+		
+		// Uses timer to shake
+		timer = game.time.create(false);
+		//  Set a TimerEvent to occur after 5 seconds
+		// Parameters are the times in between, the function it calls when the time is up
+		timer.loop(time, shake, this);
+		
+		
+
+		
 	
 		var hooked = game.add.sprite(865, 40, 'enemies', 'hooked'); //Rock (make it look like a rock)
 		hooked.scale.setTo(1.5, 1.5);
@@ -393,6 +413,7 @@ level2.prototype = {
 		door.body.immovable = true;
 		door.scale.setTo(2.26, 2.2);
 		//rock floor
+		//add hook
 
 		// C A M E R A  S T U F F
 		game.world.setBounds(0,0,1920, 1500);
@@ -411,6 +432,9 @@ level2.prototype = {
 			lArmOn = false;
 			player.body.gravity.y = 450; // change this to a var for water level gravity change
 			trapped = false;
+			
+			// Starts timer on button press, so that it only shakes after you drop
+			timer.start();
 		}
 
 		else{
@@ -647,18 +671,27 @@ level3.prototype = {
 		if(cursors.up.isUp){// check for jumping			{
 				yesJump = true;
 			}
-		if (touching == true && falling == true){ // landing sound effect (100% polish)
-			thud.play();
-			falling = false;
-			console.log('Landed');
+		if (touching == true && falling == true)
+		{ // landing sound effect (100% polish)
+			if(player.body.y < 300 )
+				{
+				thud.play();
+				falling = false;
+				console.log('Landed');
+				}
 		}
 		if(cursors.up.isDown && touching == true){ //press up to make jump sfx
 			game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
-			if(yesJump == true){
-				jumping.play();
-				yesJump = false; // player can't hold up to jump
-				if(walking.play()){//pause walking sound when jumping
+			if(yesJump == true)
+			{
+				if(player.body.y < 300 )
+				{
+					jumping.play();
+					yesJump = false; // player can't hold up to jump
+					if(walking.play())
+					{//pause walking sound when jumping
 					walking.pause();
+					}
 				}
 			}
 		}
@@ -866,7 +899,7 @@ level4.prototype = {
 		}
 		if(cursors.up.isDown && touching == true && trapped == false){ //press up to make jump sfx
 			game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
-			if(yesJump == true){
+			if(yesJump == true && lLegOn == true){
 				jumping.play();
 				yesJump = false; // player can't hold up to jump
 				if(walking.play()){//pause walking sound when jumping
@@ -1015,7 +1048,7 @@ level5.prototype = {
 		limbRip = game.add.audio('limbSound', 1, false);
 		levelRip = game.add.audio('levelShift', 1, false);
 
-        player = new Player(game, 'guy', 'tearBody', 100, 0);// add player from prefab
+        player = new Player(game, 'guy', 'tearBody', 80, 0);// add player from prefab
         game.add.existing(player);
 
 		walking.play(); //play the music so it lines up across all levels (excluding final level)
@@ -1061,11 +1094,16 @@ level5.prototype = {
 		ledge.body.immovable = true;
 		ledge.scale.setTo(2, 2);
 		
+		ledge = this.platforms.create(-65, 0, 'plat', 'lilBoxUziVertical'); // left wall
+		ledge.body.immovable = true;
+		ledge.scale.setTo(2, 10);
+		//add some platforms to jump on
+		
 		ledge = this.platforms.create(300, 0, 'plat', 'lilBoxUziVertical'); // right wall
 		ledge.body.immovable = true;
 		ledge.scale.setTo(2, 6.9);
 		
-		//  C I E L I N G
+		//  C E I L I N G
 		
 		ledge = this.platforms.create(300, 1000, 'plat', 'lilBox'); //roof left
 		ledge.body.immovable = true;
@@ -1089,8 +1127,11 @@ level5.prototype = {
 		ledge = this.platforms.create(-65, 0, 'plat', 'lilBoxUziVertical'); // left wall
 		ledge.body.immovable = true;
 		ledge.scale.setTo(2, 10);
+		
+		//  Set a TimerEvent to occur after 5 seconds
+		timerlvl5 = game.time.create(false);
+		timerlvl5.loop(100, shakelvl5, this);
 
-		//add some platforms to jump on
 		
 		// P U Z Z L E 
 		//comtemplation
@@ -1120,22 +1161,36 @@ level5.prototype = {
 		if(cursors.up.isDown && touching == true){ //press up to make jump sfx
 			game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
 			if(yesJump == true){
-				jumping.play();
+				// jumping.play();
 				yesJump = false; // player can't hold up to jump
-				if(walking.play()){//pause walking sound when jumping
-					walking.pause();
-				}
+				
 			}
 		}
 		if(player.body.onFloor() != true){// pause walking sound when not on ground
 			walking.pause();
 		}
 		if (cursors.left.isDown || cursors.right.isDown){
-			if(touching == true){ //play sound when player is moving on the ground (taken from phaser.io exmaple code)
-				walking.resume();//  Play walk sound
-				game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
-			}
+			timerlvl5.start();
+
+			if(touching == true)
+				{ 
+					if(yesSFX == true)
+					{
+					walking.resume();//  Play walk sound
+					yesSFX == false;
+					}
+					game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
+				}
+				//walking.pause();
+
 		}
+		// Makes it so the walking sound doesn't constantly play.
+		
+		if (cursors.left.isUp && cursors.right.isUP)
+		{
+			yesSFX = true;
+		}
+		
 		else {//  Pause music/sfx
 			 walking.pause();
 		}
@@ -1253,16 +1308,27 @@ GameOver.prototype = {
 function shake()
 {
 	// Sets intensity and duration
-	game.camera.shake(0.05 , 500)
+	game.camera.shake(shakeIntensity , shakeLength)
+	
+	shakeIntensity *= 1.1;
+	if(shakeLength < time )
+	{
+	shakeLength *= 1.3;
+	}
+	time *= 1.1;
+}
+
+function shakelvl5()
+{
+	shakeLength = 10000000000000000;
+	game.camera.shake(.005, shakeLength)
+	console.log('shakey bakey');
 }
 
 //---------------------------------------------------------------------------
 // S T A T E S
 //---------------------------------------------------------------------------
 
-//america
-//california
-//weast dakota
 game.state.add('level1', level1);
 game.state.add('load2', load2);
 game.state.add('level2', level2);
@@ -1276,3 +1342,4 @@ game.state.add('endLoad', endLoad);
 game.state.add('endCutscene', endCutscene);
 game.state.add('GameOver', GameOver);
 game.state.start('level1');
+
