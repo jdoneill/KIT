@@ -35,6 +35,8 @@ var platforms;
 var door;
 var doorHit = 0;
 var bvuttonTrap;
+var canBreak = false;
+var rockDur = 0;
 
 // S O U N D S
 var music;
@@ -354,10 +356,6 @@ level2.prototype = {
 		//  Set a TimerEvent to occur after 5 seconds
 		// Parameters are the times in between, the function it calls when the time is up
 		timer.loop(time, shake, this);
-		
-		
-
-		
 	
 		var hooked = game.add.sprite(865, 40, 'enemies', 'hooked'); //Rock (make it look like a rock)
 		hooked.scale.setTo(1.5, 1.5);
@@ -365,7 +363,6 @@ level2.prototype = {
         player = new Player(game, 'guy', 'Body', 940, 355);// add player from prefab
         game.add.existing(player);
 		player.body.gravity.y = 0; // change this to a var for water level gravity change
-
 
 		walking.play(); //play the music so it lines up across all levels (excluding final level)
 
@@ -377,15 +374,6 @@ level2.prototype = {
 		this.platforms.enableBody = true; //enable physics to for platforms
 
 		// Add platforms for world bounds
-		/*
-		floor right
-		floor left
-		roof
-		wall right
-		wall left
-		parkour platforms x4
-		breakable rock
-		*/
 		var ledge = this.platforms.create(30, 1427, 'plat', 'lilBox'); //floor left
 		ledge.body.immovable = true;
 		ledge.scale.setTo(5.4, 2);
@@ -409,12 +397,11 @@ level2.prototype = {
 		
 		// P U Z Z L E 
 		//add a breakable rock floor for puzzle solving
-		door = game.add.sprite(865, 1427, 'puzzles', 'rock1'); //Rock (make it look like a rock)
+		door = game.add.sprite(865, 1428, 'puzzles', 'rock1'); //Rock (make it look like a rock)
 		game.physics.enable(door);
 		door.body.immovable = true;
 		door.scale.setTo(2.26, 2.2);
 		//rock floor
-		//add hook
 
 		// C A M E R A  S T U F F
 		game.world.setBounds(0,0,1920, 1500);
@@ -474,6 +461,37 @@ level2.prototype = {
 		else {//  Pause music/sfx
 			 walking.pause();
 		}
+		
+		//P U Z Z L E
+		if(player.body.y > 20 && falling == true)
+        {
+            canBreak = true;
+        }
+
+        if(touching == true)
+        {
+            canBreak = false;
+        }
+        if(game.physics.arcade.collide(door,player) && canBreak == true)
+        {
+			door.destroy();
+			rockDur++;
+        }
+		
+		//Jake's shitty broken edits 
+		/* 
+	    if(rockDur == 1){
+		door.sprite = game.add.sprite(865, 1427, 'puzzles', 'rock2'); //Rock (make it look like a rock)
+		door.sprite.scale.setTo(2.26, 2.2);
+		}
+	    if(rockDur == 2){
+		door.sprite = game.add.sprite(865, 1426, 'puzzles', 'rock3'); //Rock (make it look like a rock)
+		door.sprite.scale.setTo(2.26, 2.2);
+		}
+        if(rockDur == 3){
+            door.destroy();
+		} */
+		//ends here
 
 	if (player.body.y > 1970 || cursors.down.isDown){//next state
 		lArmOn = false;
@@ -485,18 +503,10 @@ level2.prototype = {
 		music2.destroy();
 		music3.destroy();
 		music4.destroy();
-	}		
-
-	function rockBounce (player, door) {//jump on rocks
-		 if(player.velocity.y > 5){//if the player collides with
-			door.destroy(); // remove door
-		//A D D  S F X  H E R E
-		
-		}
-		// Make a sound to let the player know something has changed
-		// paper crumple
 	}
-	this.game.physics.arcade.collide(door, player, this.rockBounce, null, this);// check for rockBounce
+
+	game.physics.arcade.collide(player, door);
+	
 	},
 /* 	render: function() {// setup debug rendering (comment out when not debugging)
 			game.debug.bodyInfo(limb, 32, 32);
