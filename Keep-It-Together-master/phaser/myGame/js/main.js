@@ -388,13 +388,43 @@ level2.prototype = {
 		ledge.body.immovable = true;
 		ledge.scale.setTo(2, 10);
 		//add some platforms to jump on
-		ledge = this.platforms.create(1650, 1310, 'plat', 'lilBox'); //floor right
+		ledge = this.platforms.create(1460, 1310, 'plat', 'lilBox');
 		ledge.body.immovable = true;
-		ledge = this.platforms.create(1400, 1200, 'plat', 'lilBox'); //floor right
+		ledge.body.velocity.x = -100; //move the platforms to the left at different speeds
+		ledge.checkWorldBounds = true; //check if the platforms go past the world bounds
+		ledge.events.onOutOfBounds.add(this.wrapPlat, this); //wrap the platforms once they go past the world bounds
+		ledge = this.platforms.create(1390, 1200, 'plat', 'lilBox');
 		ledge.body.immovable = true;
-		ledge = this.platforms.create(1150, 1090, 'plat', 'lilBox'); //floor right
+		ledge.body.velocity.x = -200;
+		ledge.checkWorldBounds = true;
+		ledge.events.onOutOfBounds.add(this.wrapPlat, this);
+		ledge = this.platforms.create(1320, 1090, 'plat', 'lilBox');
 		ledge.body.immovable = true;
+		ledge.body.velocity.x = -100;
+		ledge.checkWorldBounds = true;
+		ledge.events.onOutOfBounds.add(this.wrapPlat, this);
+		ledge = this.platforms.create(1250, 980, 'plat', 'lilBox');
+		ledge.body.immovable = true;
+		ledge.body.velocity.x = -200;
+		ledge.checkWorldBounds = true;
+		ledge.events.onOutOfBounds.add(this.wrapPlat, this);
+		ledge = this.platforms.create(1180, 870, 'plat', 'lilBox');
+		ledge.body.immovable = true;
+		ledge.body.velocity.x = -100;
+		ledge.checkWorldBounds = true;
+		ledge.events.onOutOfBounds.add(this.wrapPlat, this);
+		ledge = this.platforms.create(1110, 760, 'plat', 'lilBox');
+		ledge.body.immovable = true;
+		ledge.body.velocity.x = -200;
+		ledge.checkWorldBounds = true;
+		ledge.events.onOutOfBounds.add(this.wrapPlat, this);
+
+		//S H R E D D E R
+		shredder = game.add.sprite(-700, 900, 'enemies', 'angryScaryShredder'); //adds the shredder
+		game.physics.enable(shredder); //give shredder physics
+		shredder.body.velocity.x = 25;
 		
+
 		// P U Z Z L E 
 		//add a breakable rock floor for puzzle solving
 		door = game.add.sprite(865, 1428, 'puzzles', 'rock1'); //Rock (make it look like a rock)
@@ -408,9 +438,20 @@ level2.prototype = {
 		game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, 0.6, 0.6);
 		// game.input.onDown.add(shake, this);
 		},
+
+	wrapPlat: function(sprite){ //wrap the platforms around the level
+		if(sprite.x + sprite.width/2 < 0){
+			sprite.x = 1920 + sprite.width/2;
+		}else if(sprite.x - sprite.width/2 > 1920){
+			sprite.x = 0 - sprite.width/2;
+		}
+	},
+	
 	update: function() {
 		var cursors = game.input.keyboard.createCursorKeys();
 		touching = game.physics.arcade.collide(player, this.platforms); //allows player to collide with walls and platforms and stuff
+
+		var shred = game.physics.arcade.collide(player, shredder); //variable for colliding with shredder
 
 		// Figures out if the player is falling then adds a landing sfx.
 		// C H A N G E  T H I S  A F T E R  T E S T I N G -------------v
@@ -497,7 +538,7 @@ level2.prototype = {
 		lArmOn = false;
 		game.state.start('load3')
 	}
-	if (game.input.keyboard.isDown(Phaser.Keyboard.R)){ //R to restart
+	if (game.input.keyboard.isDown(Phaser.Keyboard.R) || shred == true){ //R to restart or if shredder gets the player
 		game.state.start('level2')
 		music.destroy(); //so the music doesn't overlap
 		music2.destroy();
@@ -635,10 +676,15 @@ level3.prototype = {
 		ledge.body.immovable = true;
 		ledge = this.platforms.create(700, 400, 'plat', 'lilBox'); //upper floor right
 		ledge.body.immovable = true;
-		
+	
+		//O C T O P U S
+		var tako = game.add.sprite(0, 930, 'enemies', 'scaryTako');//add octopus
+		game.physics.enable(tako);
+		tako.body.immovable = true;
+		tako.scale.setTo(0.65, 0.65);
+
 		// P U Z Z L E 
 		var Water = game.add.sprite(0, 410, 'puzzles', 'water'); // water level
-		//Octopus
 
 		// C A M E R A  S T U F F
 		game.world.setBounds(0,0,1920, 1500);
@@ -1303,14 +1349,24 @@ GameOver.prototype = {
 		},
 	create: function() {
 		console.log('GameOver: create');
-		var bgGO = game.add.sprite(0, 0, 'back', 'Background5'); // add da background
-		bgGO.scale.setTo(1.25, 1.4); //scale the background
+		//var bgGO = game.add.sprite(0, 0, 'back', 'Background5'); // add da background
+		game.stage.backgroundColor = "#000";
+		//bgGO.scale.setTo(1.25, 1.4); //scale the background
 		music.destroy();
 		music2.destroy();
 		music3.destroy();
 		music4.destroy();
 		music5.destroy();
-		game.add.text(380, 300, 'Game Over', { fontSize: '50px', fill: '#000' });
+
+		//E V A N G E L I O N
+		game.add.text(10, 70, 'Keep It', {font: '90px TimesNewRoman', fill: '#FFF', fontWeight: 'bold', strokeThickness: 3});
+		game.add.text(10, 140, 'Together', {font: '170px TimesNewRoman', fill: '#FFF', fontWeight: 'bold', strokeThickness: 3});
+		game.add.text(10, 345, 'Week: 10', {font: '45px Arial', fill: '#FFF', fontWeight: 'bold', strokeThickness: 3});
+		game.add.text(420,420, 'This is (not) a game.', {font: '40px TimesNewRoman', fill: '#FFF', fontWeight: 'bold', strokeThickness: 2});
+
+
+
+
 		},
 	update: function() {
 		// main menu logic
