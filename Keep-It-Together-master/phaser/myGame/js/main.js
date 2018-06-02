@@ -36,6 +36,10 @@ var door;
 var doorHit = 0;
 var bvuttonTrap;
 var canBreak = false;
+var canBreak2 = false;
+var canBreak3 = false;
+var rockDes1 = false;
+var rockDes2 = false;
 var rockDur = 0;
 
 // S O U N D S
@@ -427,6 +431,16 @@ level2.prototype = {
 
 		// P U Z Z L E 
 		//add a breakable rock floor for puzzle solving
+		door3 = game.add.sprite(865, 1426, 'puzzles', 'rock3'); //Rock (make it look like a rock)
+		game.physics.enable(door3);
+		door3.body.immovable = true;
+		door3.scale.setTo(2.26, 2.2);
+
+		
+		door2 = game.add.sprite(865, 1427, 'puzzles', 'rock2'); //Rock (make it look like a rock)
+		game.physics.enable(door2);
+		door2.body.immovable = true;
+		door2.scale.setTo(2.26, 2.2);
 		door = game.add.sprite(865, 1428, 'puzzles', 'rock1'); //Rock (make it look like a rock)
 		game.physics.enable(door);
 		door.body.immovable = true;
@@ -504,7 +518,9 @@ level2.prototype = {
 		}
 		
 		//P U Z Z L E
-		if(player.body.y > 20 && falling == true)
+		// All this is to break the different rocks
+		// IMPORTANT: Change the number to change how far you need to fall
+		if(player.body.y < 1250 && falling == true)
         {
             canBreak = true;
         }
@@ -512,27 +528,46 @@ level2.prototype = {
         if(touching == true)
         {
             canBreak = false;
+			canBreak2 = false;
+			canBreak3 = false;
+
         }
         if(game.physics.arcade.collide(door,player) && canBreak == true)
         {
 			door.destroy();
+			// canBreak2 = false;
 			rockDur++;
+			rockDes1 = true;
         }
 		
-		//Jake's shitty broken edits 
-		/* 
-	    if(rockDur == 1){
-		door.sprite = game.add.sprite(865, 1427, 'puzzles', 'rock2'); //Rock (make it look like a rock)
-		door.sprite.scale.setTo(2.26, 2.2);
+		// debug stuff	
+		// this.game.debug.cameraInfo(this.game.camera, 32, 32);
+
+		if(rockDes1 == true && player.body.y < 1250 && falling == true)
+		{
+			canBreak2 = true;
 		}
-	    if(rockDur == 2){
-		door.sprite = game.add.sprite(865, 1426, 'puzzles', 'rock3'); //Rock (make it look like a rock)
-		door.sprite.scale.setTo(2.26, 2.2);
+		
+	    if(game.physics.arcade.collide(door2,player) && canBreak2 == true)
+		{
+			door2.destroy();
+			rockDur++;
+			rockDes2 = true;
 		}
-        if(rockDur == 3){
-            door.destroy();
-		} */
-		//ends here
+		
+		if(rockDes2 == true && player.body.y < 1250 && falling == true)
+		{
+			canBreak3 = true;
+		}
+		
+	    if(game.physics.arcade.collide(door3,player) && canBreak3 == true)
+		{
+			door3.destroy();
+			rockDur++;
+			//rockDes3 = true;
+		}
+		
+	    // rock breaking ends here
 
 	if (player.body.y > 1970 || cursors.down.isDown){//next state
 		lArmOn = false;
@@ -544,6 +579,13 @@ level2.prototype = {
 		music2.destroy();
 		music3.destroy();
 		music4.destroy();
+		walking.pause();
+		rockDur = 0;
+        rockDes1 = false;
+        rockDes2 = false;
+        canBreak = false;
+        canBreak2 = false;
+        canBreak3 = false;
 	}
 
 	game.physics.arcade.collide(player, door);
@@ -1414,4 +1456,3 @@ game.state.add('endLoad', endLoad);
 game.state.add('endCutscene', endCutscene);
 game.state.add('GameOver', GameOver);
 game.state.start('level1');
-
