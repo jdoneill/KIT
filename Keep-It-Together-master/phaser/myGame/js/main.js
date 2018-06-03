@@ -120,6 +120,10 @@ level1.prototype = {
 		music3.play();
 		music4.play();
 
+		var walkTxt = game.add.text(80, 1200, 'use the arrow keys to move', { fontSize: '20px', fill: '#595959' }); 
+		var jumpTxt = game.add.text(780, 1375, 'press the up key \nto jump', { fontSize: '20px', fill: '#595959' }); 
+		var armTxt = game.add.text(1185, 950, 'press the spacebar \nto remove your arm', { fontSize: '20px', fill: '#595959' });
+		
 		size = 1; //N O T E : figure out what this is for
 		level = 1; // set first level
 		
@@ -184,6 +188,7 @@ level1.prototype = {
 		// Figures out if the player is falling then adds a landing sfx.
 		// C H A N G E  T H I S  A F T E R  T E S T I N G -------------v 			//rffv remove commet block
 		if (game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR) /*&& rArmOn == true*/){//press space to remove limbs
+			var armMoveTxt = game.add.text(1380, 1050, 'use the a and d keys to move the arm ', { fontSize: '20px', fill: '#595959' });
 			console.log('arm off');
 			limbRip.play();
 			rArmOn = false;
