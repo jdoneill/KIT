@@ -725,10 +725,11 @@ level3.prototype = {
 		ledge.body.immovable = true;
 	
 		//O C T O P U S
-		var tako = game.add.sprite(0, 930, 'enemies', 'scaryTako');//add octopus
+		var tako = game.add.sprite(420, 1170, 'enemies', 'scaryTako');//add octopus
+		tako.anchor.set(.5, .5);
 		game.physics.enable(tako);
 		tako.body.immovable = true;
-		tako.scale.setTo(0.65, 0.65);
+		tako.scale.setTo(-0.5, 0.5);
 
 		// P U Z Z L E 
 		var Water = game.add.sprite(0, 410, 'puzzles', 'water'); // water level
