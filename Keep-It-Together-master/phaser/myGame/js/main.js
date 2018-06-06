@@ -1,5 +1,5 @@
-var game = new Phaser.Game(800, 500, Phaser.AUTO);
-// var game = new Phaser.Game(1920, 1500, Phaser.AUTO); //rffv
+//var game = new Phaser.Game(800, 500, Phaser.AUTO);
+var game = new Phaser.Game(1920, 1500, Phaser.AUTO); //rffv
 //rffv means remove from final version (word search through document to find these before the final push)
 
 // P L A Y E R
@@ -25,6 +25,7 @@ var touchingLimb;
 var distance;
 var trapped = false;
 var flipped = false;
+var octocaught = false;
 
 // L E V E L  T R A C K E R 
 var level;
@@ -753,10 +754,6 @@ level3.prototype = {
 		// (Width, height, offset x, offset y)
 		tako.body.setSize(750, 900, 550, 100);
 		
-		
-		
-
-
 		// P U Z Z L E 
 		var Water = game.add.sprite(0, 410, 'puzzles', 'water'); // water level
 
@@ -775,24 +772,24 @@ level3.prototype = {
 		var chomped = game.physics.arcade.collide(player, tako); //variable for getting eaten
 		
 		// Trying to add in movement for the octo
-		if(player.body.y >= 900 && octoCanCharge == true)
+		if(player.body.y >= 1100 && octoCanCharge == true)
 		{
 			// while(tako.body.x <= player.body.x)
 			//{
 				//tako.body.x++;
 			//}
 			paperSlice.play();
-			game.add.tween(tako).to( {x: player.body.x + 50}, 4000, Phaser.Easing.Bounce.Out, true);
+			game.add.tween(tako).to( {x: player.body.x + 150}, 4000, Phaser.Easing.Bounce.Out, true);
 			octoCanCharge = false;
 		}
-		if(rLegOn == false && limb.body.y >= 900 && octoCanCharge == true)
+		if(rLegOn == false && limb.body.y >= 1100 && octoCanCharge == true)
 		{
 			//while(tako.body.x <= limb.body.x)
 			//{
 				//tako.body.x++;
 			//}
 			paperSlice.play();
-			game.add.tween(tako).to( {x: limb.body.x + 50 }, 4000, Phaser.Easing.Bounce.Out, true);
+			game.add.tween(tako).to( {x: limb.body.x + 150 }, 4000, Phaser.Easing.Bounce.Out, true);
 			octoCanCharge = false;
 		}
 		
@@ -876,11 +873,11 @@ level3.prototype = {
 			
 	// L I M B	
 		// W A L K I N G
- 	if (game.input.keyboard.isDown(Phaser.Keyboard.A) && rLegOn == false){// go left
+ 	if (game.input.keyboard.isDown(Phaser.Keyboard.A) && rLegOn == false && octocaught == false){// go left
 		limb.body.velocity.x = -playerVel;
 		game.camera.follow(limb, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
 	}
-	else if (game.input.keyboard.isDown(Phaser.Keyboard.D) && rLegOn == false){// go right
+	else if (game.input.keyboard.isDown(Phaser.Keyboard.D) && rLegOn == false && octocaught == false){// go right
 		limb.body.velocity.x = playerVel;
 		game.camera.follow(limb, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
 	} 
@@ -901,30 +898,32 @@ level3.prototype = {
 		walking.pause();
 		octoCanCharge = true;
 		
-
-	}		
-
-	function buttonPressed (limbs, buttons) {//press the button
-		door.destroy(); // remove door
-		//A D D  S F X  H E R E
-		buttons.destroy();
-		buttons = game.add.sprite(1690, 1397, 'puzzles', 'buttonDown');//replace with button pressed sprite
-		buttons.scale.setTo(1.9, 2);
-	    game.physics.arcade.enable(buttons); // add physics to the button (line might be unnecessary)
-		buttons.body.immovable = true;
-		indicator = game.add.sprite(610, 1400, 'puzzles', 'indicatorGreen'); //show the player that something has happened
-		indicator.scale.setTo(.95, .7);
-		
-		// Make a sound to let the player know something has changed
-		levelRip.play();
 	}
-	game.physics.arcade.collide(limb, buttons, buttonPressed, null, this);// check for buttonPressed
+		
+	function limbCaught (limb, tako) {//press the button
+		octocaught = true;
+		limb.body.gravity = 0
+		limb.body.x = tako.body.x + 60;
+		limb.body.y = tako.body.y + 60;
+		limb.body.velocity.x = 0;
+		limb.body.velocity.x = 0;
+		levelRip.play(); // play an indicator noise
+		game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
+		tako.body.velocity.x = -80;
+
+	}
+	if(tako.body.x < 50){
+		tako.body.velocity.x = 0;
+
+	}
+	game.physics.arcade.collide(limb, tako, limbCaught, null, this);// check for buttonPressed
+	
 	},
-	/*
+	
 	render: function() {// setup debug rendering (comment out when not debugging)
 			game.debug.bodyInfo(tako, 32, 32);
 			game.debug.body(tako);
-	}, */
+	}, 
 }
 
 //---------------------------------------------------------------------------
@@ -962,7 +961,7 @@ load4.prototype = {
 		if(cutscene.body.y >820){
 			game.state.start('level4')//switch level
 
-		}
+		}	
 		}
 	}
 
