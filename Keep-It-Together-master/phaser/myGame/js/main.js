@@ -1,5 +1,5 @@
 var game = new Phaser.Game(800, 500, Phaser.AUTO);
-//var game = new Phaser.Game(1920, 1500, Phaser.AUTO); //rffv
+// var game = new Phaser.Game(1920, 1500, Phaser.AUTO); //rffv
 //rffv means remove from final version (word search through document to find these before the final push)
 
 // P L A Y E R
@@ -24,6 +24,7 @@ var limb;
 var touchingLimb;
 var distance;
 var trapped = false;
+var flipped = false;
 
 // L E V E L  T R A C K E R 
 var level;
@@ -41,6 +42,9 @@ var canBreak3 = false;
 var rockDes1 = false;
 var rockDes2 = false;
 var rockDur = 0;
+var tako;
+var suckers;
+var octoCanCharge = true;
 
 // S O U N D S
 var music;
@@ -54,6 +58,8 @@ var jumping;
 var thud;
 var limbRip;
 var levelRip;
+var crack;
+var paperSlice;
 var bearTrap;
 
 // T I M E R  &  S H A K E
@@ -102,6 +108,7 @@ level1.prototype = {
 
 		// Assigns the audio to a global variable
 		walking = game.add.audio('walkNoise', 1, true); // add walk sfx, vol 1, looping true
+		walking.pause();
 		music = game.add.audio('claireDeLune',1,true);
 		music2 = game.add.audio('glitch1',0,true);
 		music3 = game.add.audio('glitch2',0,true);
@@ -120,9 +127,10 @@ level1.prototype = {
 		music3.play();
 		music4.play();
 
-		var walkTxt = game.add.text(80, 1200, 'use the arrow keys to move', { fontSize: '20px', fill: '#595959' }); 
-		var jumpTxt = game.add.text(780, 1375, 'press the up key \nto jump', { fontSize: '20px', fill: '#595959' }); 
-		var armTxt = game.add.text(1185, 950, 'press the spacebar \nto remove your arm', { fontSize: '20px', fill: '#595959' });
+		var walkTxt = game.add.text(80, 1200, 'Use the arrow keys to move', { fontSize: '20px', fill: '#595959' }); 
+		var jumpTxt = game.add.text(780, 1375, 'Press the up key \nto jump', { fontSize: '20px', fill: '#595959' }); 
+		var armTxt = game.add.text(1185, 950, 'Press the spacebar \nto remove your arm', { fontSize: '20px', fill: '#595959' });
+		var beetTxt = game.add.text(1000, 1100, 'Music is Claire de Lune \nby Beethoven', { fontSize: '20px', fill: '#595959' });
 		
 		size = 1; //N O T E : figure out what this is for
 		level = 1; // set first level
@@ -188,7 +196,7 @@ level1.prototype = {
 		// Figures out if the player is falling then adds a landing sfx.
 		// C H A N G E  T H I S  A F T E R  T E S T I N G -------------v 			//rffv remove commet block
 		if (game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR) /*&& rArmOn == true*/){//press space to remove limbs
-			var armMoveTxt = game.add.text(1380, 1050, 'use the a and d keys to move the arm ', { fontSize: '20px', fill: '#595959' });
+			var armMoveTxt = game.add.text(1380, 1050, 'Use the a and d keys to move the arm ', { fontSize: '20px', fill: '#595959' });
 			console.log('arm off');
 			limbRip.play();
 			rArmOn = false;
@@ -255,6 +263,8 @@ level1.prototype = {
 		music2.destroy();
 		music3.destroy();
 		music4.destroy();
+		walking.pause();
+
 	}		
 
 	function buttonPressed (limbs, buttons) {//press the button
@@ -302,6 +312,7 @@ load2.prototype = {
 		console.log('load2: preload');
 		game.load.atlas('scene', 'assets/img/cutscenes.png', 'assets/img/cutscenes.json'); // load the stuff
 		game.load.audio('flip', 'assets/audio/flip.mp3');
+		game.load.audio('crackSFX', 'assets/audio/crumple.mp3');
 		},
 	create: function() {
 		console.log('load2: create');
@@ -352,10 +363,12 @@ level2.prototype = {
 				//Do we need to reassign these vars?
 		// Assigns the audio to a global variable
 		walking = game.add.audio('walkNoise', 1, true); // add walk sfx, vol 1, looping true
+		walking.pause();
 		thud = game.add.audio('thudSFX', 1, false);
 		jumping = game.add.audio('paperTap',1,false);
 		limbRip = game.add.audio('limbSound', 1, false);
 		levelRip = game.add.audio('levelShift', 1, false);
+		crack = game.add.audio('crackSFX', 1, false);
 		
 		music.destroy();
 		music2.volume = 1;
@@ -539,6 +552,7 @@ level2.prototype = {
         }
         if(game.physics.arcade.collide(door,player) && canBreak == true)
         {
+			crack.play();
 			door.destroy();
 			// canBreak2 = false;
 			rockDur++;
@@ -548,6 +562,7 @@ level2.prototype = {
 		// debug stuff	
 		// this.game.debug.cameraInfo(this.game.camera, 32, 32);
 
+		// This ensures that the rocks can only break one at a time & then when they collide it destroys the top layered sprite.
 		if(rockDes1 == true && player.body.y < 1250 && falling == true)
 		{
 			canBreak2 = true;
@@ -555,6 +570,7 @@ level2.prototype = {
 		
 	    if(game.physics.arcade.collide(door2,player) && canBreak2 == true)
 		{
+			crack.play();
 			door2.destroy();
 			rockDur++;
 			rockDes2 = true;
@@ -567,6 +583,7 @@ level2.prototype = {
 		
 	    if(game.physics.arcade.collide(door3,player) && canBreak3 == true)
 		{
+			crack.play();
 			door3.destroy();
 			rockDur++;
 			//rockDes3 = true;
@@ -591,6 +608,7 @@ level2.prototype = {
         canBreak = false;
         canBreak2 = false;
         canBreak3 = false;
+		
 	}
 
 	game.physics.arcade.collide(player, door);
@@ -612,7 +630,7 @@ load3.prototype = {
 		console.log('load3: preload');
 		game.load.atlas('guy', 'assets/img/Player.png', 'assets/img/Player.json'); // load the stuff
 		game.load.atlas('back', 'assets/img/Backgrounds.png', 'assets/img/Backgrounds.json'); // load the stuff
-
+		game.load.audio('krakenCry', 'assets/audio/paperSlicer.mp3');
 		},
 	create: function() {
 		console.log('load2: create');
@@ -664,10 +682,12 @@ level3.prototype = {
 				//Do we need to reassign these vars?
 		// Assigns the audio to a global variable
 		walking = game.add.audio('walkNoise', 1, true); // add walk sfx, vol 1, looping true
+		walking.pause();
 		thud = game.add.audio('thudSFX', 1, false);
 		jumping = game.add.audio('paperTap',1,false);
 		limbRip = game.add.audio('limbSound', 1, false);
 		levelRip = game.add.audio('levelShift', 1, false);
+		paperSlice = game.add.audio('krakenCry', 1, false);
 		
 		// Destroy last music and unmute new track
 		music2.destroy();
@@ -725,11 +745,17 @@ level3.prototype = {
 		ledge.body.immovable = true;
 	
 		//O C T O P U S
-		var tako = game.add.sprite(420, 1170, 'enemies', 'scaryTako');//add octopus
-		tako.anchor.set(.5, .5);
-		game.physics.enable(tako);
+		tako = game.add.sprite(420, 1170, 'enemies', 'scaryTako');//add octopus
+		tako.anchor.set(.5,.5);
+		game.physics.arcade.enable(tako);
 		tako.body.immovable = true;
 		tako.scale.setTo(-0.5, 0.5);
+		// (Width, height, offset x, offset y)
+		tako.body.setSize(750, 900, 550, 100);
+		
+		
+		
+
 
 		// P U Z Z L E 
 		var Water = game.add.sprite(0, 410, 'puzzles', 'water'); // water level
@@ -739,11 +765,46 @@ level3.prototype = {
 		game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, 0.6, 0.6);
 		// game.input.onDown.add(shake, this);
 		},
+		
 	update: function() {
 		var cursors = game.input.keyboard.createCursorKeys();
 		touching = game.physics.arcade.collide(player, this.platforms); //allows player to collide with walls and platforms and stuff
 		touchingLimb = game.physics.arcade.collide(limb, this.platforms); //allows limb to collide with walls and platforms and stuff
-
+		suckers = game.physics.arcade.collide(tako, this.platforms); // A collision for the octo 
+		
+		var chomped = game.physics.arcade.collide(player, tako); //variable for getting eaten
+		
+		// Trying to add in movement for the octo
+		if(player.body.y >= 900 && octoCanCharge == true)
+		{
+			// while(tako.body.x <= player.body.x)
+			//{
+				//tako.body.x++;
+			//}
+			paperSlice.play();
+			game.add.tween(tako).to( {x: player.body.x + 50}, 4000, Phaser.Easing.Bounce.Out, true);
+			octoCanCharge = false;
+		}
+		if(rLegOn == false && limb.body.y >= 900 && octoCanCharge == true)
+		{
+			//while(tako.body.x <= limb.body.x)
+			//{
+				//tako.body.x++;
+			//}
+			paperSlice.play();
+			game.add.tween(tako).to( {x: limb.body.x + 50 }, 4000, Phaser.Easing.Bounce.Out, true);
+			octoCanCharge = false;
+		}
+		
+		// Should make the octopus retreat after charging
+		/*
+		if(suckers == true && octoCanCharge == false)
+		{
+			game.add.tween(tako).to( {x: 300}, 300, Phaser.Easing.Bounce.Out, true);
+			octoCanCharge = true;
+		}
+		*/
+		
 		if(player.body.y > 410 && player.body.y < 1940){ //lower the gravity so that when the player is underwater they sink slower
 			player.body.velocity.y = 100;
 		   	if(cursors.up.isDown){
@@ -831,12 +892,16 @@ level3.prototype = {
 		rLegOn = false;
 		game.state.start('load4')
 	}
-	if (game.input.keyboard.isDown(Phaser.Keyboard.R)){ //R to restart
+	if (game.input.keyboard.isDown(Phaser.Keyboard.R) || chomped == true){ //R to restart
 		game.state.start('level3')
 		music.destroy(); //so the music doesn't overlap
 		music2.destroy();
 		music3.destroy();
 		music4.destroy();
+		walking.pause();
+		octoCanCharge = true;
+		
+
 	}		
 
 	function buttonPressed (limbs, buttons) {//press the button
@@ -855,9 +920,10 @@ level3.prototype = {
 	}
 	game.physics.arcade.collide(limb, buttons, buttonPressed, null, this);// check for buttonPressed
 	},
-/* 	render: function() {// setup debug rendering (comment out when not debugging)
-			game.debug.bodyInfo(limb, 32, 32);
-			game.debug.body(limb);
+	/*
+	render: function() {// setup debug rendering (comment out when not debugging)
+			game.debug.bodyInfo(tako, 32, 32);
+			game.debug.body(tako);
 	}, */
 }
 
@@ -923,6 +989,7 @@ level4.prototype = {
 				//Do we need to reassign these vars?
 		// Assigns the audio to a global variable
 		walking = game.add.audio('walkNoise', 1, true); // add walk sfx, vol 1, looping true
+		walking.pause();
 		thud = game.add.audio('thudSFX', 1, false);
 		jumping = game.add.audio('paperTap',1,false);
 		limbRip = game.add.audio('limbSound', 1, false);
@@ -1040,6 +1107,8 @@ level4.prototype = {
 		music2.destroy();
 		music3.destroy();
 		music4.destroy();
+		walking.pause();
+
 	}
 	
 	function trapPressed (player, buttonTrap) {//press the button
@@ -1153,6 +1222,7 @@ level5.prototype = {
 				//Do we need to reassign these vars?
 		// Assigns the audio to a global variable
 		walking = game.add.audio('walkNoise', 1, true); // add walk sfx, vol 1, looping true
+		walking.pause();
 		thud = game.add.audio('thudSFX', 1, false);
 		jumping = game.add.audio('paperTap',1,false);
 		limbRip = game.add.audio('limbSound', 1, false);
@@ -1171,7 +1241,8 @@ level5.prototype = {
 
 		size = 1; //N O T E : figure out what this is for
 		level = 5; // set first level
-
+		
+		
 		//level layout
 		this.platforms = game.add.group(); //create platforms group
 		this.platforms.enableBody = true; //enable physics to for platforms
@@ -1255,6 +1326,19 @@ level5.prototype = {
 		var cursors = game.input.keyboard.createCursorKeys();
 		touching = game.physics.arcade.collide(player, this.platforms); //allows player to collide with walls and platforms and stuff
 		touchingLimb = game.physics.arcade.collide(limb, this.platforms); //allows limb to collide with walls and platforms and stuff
+		
+		// Falls over
+		// Makes player flip over
+		if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && flipped == false)
+		{
+		player.anchor.setTo(.5, .7);
+		while (player.angle < 90) 
+		{
+			player.angle = player.angle + 1;
+		}
+		flipped = true;
+		}
+
 
 		// Figures out if the player is falling then adds a landing sfx.
 		if(player.body.velocity.y > 0){ // check for falling
@@ -1279,6 +1363,7 @@ level5.prototype = {
 		if(player.body.onFloor() != true){// pause walking sound when not on ground
 			walking.pause();
 		}
+	
 		if (cursors.left.isDown || cursors.right.isDown){
 			timerlvl5.start();
 
@@ -1310,10 +1395,10 @@ level5.prototype = {
 	}
 		
 	},
-/* 	render: function() {// setup debug rendering (comment out when not debugging)
-			game.debug.bodyInfo(limb, 32, 32);
-			game.debug.body(limb);
-	}, */
+ 	render: function() {// setup debug rendering (comment out when not debugging)
+			game.debug.bodyInfo(player, 32, 32);
+			game.debug.body(player);
+	}, 
 }
 
 //---------------------------------------------------------------------------
