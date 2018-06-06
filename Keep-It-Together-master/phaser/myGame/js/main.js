@@ -131,7 +131,7 @@ level1.prototype = {
 		var walkTxt = game.add.text(80, 1200, 'Use the arrow keys to move', { fontSize: '20px', fill: '#595959' }); 
 		var jumpTxt = game.add.text(780, 1375, 'Press the up key \nto jump', { fontSize: '20px', fill: '#595959' }); 
 		var armTxt = game.add.text(1185, 950, 'Press the spacebar \nto remove your arm', { fontSize: '20px', fill: '#595959' });
-		var beetTxt = game.add.text(1000, 1100, 'Music is Claire de Lune \nby Beethoven', { fontSize: '20px', fill: '#595959' });
+		var beetTxt = game.add.text(1000, 1285, 'Music is \nClaire de Lune \nby Beethoven', { fontSize: '20px', fill: '#595959' });
 		
 		size = 1; //N O T E : figure out what this is for
 		level = 1; // set first level
@@ -413,35 +413,66 @@ level2.prototype = {
 		//add some platforms to jump on
 		ledge = this.platforms.create(1460, 1310, 'plat', 'lilBox');
 		ledge.body.immovable = true;
-		ledge.body.velocity.x = -100; //move the platforms to the left at different speeds
+		if(rockDes1 == true){
+			ledge.body.velocity.x = -250; //move the platforms to the left at different speeds
+			if(ledge.body.x == 800){
+				ledge.body.velocity.x = 250;
+			}
+			if(ledge.body.x == 1460){
+				ledge.body.velocity.x = -250;
+			}
+		}
 		ledge.checkWorldBounds = true; //check if the platforms go past the world bounds
 		ledge.events.onOutOfBounds.add(this.wrapPlat, this); //wrap the platforms once they go past the world bounds
-		ledge = this.platforms.create(1390, 1200, 'plat', 'lilBox');
+		ledge = this.platforms.create(800, 1200, 'plat', 'lilBox');
 		ledge.body.immovable = true;
-		ledge.body.velocity.x = -200;
+		if(rockDes1 == true){
+			ledge.body.velocity.x = 250;
+			if(ledge.body.x == 800){
+				ledge.body.velocity.x = 250;
+			}
+			if(ledge.body.x == 1460){
+				ledge.body.velocity.x = -250;
+			}
+		}
 		ledge.checkWorldBounds = true;
 		ledge.events.onOutOfBounds.add(this.wrapPlat, this);
+		if(ledge.body.x == 1460){
+			ledge.body.velocity.x = -250;
+		}
+		if(ledge.body.x == 800){
+			ledge.body.velocity.x = 250;
+		}
 		ledge = this.platforms.create(1320, 1090, 'plat', 'lilBox');
 		ledge.body.immovable = true;
-		ledge.body.velocity.x = -100;
-		ledge.checkWorldBounds = true;
+		if(rockDes1 == true){
+		ledge.body.velocity.y = -250;
+			if(ledge.body.x == 800){
+				ledge.body.velocity.x = 250;
+			}
+			if(ledge.body.x == 1460){
+				ledge.body.velocity.x = -250;
+			}
+		}
 		ledge.events.onOutOfBounds.add(this.wrapPlat, this);
+/*
 		ledge = this.platforms.create(1250, 980, 'plat', 'lilBox');
 		ledge.body.immovable = true;
-		ledge.body.velocity.x = -200;
+		ledge.body.velocity.x = -250;
 		ledge.checkWorldBounds = true;
 		ledge.events.onOutOfBounds.add(this.wrapPlat, this);
 		ledge = this.platforms.create(1180, 870, 'plat', 'lilBox');
 		ledge.body.immovable = true;
-		ledge.body.velocity.x = -100;
+		ledge.body.velocity.x = -250;
 		ledge.checkWorldBounds = true;
 		ledge.events.onOutOfBounds.add(this.wrapPlat, this);
 		ledge = this.platforms.create(1110, 760, 'plat', 'lilBox');
 		ledge.body.immovable = true;
-		ledge.body.velocity.x = -200;
+		ledge.body.velocity.x = -250;
 		ledge.checkWorldBounds = true;
 		ledge.events.onOutOfBounds.add(this.wrapPlat, this);
-
+*/
+		
 		//S H R E D D E R
 		shredder = game.add.sprite(-700, 900, 'enemies', 'angryScaryShredder'); //adds the shredder
 		game.physics.enable(shredder); //give shredder physics
@@ -539,7 +570,7 @@ level2.prototype = {
 		//P U Z Z L E
 		// All this is to break the different rocks
 		// IMPORTANT: Change the number to change how far you need to fall
-		if(player.body.y < 1250 && falling == true)
+		if(player.body.y < 1150 && falling == true)
         {
             canBreak = true;
         }
@@ -564,7 +595,7 @@ level2.prototype = {
 		// this.game.debug.cameraInfo(this.game.camera, 32, 32);
 
 		// This ensures that the rocks can only break one at a time & then when they collide it destroys the top layered sprite.
-		if(rockDes1 == true && player.body.y < 1250 && falling == true)
+		if(rockDes1 == true && player.body.y < 1150 && falling == true)
 		{
 			canBreak2 = true;
 		}
@@ -577,7 +608,7 @@ level2.prototype = {
 			rockDes2 = true;
 		}
 		
-		if(rockDes2 == true && player.body.y < 1250 && falling == true)
+		if(rockDes2 == true && player.body.y < 1150 && falling == true)
 		{
 			canBreak3 = true;
 		}
@@ -694,7 +725,6 @@ level3.prototype = {
 		music2.destroy();
 		music3.volume = 1;
 	
-	
         player = new Player(game, 'guy', 'Body', 180, 0);// add player from prefab
         game.add.existing(player);
 
@@ -721,7 +751,6 @@ level3.prototype = {
 		wall right
 		wall left
 		parkour platforms x4
-		breakable rock
 		*/
 		var ledge = this.platforms.create(30, 1427, 'plat', 'lilBox'); //floor left
 		ledge.body.immovable = true;
@@ -752,7 +781,7 @@ level3.prototype = {
 		tako.body.immovable = true;
 		tako.scale.setTo(-0.5, 0.5);
 		// (Width, height, offset x, offset y)
-		tako.body.setSize(750, 900, 550, 100);
+		tako.body.setSize(1000, 900, 350, 100);
 		
 		// P U Z Z L E 
 		var Water = game.add.sprite(0, 410, 'puzzles', 'water'); // water level
@@ -910,10 +939,10 @@ level3.prototype = {
 		levelRip.play(); // play an indicator noise
 		game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
 		tako.body.velocity.x = -80;
-
 	}
 	if(tako.body.x < 50){
 		tako.body.velocity.x = 0;
+		//octoCanCharge = true;
 
 	}
 	game.physics.arcade.collide(limb, tako, limbCaught, null, this);// check for buttonPressed
