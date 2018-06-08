@@ -46,6 +46,8 @@ var rockDur = 0;
 var tako;
 var suckers;
 var octoCanCharge = true;
+var octoFlip = false;
+var canRip = true;
 
 // S O U N D S
 var music;
@@ -663,6 +665,7 @@ load3.prototype = {
 		game.load.atlas('guy', 'assets/img/Player.png', 'assets/img/Player.json'); // load the stuff
 		game.load.atlas('back', 'assets/img/Backgrounds.png', 'assets/img/Backgrounds.json'); // load the stuff
 		game.load.audio('krakenCry', 'assets/audio/paperSlicer.mp3');
+		game.load.audio('CrUnCh', 'assets/audio/crumple.mp3');
 		},
 	create: function() {
 		console.log('load2: create');
@@ -700,6 +703,7 @@ level3.prototype = {
 	preload: function() { // pre game loop
 		console.log('First level: preload');
 		//nothing to load rn
+		
 
 		},
 	create: function() { //make the game world
@@ -718,7 +722,7 @@ level3.prototype = {
 		thud = game.add.audio('thudSFX', 1, false);
 		jumping = game.add.audio('paperTap',1,false);
 		limbRip = game.add.audio('limbSound', 1, false);
-		levelRip = game.add.audio('levelShift', 1, false);
+		levelRip = game.add.audio('CrUnCh', 1, false);
 		paperSlice = game.add.audio('krakenCry', 1, false);
 		
 		// Destroy last music and unmute new track
@@ -796,7 +800,7 @@ level3.prototype = {
 		var cursors = game.input.keyboard.createCursorKeys();
 		touching = game.physics.arcade.collide(player, this.platforms); //allows player to collide with walls and platforms and stuff
 		touchingLimb = game.physics.arcade.collide(limb, this.platforms); //allows limb to collide with walls and platforms and stuff
-		suckers = game.physics.arcade.collide(tako, this.platforms); // A collision for the octo 
+		suckers = game.physics.arcade.collide(tako, limb); // A collision for the octo 
 		
 		var chomped = game.physics.arcade.collide(player, tako); //variable for getting eaten
 		
@@ -807,8 +811,12 @@ level3.prototype = {
 			//{
 				//tako.body.x++;
 			//}
+			if(player.body.x < tako.body.x && octoFlip == false){
+				tako.scale.x *= -1;
+				octoFlip = true;
+			}
 			paperSlice.play();
-			game.add.tween(tako).to( {x: player.body.x + 150}, 4000, Phaser.Easing.Bounce.Out, true);
+			game.add.tween(tako).to( {x: player.body.x }, 500, Phaser.Easing.Linear.Out, true);
 			octoCanCharge = false;
 		}
 		if(rLegOn == false && limb.body.y >= 1100 && octoCanCharge == true)
@@ -817,19 +825,22 @@ level3.prototype = {
 			//{
 				//tako.body.x++;
 			//}
+			if(limb.body.x < tako.body.x && octoFlip == false){
+				tako.scale.x *= -1;
+				octoFlip = true;
+			}
 			paperSlice.play();
-			game.add.tween(tako).to( {x: limb.body.x + 150 }, 4000, Phaser.Easing.Bounce.Out, true);
+			game.add.tween(tako).to( {x: limb.body.x + 150 }, 500, Phaser.Easing.Linear.Out, true);
 			octoCanCharge = false;
 		}
 		
-		// Should make the octopus retreat after charging
-		/*
-		if(suckers == true && octoCanCharge == false)
+		if(tako.body.x < 0 && octoCanCharge == false && tako.body.velocity.x == 0)
 		{
-			game.add.tween(tako).to( {x: 300}, 300, Phaser.Easing.Bounce.Out, true);
+			//game.add.tween(tako).to( {x: 300}, 300, Phaser.Easing.Bounce.Out, true);
 			octoCanCharge = true;
+			
 		}
-		*/
+		
 		
 		if(player.body.y > 410 && player.body.y < 1940){ //lower the gravity so that when the player is underwater they sink slower
 			player.body.velocity.y = 100;
@@ -926,26 +937,39 @@ level3.prototype = {
 		music4.destroy();
 		walking.pause();
 		octoCanCharge = true;
+		octoFlip = false;
 		
 	}
-		
+	
+
+	
 	function limbCaught (limb, tako) {//press the button
 		octocaught = true;
-		limb.body.gravity = 0
+		limb.body.gravity = 0;
 		limb.body.x = tako.body.x + 60;
 		limb.body.y = tako.body.y + 60;
 		limb.body.velocity.x = 0;
 		limb.body.velocity.x = 0;
+		if(canRip == true)
+		{
 		levelRip.play(); // play an indicator noise
+		canRip = false;
+		}
 		game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
 		tako.body.velocity.x = -80;
 	}
-	if(tako.body.x < 50){
+	if(tako.body.x < 150){
 		tako.body.velocity.x = 0;
 		//octoCanCharge = true;
 
 	}
 	game.physics.arcade.collide(limb, tako, limbCaught, null, this);// check for buttonPressed
+	
+	// Trying to get the octo to relaunch itself if the player gets by it	
+	if(octocaught == false && tako.body.velocity.x == 0)
+	{
+		octoCanCharge = true;
+	}
 	
 	},
 	
