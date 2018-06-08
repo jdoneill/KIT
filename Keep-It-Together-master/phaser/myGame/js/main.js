@@ -415,47 +415,27 @@ level2.prototype = {
 		//add some platforms to jump on
 		ledge = this.platforms.create(1460, 1310, 'plat', 'lilBox');
 		ledge.body.immovable = true;
-		if(rockDes1 == true){
-			ledge.body.velocity.x = -250; //move the platforms to the left at different speeds
-			if(ledge.body.x == 800){
-				ledge.body.velocity.x = 250;
-			}
-			if(ledge.body.x == 1460){
-				ledge.body.velocity.x = -250;
-			}
-		}
+		//DELETE THESE IF STATEMENTS IF YOU CAN'T GET THEM TO WORK
+		//if(trapped == false){
+			ledge.body.velocity.x = -500; //move the platforms to the left at different speeds
+			/*if(ledge.body.x == 800){
+				ledge.body.velocity.x = 500;
+			}else if(ledge.body.x == 1460){
+				ledge.body.velocity.x = -500;
+			}*/
+		//}
 		ledge.checkWorldBounds = true; //check if the platforms go past the world bounds
 		ledge.events.onOutOfBounds.add(this.wrapPlat, this); //wrap the platforms once they go past the world bounds
+		//DELETE ^THESE^ IF STATEMENTS IF YOU CAN'T GET THEM TO WORK
 		ledge = this.platforms.create(800, 1200, 'plat', 'lilBox');
 		ledge.body.immovable = true;
-		if(rockDes1 == true){
-			ledge.body.velocity.x = 250;
-			if(ledge.body.x == 800){
-				ledge.body.velocity.x = 250;
-			}
-			if(ledge.body.x == 1460){
-				ledge.body.velocity.x = -250;
-			}
-		}
+		ledge.body.velocity.x = 500;
 		ledge.checkWorldBounds = true;
 		ledge.events.onOutOfBounds.add(this.wrapPlat, this);
-		if(ledge.body.x == 1460){
-			ledge.body.velocity.x = -250;
-		}
-		if(ledge.body.x == 800){
-			ledge.body.velocity.x = 250;
-		}
 		ledge = this.platforms.create(1320, 1090, 'plat', 'lilBox');
 		ledge.body.immovable = true;
-		if(rockDes1 == true){
-		ledge.body.velocity.y = -250;
-			if(ledge.body.x == 800){
-				ledge.body.velocity.x = 250;
-			}
-			if(ledge.body.x == 1460){
-				ledge.body.velocity.x = -250;
-			}
-		}
+		ledge.body.velocity.y = -500;
+		ledge.checkWorldBounds = true;
 		ledge.events.onOutOfBounds.add(this.wrapPlat, this);
 /*
 		ledge = this.platforms.create(1250, 980, 'plat', 'lilBox');
@@ -508,11 +488,19 @@ level2.prototype = {
 	wrapPlat: function(sprite){ //wrap the platforms around the level
 		if(sprite.x + sprite.width/2 < 0){
 			sprite.x = 1920 + sprite.width/2;
-		}else if(sprite.x - sprite.width/2 > 1920){
+		}else if(sprite.x - sprite.width/2 > 1500){
 			sprite.x = 0 - sprite.width/2;
+		}else if(sprite.y + sprite.height/2 < 0){
+			sprite.y = 1500;
+		}else if(sprite.y - sprite.height/2 > 1500){
+			sprite.y = 0;
 		}
 	},
-	
+
+
+
+
+
 	update: function() {
 		var cursors = game.input.keyboard.createCursorKeys();
 		touching = game.physics.arcade.collide(player, this.platforms); //allows player to collide with walls and platforms and stuff
