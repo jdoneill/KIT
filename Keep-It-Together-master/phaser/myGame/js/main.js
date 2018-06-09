@@ -1,5 +1,5 @@
-//var game = new Phaser.Game(800, 500, Phaser.AUTO);
-var game = new Phaser.Game(1920, 1500, Phaser.AUTO); //rffv
+var game = new Phaser.Game(800, 500, Phaser.AUTO);
+//var game = new Phaser.Game(1920, 1500, Phaser.AUTO); //rffv
 //rffv means remove from final version (word search through document to find these before the final push)
 
 // P L A Y E R
@@ -138,7 +138,6 @@ level1.prototype = {
 		var restartText = game.add.text(1220, 1205, 'Press the R key \nto restart any \nlevel', { fontSize: '20px', fill: '#595959' });
 		
 		size = 1; //N O T E : figure out what this is for
-		var level = 1; // set first level (THIS MIGHT NOT ACTUALLY DO SOMETHING)
 		
 		limb = game.add.sprite(1920, 400, 'guy', 'armRside'); //add the controlable limb in where the player can't see
 	    game.physics.arcade.enable(limb);
@@ -198,8 +197,10 @@ level1.prototype = {
 		touching = game.physics.arcade.collide(player, this.platforms); //allows player to collide with walls and platforms and stuff
 		touchingLimb = game.physics.arcade.collide(limb, this.platforms); //allows limb to collide with walls and platforms and stuff
 
+		var level = 1; // set first level
+
+		
 		// Figures out if the player is falling then adds a landing sfx.
-		// C H A N G E  T H I S  A F T E R  T E S T I N G -------------v 			//rffv remove commet block
 		if (game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR) && rArmOn == true){//press space to remove limbs
 			var armMoveTxt = game.add.text(1380, 1050, 'Use the a and d keys to move the arm ', { fontSize: '20px', fill: '#595959' });
 			console.log('arm off');
@@ -287,7 +288,7 @@ level1.prototype = {
 	game.physics.arcade.collide(limb, buttons, buttonPressed, null, this);// check for buttonPressed
 	
 	//state shifts for level development //rffv
-		if (game.input.keyboard.isDown(Phaser.Keyboard.TWO)){
+/* 		if (game.input.keyboard.isDown(Phaser.Keyboard.TWO)){
 			game.state.start('Credits')
 		}
 		if (game.input.keyboard.isDown(Phaser.Keyboard.THREE)){
@@ -298,7 +299,7 @@ level1.prototype = {
 		}
 		if (game.input.keyboard.isDown(Phaser.Keyboard.FIVE)){
 			game.state.start('level5')
-		}
+		} */
 	
 	},
 /* 	render: function() {// setup debug rendering (comment out when not debugging) //rffv
@@ -334,11 +335,7 @@ load2.prototype = {
 		// leftArm
 		// Pauses SFX
 		walking.pause();
-		
-		if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR))
-		{
-			game.state.start('level2')//switch level
-		}
+
 		if(cutscene.body.y >820){
 			game.state.start('level2')//switch level
 		}
@@ -396,7 +393,6 @@ level2.prototype = {
 		walking.play(); //play the music so it lines up across all levels (excluding final level)
 
 		size = 1; //N O T E : figure out what this is for
-		level = 2; // set first level
 		
 		//level layout
 		this.platforms = game.add.group(); //create platforms group
@@ -481,6 +477,8 @@ level2.prototype = {
 
 		var shred = game.physics.arcade.collide(player, shredder); //variable for colliding with shredder
 
+		level = 2; // set second level
+		
 		// Figures out if the player is falling then adds a landing sfx.
 		// C H A N G E  T H I S  A F T E R  T E S T I N G -------------v
 		if (game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR) /*&& lArmOn == true*/){//press space to remove limbs
@@ -675,16 +673,11 @@ load3.prototype = {
 		// Pauses SFX
 		walking.pause();
 		
-		if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR))
-		{
-			game.state.start('level3')//switch level
-		}
 		if(cutscene.body.y >820){
 			game.state.start('level3')//switch level
-
-		}
 		}
 	}
+}
 
 //---------------------------------------------------------------------------
 // L E V E L  T H R E E
@@ -729,7 +722,6 @@ level3.prototype = {
 		walking.play(); //play the music so it lines up across all levels (excluding final level)
 
 		size = 1; //N O T E : figure out what this is for
-		level = 3; // set first level
 		
 		limb = game.add.sprite(1920, 400, 'guy', 'legRside'); //add the controlable limb in where the player can't see
 	    game.physics.arcade.enable(limb);
@@ -788,6 +780,8 @@ level3.prototype = {
 		suckers = game.physics.arcade.collide(tako, limb); // A collision for the octo 
 		
 		var chomped = game.physics.arcade.collide(player, tako); //variable for getting eaten
+		
+		level = 3; // set third level
 		
 		// Trying to add in movement for the octo
 		if(player.body.y >= 1100 && octoCanCharge == true)
@@ -1007,11 +1001,7 @@ load4.prototype = {
 		
 		// Pauses SFX
 		walking.pause();
-		
-		if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR))
-		{
-			game.state.start('level4')//switch level
-		}
+
 		if(cutscene.body.y >820){
 			game.state.start('level4')//switch level
 
@@ -1059,7 +1049,6 @@ level4.prototype = {
 		music4.volume = 1;
 
 		size = 1; //N O T E : figure out what this is for
-		level = 4; // set first level
 
 		//level layout
 		this.platforms = game.add.group(); //create platforms group
@@ -1101,9 +1090,10 @@ level4.prototype = {
 		var cursors = game.input.keyboard.createCursorKeys();
 		touching = game.physics.arcade.collide(player, this.platforms); //allows player to collide with walls and platforms and stuff
 
+		level = 4; // set fourth level
+		
 		// Figures out if the player is falling then adds a landing sfx.
-		// C H A N G E  T H I S  A F T E R  T E S T I N G ----------------------------------v
-		if (game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR) && trapped == true/*&& lLegOn == true*/){//press space to remove limbs
+		if (game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR) && trapped == true && lLegOn == true ){//press space to remove limbs
 			console.log('arm off');
 			limbRip.play();
 			lLegOn = false;
@@ -1293,7 +1283,6 @@ level5.prototype = {
 	
 
 		size = 1; //N O T E : figure out what this is for
-		level = 5; // set first level
 		
 		
 		//level layout
@@ -1380,6 +1369,8 @@ level5.prototype = {
 		touching = game.physics.arcade.collide(player, this.platforms); //allows player to collide with walls and platforms and stuff
 		touchingLimb = game.physics.arcade.collide(limb, this.platforms); //allows limb to collide with walls and platforms and stuff
 		
+		level = 5; // set fifth level
+		
 		// Falls over
 		// Makes player flip over
 		if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && flipped == false)
@@ -1445,12 +1436,7 @@ level5.prototype = {
 	if (player.body.x > 1927){//next state
 		music5.destroy();
 		game.state.start('endLoad')
-	}
-	
-			if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)){
-				game.state.start('endLoad')	
-			}
-		
+	}	
 	},
 }
 
@@ -1506,7 +1492,6 @@ gameOver.prototype = {
 
 		},
 	create: function() {
-		level = 6;
 		console.log('gameOver: create');
 		var bgEnd = game.add.sprite(0, 0, 'back', 'Background5'); // add da background
 		bgEnd.scale.setTo(1.25, 1.4); //scale the background
