@@ -1,5 +1,5 @@
-//var game = new Phaser.Game(800, 500, Phaser.AUTO);
-var game = new Phaser.Game(1920, 1500, Phaser.AUTO); //rffv
+var game = new Phaser.Game(800, 500, Phaser.AUTO);
+//var game = new Phaser.Game(1920, 1500, Phaser.AUTO); //rffv
 //rffv means remove from final version (word search through document to find these before the final push)
 
 // P L A Y E R
@@ -28,7 +28,7 @@ var flipped = false;
 var octocaught = false;
 
 // L E V E L  T R A C K E R 
-var level;
+var level = 0;
 var currentLevel;
 
 // O B S T A C L E S
@@ -36,7 +36,7 @@ var buttons;
 var platforms;
 var door;
 var doorHit = 0;
-var bvuttonTrap;
+var buttonTrap;
 var canShred = true;
 var canBreak = false;
 var canBreak2 = false;
@@ -100,7 +100,6 @@ level1.prototype = {
 		game.load.audio('levelShift', 'assets/audio/tear.mp3');
 		},
 	create: function() { //make the game world
-		console.log('First level: create');
 		var bg = game.add.sprite(0, 0, 'back', 'Background1'); // add background, level 1 green for right arm
 		bg.scale.setTo(3, 3); //scale the background		
 		game.physics.startSystem(Phaser.Physics.ARCADE); // add physics
@@ -108,14 +107,12 @@ level1.prototype = {
 		lArmOn = true;
 		rLegOn = true;
 		lLegOn = true;
-		
-	
 
-		// Assigns the audio to a global variable
+		// M U S I C  A N D  S F X 
 		walking = game.add.audio('walkNoise', 1, true); // add walk sfx, vol 1, looping true
-		walking.pause();
+		walking.pause();//only play when walking //THIS LINE MIGHT BE UNNECESSARY SEE LINE 126
 		music = game.add.audio('claireDeLune',1,true);
-		music2 = game.add.audio('glitch1',0,true);
+		music2 = game.add.audio('glitch1',0,true); //0 vol so the songs match accross levels
 		music3 = game.add.audio('glitch2',0,true);
 		music4 = game.add.audio('glitch3',0,true);
 		thud = game.add.audio('thudSFX', 1, false);
@@ -126,19 +123,22 @@ level1.prototype = {
         player = new Player(game, 'guy', 'Body', 400, 0);// add player from prefab
         game.add.existing(player);
 
-		walking.play(); //play the music so it lines up across all levels (excluding final level)
+		walking.play();
+		//play the music so it lines up across all levels (excluding final level)
 		music.play();
 		music2.play();
 		music3.play();
 		music4.play();
 
+		// I N S T R U C T I O N S
 		var walkTxt = game.add.text(80, 1200, 'Use the arrow keys to move', { fontSize: '20px', fill: '#595959' }); 
 		var jumpTxt = game.add.text(780, 1375, 'Press the up key \nto jump', { fontSize: '20px', fill: '#595959' }); 
 		var armTxt = game.add.text(1185, 950, 'Press the spacebar \nto remove your arm', { fontSize: '20px', fill: '#595959' });
 		var beetTxt = game.add.text(1000, 1285, 'Music is \nClaire de Lune \nby Beethoven', { fontSize: '20px', fill: '#595959' });
+		var restartText = game.add.text(1220, 1205, 'Press the R key \nto restart any \nlevel', { fontSize: '20px', fill: '#595959' });
 		
 		size = 1; //N O T E : figure out what this is for
-		level = 1; // set first level
+		var level = 1; // set first level (THIS MIGHT NOT ACTUALLY DO SOMETHING)
 		
 		limb = game.add.sprite(1920, 400, 'guy', 'armRside'); //add the controlable limb in where the player can't see
 	    game.physics.arcade.enable(limb);
@@ -200,7 +200,7 @@ level1.prototype = {
 
 		// Figures out if the player is falling then adds a landing sfx.
 		// C H A N G E  T H I S  A F T E R  T E S T I N G -------------v 			//rffv remove commet block
-		if (game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR) /*&& rArmOn == true*/){//press space to remove limbs
+		if (game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR) && rArmOn == true){//press space to remove limbs
 			var armMoveTxt = game.add.text(1380, 1050, 'Use the a and d keys to move the arm ', { fontSize: '20px', fill: '#595959' });
 			console.log('arm off');
 			limbRip.play();
@@ -287,8 +287,8 @@ level1.prototype = {
 	game.physics.arcade.collide(limb, buttons, buttonPressed, null, this);// check for buttonPressed
 	
 	//state shifts for level development //rffv
-		if (game.input.keyboard.isDown(Phaser.Keyboard.TWO)){
-			game.state.start('level2')
+		/* if (game.input.keyboard.isDown(Phaser.Keyboard.TWO)){
+			game.state.start('Credits')
 		}
 		if (game.input.keyboard.isDown(Phaser.Keyboard.THREE)){
 			game.state.start('level3')
@@ -298,7 +298,7 @@ level1.prototype = {
 		}
 		if (game.input.keyboard.isDown(Phaser.Keyboard.FIVE)){
 			game.state.start('level5')
-		}
+		} */
 	
 	},
 /* 	render: function() {// setup debug rendering (comment out when not debugging) //rffv
@@ -353,7 +353,7 @@ var level2 = function(game) {};
 level2.prototype = {
 	preload: function() { // pre game loop
 		console.log('First level: preload');
-		//nothing to load rn
+		//nothing to load
 
 		},
 	create: function() { //make the game world
@@ -419,15 +419,8 @@ level2.prototype = {
 		//add some platforms to jump on
 		ledge = this.platforms.create(1460, 1310, 'plat', 'lilBox');
 		ledge.body.immovable = true;
-		//DELETE THESE IF STATEMENTS IF YOU CAN'T GET THEM TO WORK
-		//if(trapped == false){
-			ledge.body.velocity.x = -500; //move the platforms to the left at different speeds
-			/*if(ledge.body.x == 800){
-				ledge.body.velocity.x = 500;
-			}else if(ledge.body.x == 1460){
-				ledge.body.velocity.x = -500;
-			}*/
-		//}
+		ledge.body.velocity.x = -500; //move the platforms to the left at different speeds
+
 		ledge.checkWorldBounds = true; //check if the platforms go past the world bounds
 		ledge.events.onOutOfBounds.add(this.wrapPlat, this); //wrap the platforms once they go past the world bounds
 		//DELETE ^THESE^ IF STATEMENTS IF YOU CAN'T GET THEM TO WORK
@@ -441,24 +434,6 @@ level2.prototype = {
 		ledge.body.velocity.y = -500;
 		ledge.checkWorldBounds = true;
 		ledge.events.onOutOfBounds.add(this.wrapPlat, this);
-/*
-		ledge = this.platforms.create(1250, 980, 'plat', 'lilBox');
-		ledge.body.immovable = true;
-		ledge.body.velocity.x = -250;
-		ledge.checkWorldBounds = true;
-		ledge.events.onOutOfBounds.add(this.wrapPlat, this);
-		ledge = this.platforms.create(1180, 870, 'plat', 'lilBox');
-		ledge.body.immovable = true;
-		ledge.body.velocity.x = -250;
-		ledge.checkWorldBounds = true;
-		ledge.events.onOutOfBounds.add(this.wrapPlat, this);
-		ledge = this.platforms.create(1110, 760, 'plat', 'lilBox');
-		ledge.body.immovable = true;
-		ledge.body.velocity.x = -250;
-		ledge.checkWorldBounds = true;
-		ledge.events.onOutOfBounds.add(this.wrapPlat, this);
-*/
-				
 
 		// P U Z Z L E 
 		//add a breakable rock floor for puzzle solving
@@ -466,7 +441,6 @@ level2.prototype = {
 		game.physics.enable(door3);
 		door3.body.immovable = true;
 		door3.scale.setTo(2.26, 2.2);
-
 		
 		door2 = game.add.sprite(865, 1427, 'puzzles', 'rock2'); //Rock (make it look like a rock)
 		game.physics.enable(door2);
@@ -500,10 +474,6 @@ level2.prototype = {
 			sprite.y = 0;
 		}
 	},
-
-
-
-
 
 	update: function() {
 		var cursors = game.input.keyboard.createCursorKeys();
@@ -635,7 +605,7 @@ level2.prototype = {
 		limbRip.play();
 	}
 	
-	if (game.input.keyboard.isDown(Phaser.Keyboard.R) || shred == true){ //R to restart or if shredder gets the player
+	if (game.input.keyboard.isDown(Phaser.Keyboard.R)){ //R to restart or if shredder gets the player
 		game.state.start('level2')
 		music.destroy(); //so the music doesn't overlap
 		music2.destroy();
@@ -649,7 +619,21 @@ level2.prototype = {
         canBreak = false;
         canBreak2 = false;
         canBreak3 = false;
-		
+	}
+	if (shred == true){ //R to restart or if shredder gets the player
+		game.state.start('gameOver')
+		music.destroy(); //so the music doesn't overlap
+		music2.destroy();
+		music3.destroy();
+		music4.destroy();
+		walking.pause();
+		shredBuzz.pause();
+		rockDur = 0;
+        rockDes1 = false;
+        rockDes2 = false;
+        canBreak = false;
+        canBreak2 = false;
+        canBreak3 = false;
 	}
 
 	game.physics.arcade.collide(player, door);
@@ -710,8 +694,7 @@ var level3 = function(game) {};
 level3.prototype = {
 	preload: function() { // pre game loop
 		console.log('First level: preload');
-		//nothing to load rn
-		
+		//nothing to load
 
 		},
 	create: function() { //make the game world
@@ -737,6 +720,9 @@ level3.prototype = {
 		music2.destroy();
 		music3.volume = 1;
 	
+		var warning = game.add.sprite(420, 315, 'puzzles', 'tentacleSign');//add octopus
+		warning.scale.setTo(0.3, 0.3);
+	
         player = new Player(game, 'guy', 'Body', 180, 0);// add player from prefab
         game.add.existing(player);
 
@@ -755,15 +741,6 @@ level3.prototype = {
 		this.platforms = game.add.group(); //create platforms group
 		this.platforms.enableBody = true; //enable physics to for platforms
 
-		// Add platforms for world bounds
-		/*
-		floor right
-		floor left
-		roof
-		wall right
-		wall left
-		parkour platforms x4
-		*/
 		var ledge = this.platforms.create(30, 1427, 'plat', 'lilBox'); //floor left
 		ledge.body.immovable = true;
 		ledge.scale.setTo(5.4, 2);
@@ -787,7 +764,7 @@ level3.prototype = {
 		ledge.body.immovable = true;
 	
 		//O C T O P U S
-		tako = game.add.sprite(420, 1170, 'enemies', 'scaryTako');//add octopus
+		tako = game.add.sprite(350, 1170, 'enemies', 'scaryTako');//add octopus
 		tako.anchor.set(.5,.5);
 		game.physics.arcade.enable(tako);
 		tako.body.immovable = true;
@@ -933,7 +910,7 @@ level3.prototype = {
 		limb.body.velocity.x = 0;
 	} 
 								//v rffv
-	if (player.body.y > 1970 || cursors.down.isDown){//next state
+	if (player.body.y > 1970){//next state
 		rLegOn = false;
 		game.state.start('load4')
 	}
@@ -942,7 +919,7 @@ level3.prototype = {
 		limbRip.play();
 	}
 	
-	if (game.input.keyboard.isDown(Phaser.Keyboard.R) || chomped == true){ //R to restart
+	if (game.input.keyboard.isDown(Phaser.Keyboard.R)){ //R to restart
 		game.state.start('level3')
 		music.destroy(); //so the music doesn't overlap
 		music2.destroy();
@@ -954,8 +931,18 @@ level3.prototype = {
 		canRip = true;
 		
 	}
-	
-
+		if (chomped == true){ //R to restart
+		game.state.start('gameOver')
+		music.destroy(); //so the music doesn't overlap
+		music2.destroy();
+		music3.destroy();
+		music4.destroy();
+		walking.pause();
+		octoCanCharge = true;
+		octoFlip = false;
+		canRip = true;
+		
+	}
 	
 	function limbCaught (limb, tako) {//press the button
 		octocaught = true;
@@ -987,10 +974,10 @@ level3.prototype = {
 	
 	},
 	
-	render: function() {// setup debug rendering (comment out when not debugging)
+/* 	render: function() {// setup debug rendering (comment out when not debugging)
 			game.debug.bodyInfo(tako, 32, 32);
 			game.debug.body(tako);
-	}, 
+	},  */
 }
 
 //---------------------------------------------------------------------------
@@ -1457,14 +1444,10 @@ level5.prototype = {
 		}
 	if (player.body.x > 1927){//next state
 		music5.destroy();
-		game.state.start('endCutscene')
+		game.state.start('endLoad')
 	}
 		
 	},
- 	render: function() {// setup debug rendering (comment out when not debugging)
-			game.debug.bodyInfo(player, 32, 32);
-			game.debug.body(player);
-	}, 
 }
 
 //---------------------------------------------------------------------------
@@ -1492,17 +1475,16 @@ endLoad.prototype = {
 		},
 	update: function() {
 		// main menu logic
-		
 		// Pauses SFX
 		walking.pause();
 		
 		if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR))
 		{
-			game.state.start('endCutscene')//switch level
+			game.state.start('Credits')//switch level
 		}
 		if(cutscene.body.y >820){
-			game.state.start('endCutscene')//switch level
-
+			game.state.start('Credits')//switch level
+			level = 0;
 		}
 		}
 	}
@@ -1511,60 +1493,162 @@ endLoad.prototype = {
 // E N D  C U T S C E N E
 //---------------------------------------------------------------------------
 
-var endCutscene = function(game) {};
-endCutscene.prototype = {
+var gameOver = function(game) {};
+gameOver.prototype = {
 	preload: function() { // pre game loop
-		console.log('endCutscene: preload');
+		console.log('gameOver: preload');
 		game.load.atlas('guy', 'assets/img/Player.png', 'assets/img/Player.json'); // load the stuff
 		game.load.atlas('back', 'assets/img/Backgrounds.png', 'assets/img/Backgrounds.json'); // load the stuff
 
 		},
 	create: function() {
-		console.log('endCutscene: create');
+		level = 6;
+		console.log('gameOver: create');
 		var bgEnd = game.add.sprite(0, 0, 'back', 'Background5'); // add da background
 		bgEnd.scale.setTo(1.25, 1.4); //scale the background
 		game.add.sprite(390, 450, 'guy', 'tearBody');
+		var GOText = game.add.text(290, 200, 'Game Over', {font: '45px Arial', fill: '#FFF', fontWeight: 'bold', strokeThickness: 3});
+		var restart = game.add.text(240, 300, 'Press spacebar to restart', {font: '30px Arial', fill: '#FFF', fontWeight: 'bold', strokeThickness: 3});
 		
 		},
 	update: function() {
-		if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR))
-		{
-			game.state.start('GameOver')//switch level
-		}
+		if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)){
+			if(level == 2){
+				game.state.start('level2');
+			}
+			else if(level == 3){
+				game.state.start('level3');
+			}
+			else if(level == 4){
+				game.state.start('level4');
+			}
+			else if(level == 5){
+				game.state.start('level5');
+			}
+			else{
+				game.state.start('level1');
+			}	
 		}
 	}
+}
 
 //---------------------------------------------------------------------------
-// G A M E  O V E R
+// E N D  C R E D I T S
 //---------------------------------------------------------------------------
 
-var GameOver = function(game) {};
-GameOver.prototype = {
+var Credits = function(game) {};
+Credits.prototype = {
 	preload: function() { // pre game loop
-		console.log('GameOver: preload');
+		console.log('Credits: preload');
+		game.load.atlas('guy', 'assets/img/Player.png', 'assets/img/Player.json'); // load the stuff
+		game.load.atlas('back', 'assets/img/Backgrounds.png', 'assets/img/Backgrounds.json'); // load the stuff
+		game.load.image('Jake', 'assets/img/JakeCredit.png');
+		},
+	create: function() {
+		var level = 0;
+		game.physics.startSystem(Phaser.Physics.ARCADE); // add physics
+		rArmOn = true; //reset limb variables in case of restart
+		lArmOn = true;
+		rLegOn = true;
+		lLegOn = true;
+				//Do we need to reassign these vars?
+		// Assigns the audio to a global variable
+		walking = game.add.audio('walkNoise', 1, true); // add walk sfx, vol 1, looping true
+		walking.pause();
+		thud = game.add.audio('thudSFX', 1, false);
+		jumping = game.add.audio('paperTap',1,false);
+
+        player = new Player(game, 'guy', 'tearBody', 180, 0);// add player from prefab
+        game.add.existing(player);
+		
+		console.log('Credits: create');
+		//var bgGO = game.add.sprite(0, 0, 'back', 'Background5'); // add da background
+		game.stage.backgroundColor = "#000";
+		//bgGO.scale.setTo(1.25, 1.4); //scale the background
+		this.platforms = game.add.group(); //create platforms group
+		this.platforms.enableBody = true; //enable physics to for platforms
+		
+		var ledge = this.platforms.create(0, 285, 'plat', 'lilBox'); //floor one
+		ledge.body.immovable = true;
+		ledge.scale.setTo(10, 2);
+		ledge = this.platforms.create(320, 570, 'plat', 'lilBox'); //floor two
+		ledge.body.immovable = true;
+		ledge.scale.setTo(10, 2);
+		ledge = this.platforms.create(0, 855, 'plat', 'lilBox'); //floor three
+		ledge.body.immovable = true;
+		ledge.scale.setTo(10, 2); //12.4, 2
+		ledge = this.platforms.create(320, 1140, 'plat', 'lilBox'); //floor five
+		ledge.body.immovable = true;
+		ledge.scale.setTo(10, 2); //12.4, 2
+		ledge = this.platforms.create(0, 1427, 'plat', 'lilBox'); //floor five
+		ledge.body.immovable = true;
+		ledge.scale.setTo(10, 2); //12.4, 2
+		
+ 		ledge = this.platforms.create(1850, 0, 'plat', 'lilBoxUziVertical'); // right wall
+		ledge.body.immovable = true;
+		ledge.scale.setTo(2, 10); 
+		ledge = this.platforms.create(0, 0, 'plat', 'lilBoxUziVertical'); // left wall
+		ledge.body.immovable = true;
+		ledge.scale.setTo(2, 10);
+
+		},
+	update: function() {
+		// main menu logic
+		touching = game.physics.arcade.collide(player, this.platforms); //allows player to collide with walls and platforms and stuff
+		if(player.body.y > 285 && rArmOn == true){
+			rArmOn = false;
+			rArm.destroy();
+			game.add.text(1570, 580, 'Ethan Chong', {font: '45px TimesNewRoman', fill: '#FFF', fontWeight: 'bold', strokeThickness: 3});
+
+		}
+		if(player.body.y > 570 && lArmOn == true){
+			lArmOn = false;
+			lArm.destroy();
+			game.add.text(90, 865, 'Max Cronce', {font: '45px TimesNewRoman', fill: '#FFF', fontWeight: 'bold', strokeThickness: 3});
+
+		}
+		if(player.body.y > 855 && rLegOn == true){
+			rLegOn = false;
+			rLeg.destroy();
+			game.add.image(1500, 1150, 'Jake');
+
+		}
+		if(player.body.y > 1140 && lLegOn == true){
+			lLegOn = false;
+			lLeg.destroy();
+			game.add.text(90, 1437, 'With motivational support from Captain Punch (Our mascott)', {font: '45px TimesNewRoman', fill: '#FFF', fontWeight: 'bold', strokeThickness: 3});
+
+		}
+		
+		if(player.body.y > 1970){
+			game.state.start('TitleScreen')//switch level
+		}
+	}
+}
+
+//---------------------------------------------------------------------------
+// End Screen
+//---------------------------------------------------------------------------
+
+var TitleScreen = function(game) {};
+TitleScreen.prototype = {
+	preload: function() { // pre game loop
+		console.log('TitleScreen: preload');
 		game.load.atlas('guy', 'assets/img/Player.png', 'assets/img/Player.json'); // load the stuff
 		game.load.atlas('back', 'assets/img/Backgrounds.png', 'assets/img/Backgrounds.json'); // load the stuff
 
 		},
 	create: function() {
-		console.log('GameOver: create');
+		console.log('TitleScreen: create');
 		//var bgGO = game.add.sprite(0, 0, 'back', 'Background5'); // add da background
 		game.stage.backgroundColor = "#000";
 		//bgGO.scale.setTo(1.25, 1.4); //scale the background
-		music.destroy();
-		music2.destroy();
-		music3.destroy();
-		music4.destroy();
-		music5.destroy();
 
 		//E V A N G E L I O N
 		game.add.text(10, 70, 'Keep It', {font: '90px TimesNewRoman', fill: '#FFF', fontWeight: 'bold', strokeThickness: 3});
 		game.add.text(10, 140, 'Together', {font: '170px TimesNewRoman', fill: '#FFF', fontWeight: 'bold', strokeThickness: 3});
 		game.add.text(10, 345, 'Week: 10', {font: '45px Arial', fill: '#FFF', fontWeight: 'bold', strokeThickness: 3});
 		game.add.text(420,420, 'This is (not) a game.', {font: '40px TimesNewRoman', fill: '#FFF', fontWeight: 'bold', strokeThickness: 2});
-
-
-
 
 		},
 	update: function() {
@@ -1610,6 +1694,8 @@ game.state.add('level4', level4);
 game.state.add('load5', load5);
 game.state.add('level5', level5);
 game.state.add('endLoad', endLoad);
-game.state.add('endCutscene', endCutscene);
-game.state.add('GameOver', GameOver);
+game.state.add('gameOver', gameOver);
+game.state.add('TitleScreen', TitleScreen);
+game.state.add('Credits', Credits);
 game.state.start('level1');
+
