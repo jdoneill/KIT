@@ -2,6 +2,10 @@ var game = new Phaser.Game(800, 500, Phaser.AUTO);
 //var game = new Phaser.Game(1920, 1500, Phaser.AUTO); //rffv
 //rffv means remove from final version (word search through document to find these before the final push)
 
+//---------------------------------------------------------------------------
+// I M P O R T A N T  V A R I A B L E S
+//---------------------------------------------------------------------------
+
 // P L A Y E R
 var playerVel = 150;
 var player;
@@ -29,13 +33,11 @@ var octocaught = false;
 
 // L E V E L  T R A C K E R 
 var level = 0;
-var currentLevel;
 
 // O B S T A C L E S
 var buttons;
 var platforms;
 var door;
-var doorHit = 0;
 var buttonTrap;
 var canShred = true;
 var canBreak = false;
@@ -43,7 +45,6 @@ var canBreak2 = false;
 var canBreak3 = false;
 var rockDes1 = false;
 var rockDes2 = false;
-var rockDur = 0;
 var tako;
 var suckers;
 var octoCanCharge = true;
@@ -51,12 +52,12 @@ var octoFlip = false;
 var canRip = true;
 
 // S O U N D S
-var music;
+var music; // M U S I C
 var music2;
 var music3;
 var music4;
-var music5;
-var walking;
+var music5;		// each level has increasingly deteriorating music
+var walking; // S F X
 var fallSFX;
 var jumping;
 var thud;
@@ -159,10 +160,12 @@ level1.prototype = {
 		ledge = this.platforms.create(30, 1427, 'plat', 'lilBox'); //floor left
 		ledge.body.immovable = true;
 		ledge.scale.setTo(2, 2);
-		//add a movable floor for puzzle solving
+		
+		//add a removable floor for puzzle solving
 		door = this.platforms.create(337, 1427, 'puzzles', 'puzzleDoor'); //door
 		door.body.immovable = true;
 		door.scale.setTo(2, 2);
+		
 		ledge = this.platforms.create(620, 1427, 'plat', 'lilBox'); //floor right
 		ledge.body.immovable = true;
 		ledge.scale.setTo(8, 2);
@@ -250,10 +253,12 @@ level1.prototype = {
  	if (game.input.keyboard.isDown(Phaser.Keyboard.A) && rArmOn == false){// go left
 		limb.body.velocity.x = -playerVel;
 		game.camera.follow(limb, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
+		walking.resume();//  Play walk sound
 	}
 	else if (game.input.keyboard.isDown(Phaser.Keyboard.D) && rArmOn == false){// go right
 		limb.body.velocity.x = playerVel;
 		game.camera.follow(limb, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
+		walking.resume();//  Play walk sound
 	} 
 	else {//  don't move
 		limb.body.velocity.x = 0;
@@ -288,7 +293,7 @@ level1.prototype = {
 	game.physics.arcade.collide(limb, buttons, buttonPressed, null, this);// check for buttonPressed
 	
 	//state shifts for level development //rffv
-/* 		if (game.input.keyboard.isDown(Phaser.Keyboard.TWO)){
+		if (game.input.keyboard.isDown(Phaser.Keyboard.TWO)){
 			game.state.start('Credits')
 		}
 		if (game.input.keyboard.isDown(Phaser.Keyboard.THREE)){
@@ -299,7 +304,7 @@ level1.prototype = {
 		}
 		if (game.input.keyboard.isDown(Phaser.Keyboard.FIVE)){
 			game.state.start('level5')
-		} */
+		}
 	
 	},
 /* 	render: function() {// setup debug rendering (comment out when not debugging) //rffv
@@ -437,7 +442,7 @@ level2.prototype = {
 		game.physics.enable(door3);
 		door3.body.immovable = true;
 		door3.scale.setTo(2.26, 2.2);
-		
+		// create 3 destructable doors to create the illusion of damage over time
 		door2 = game.add.sprite(865, 1427, 'puzzles', 'rock2'); //Rock (make it look like a rock)
 		game.physics.enable(door2);
 		door2.body.immovable = true;
@@ -451,7 +456,6 @@ level2.prototype = {
 		//S H R E D D E R
 		shredder = game.add.sprite(-700, 900, 'enemies', 'angryScaryShredder'); //adds the shredder
 		game.physics.enable(shredder); //give shredder physics
-		
 
 		// C A M E R A  S T U F F
 		game.world.setBounds(0,0,1920, 1500);
@@ -480,8 +484,7 @@ level2.prototype = {
 		level = 2; // set second level
 		
 		// Figures out if the player is falling then adds a landing sfx.
-		// C H A N G E  T H I S  A F T E R  T E S T I N G -------------v
-		if (game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR) /*&& lArmOn == true*/){//press space to remove limbs
+		if (game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR) && lArmOn == true){//press space to remove limbs
 			console.log('arm off');
 			limbRip.play();
 			lArmOn = false;
@@ -556,13 +559,8 @@ level2.prototype = {
         {
 			thud.play();
 			door.destroy();
-			// canBreak2 = false;
-			rockDur++;
 			rockDes1 = true;
         }
-		
-		// debug stuff	
-		// this.game.debug.cameraInfo(this.game.camera, 32, 32);
 
 		// This ensures that the rocks can only break one at a time & then when they collide it destroys the top layered sprite.
 		if(rockDes1 == true && player.body.y < 1150 && falling == true)
@@ -574,7 +572,6 @@ level2.prototype = {
 		{
 			thud.play();
 			door2.destroy();
-			rockDur++;
 			rockDes2 = true;
 		}
 		
@@ -588,8 +585,6 @@ level2.prototype = {
 			thud.play();
 			crack.play();
 			door3.destroy();
-			rockDur++;
-			//rockDes3 = true;
 		}
 		
 	    // rock breaking ends here
@@ -611,7 +606,6 @@ level2.prototype = {
 		music4.destroy();
 		walking.pause();
 		shredBuzz.pause();
-		rockDur = 0;
         rockDes1 = false;
         rockDes2 = false;
         canBreak = false;
@@ -626,7 +620,6 @@ level2.prototype = {
 		music4.destroy();
 		walking.pause();
 		shredBuzz.pause();
-		rockDur = 0;
         rockDes1 = false;
         rockDes2 = false;
         canBreak = false;
@@ -699,6 +692,9 @@ level3.prototype = {
 		lArmOn = false;
 		rLegOn = true;
 		lLegOn = true;
+		
+		octocaught = false;
+
 				//Do we need to reassign these vars?
 		// Assigns the audio to a global variable
 		walking = game.add.audio('walkNoise', 1, true); // add walk sfx, vol 1, looping true
@@ -838,7 +834,7 @@ level3.prototype = {
 		}
 		// Figures out if the player is falling then adds a landing sfx.
 		// C H A N G E  T H I S  A F T E R  T E S T I N G -------------v
-		if (game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR) /*&& rLegOn == true*/){//press space to remove limbs
+		if (game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR) && rLegOn == true){//press space to remove limbs
 			console.log('arm off');
 			limbRip.play();
 			rLegOn = false;
@@ -895,10 +891,12 @@ level3.prototype = {
  	if (game.input.keyboard.isDown(Phaser.Keyboard.A) && rLegOn == false && octocaught == false){// go left
 		limb.body.velocity.x = -playerVel;
 		game.camera.follow(limb, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
+		walking.resume();//  Play walk sound
 	}
 	else if (game.input.keyboard.isDown(Phaser.Keyboard.D) && rLegOn == false && octocaught == false){// go right
 		limb.body.velocity.x = playerVel;
 		game.camera.follow(limb, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
+		walking.resume();//  Play walk sound
 	} 
 	else {//  don't move
 		limb.body.velocity.x = 0;
@@ -935,7 +933,8 @@ level3.prototype = {
 		octoCanCharge = true;
 		octoFlip = false;
 		canRip = true;
-		
+		octocaught = false;
+
 	}
 	
 	function limbCaught (limb, tako) {//press the button
