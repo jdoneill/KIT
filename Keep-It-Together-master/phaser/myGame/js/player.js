@@ -87,10 +87,13 @@ Player.prototype.update = function(){
 	{
 		canJump = false;
 	}
-	if(lLegOn != true)
+	/* else */ if(lLegOn != true)
 	{
 		canJump = false;
 	}
+/* 	else{
+		canJump = true;
+	} */
 	if(cursors.up.isDown && player.body.touching.down)
     	{ //press up to jump (taken from phaser.io example code)
 			game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, .6, .6);

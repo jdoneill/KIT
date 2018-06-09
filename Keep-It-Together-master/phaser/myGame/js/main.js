@@ -1,5 +1,5 @@
-var game = new Phaser.Game(800, 500, Phaser.AUTO);
-//var game = new Phaser.Game(1920, 1500, Phaser.AUTO); //rffv
+//var game = new Phaser.Game(800, 500, Phaser.AUTO);
+var game = new Phaser.Game(1920, 1500, Phaser.AUTO); //rffv
 //rffv means remove from final version (word search through document to find these before the final push)
 
 // P L A Y E R
@@ -287,7 +287,7 @@ level1.prototype = {
 	game.physics.arcade.collide(limb, buttons, buttonPressed, null, this);// check for buttonPressed
 	
 	//state shifts for level development //rffv
-		/* if (game.input.keyboard.isDown(Phaser.Keyboard.TWO)){
+		if (game.input.keyboard.isDown(Phaser.Keyboard.TWO)){
 			game.state.start('Credits')
 		}
 		if (game.input.keyboard.isDown(Phaser.Keyboard.THREE)){
@@ -298,7 +298,7 @@ level1.prototype = {
 		}
 		if (game.input.keyboard.isDown(Phaser.Keyboard.FIVE)){
 			game.state.start('level5')
-		} */
+		}
 	
 	},
 /* 	render: function() {// setup debug rendering (comment out when not debugging) //rffv
@@ -1446,6 +1446,10 @@ level5.prototype = {
 		music5.destroy();
 		game.state.start('endLoad')
 	}
+	
+			if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)){
+				game.state.start('endLoad')	
+			}
 		
 	},
 }
@@ -1594,6 +1598,7 @@ Credits.prototype = {
 		},
 	update: function() {
 		// main menu logic
+		level = 6;
 		touching = game.physics.arcade.collide(player, this.platforms); //allows player to collide with walls and platforms and stuff
 		if(player.body.y > 285 && rArmOn == true){
 			rArmOn = false;
@@ -1617,7 +1622,6 @@ Credits.prototype = {
 			lLegOn = false;
 			lLeg.destroy();
 			game.add.text(90, 1437, 'With motivational support from Captain Punch (Our mascott)', {font: '45px TimesNewRoman', fill: '#FFF', fontWeight: 'bold', strokeThickness: 3});
-
 		}
 		
 		if(player.body.y > 1970){
