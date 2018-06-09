@@ -37,6 +37,7 @@ var platforms;
 var door;
 var doorHit = 0;
 var bvuttonTrap;
+var canShred = true;
 var canBreak = false;
 var canBreak2 = false;
 var canBreak3 = false;
@@ -64,6 +65,7 @@ var levelRip;
 var crack;
 var paperSlice;
 var bearTrap;
+var shredBuzz;
 
 // T I M E R  &  S H A K E
 var timer;
@@ -316,6 +318,7 @@ load2.prototype = {
 		game.load.atlas('scene', 'assets/img/cutscenes.png', 'assets/img/cutscenes.json'); // load the stuff
 		game.load.audio('flip', 'assets/audio/flip.mp3');
 		game.load.audio('crackSFX', 'assets/audio/crumple.mp3');
+		game.load.audio('buzzSFX', 'assets/audio/vaccum.mp3');
 		},
 	create: function() {
 		console.log('load2: create');
@@ -372,6 +375,7 @@ level2.prototype = {
 		limbRip = game.add.audio('limbSound', 1, false);
 		levelRip = game.add.audio('levelShift', 1, false);
 		crack = game.add.audio('crackSFX', 1, false);
+		shredBuzz = game.add.audio('buzzSFX', .5, true);
 		
 		music.destroy();
 		music2.volume = 1;
@@ -454,12 +458,7 @@ level2.prototype = {
 		ledge.checkWorldBounds = true;
 		ledge.events.onOutOfBounds.add(this.wrapPlat, this);
 */
-		
-		//S H R E D D E R
-		shredder = game.add.sprite(-700, 900, 'enemies', 'angryScaryShredder'); //adds the shredder
-		game.physics.enable(shredder); //give shredder physics
-		shredder.body.velocity.x = 25;
-		
+				
 
 		// P U Z Z L E 
 		//add a breakable rock floor for puzzle solving
@@ -478,6 +477,11 @@ level2.prototype = {
 		door.body.immovable = true;
 		door.scale.setTo(2.26, 2.2);
 		//rock floor
+		
+		//S H R E D D E R
+		shredder = game.add.sprite(-700, 900, 'enemies', 'angryScaryShredder'); //adds the shredder
+		game.physics.enable(shredder); //give shredder physics
+		
 
 		// C A M E R A  S T U F F
 		game.world.setBounds(0,0,1920, 1500);
@@ -518,11 +522,19 @@ level2.prototype = {
 			
 			// Starts timer on button press, so that it only shakes after you drop
 			timer.start();
+			
+			// Makes it so the shredder only starts to move after you hit space.
+			shredder.body.velocity.x = 25;
+			shredBuzz.play()
 		}
-
 		else{
 			playerVel = 70;
 		}
+		
+		 if(shredder.body.x > 550){
+            timer.pause();
+        }
+		
 		if(player.body.velocity.y > 0){ // check for falling
 			falling = true;
 		}
@@ -574,7 +586,7 @@ level2.prototype = {
         }
         if(game.physics.arcade.collide(door,player) && canBreak == true)
         {
-			crack.play();
+			thud.play();
 			door.destroy();
 			// canBreak2 = false;
 			rockDur++;
@@ -592,7 +604,7 @@ level2.prototype = {
 		
 	    if(game.physics.arcade.collide(door2,player) && canBreak2 == true)
 		{
-			crack.play();
+			thud.play();
 			door2.destroy();
 			rockDur++;
 			rockDes2 = true;
@@ -605,6 +617,7 @@ level2.prototype = {
 		
 	    if(game.physics.arcade.collide(door3,player) && canBreak3 == true)
 		{
+			thud.play();
 			crack.play();
 			door3.destroy();
 			rockDur++;
@@ -617,6 +630,11 @@ level2.prototype = {
 		lArmOn = false;
 		game.state.start('load3')
 	}
+	if(shred == true)
+	{
+		limbRip.play();
+	}
+	
 	if (game.input.keyboard.isDown(Phaser.Keyboard.R) || shred == true){ //R to restart or if shredder gets the player
 		game.state.start('level2')
 		music.destroy(); //so the music doesn't overlap
@@ -624,6 +642,7 @@ level2.prototype = {
 		music3.destroy();
 		music4.destroy();
 		walking.pause();
+		shredBuzz.pause();
 		rockDur = 0;
         rockDes1 = false;
         rockDes2 = false;
@@ -656,6 +675,7 @@ load3.prototype = {
 		game.load.audio('CrUnCh', 'assets/audio/crumple.mp3');
 		},
 	create: function() {
+		shredBuzz.pause();
 		console.log('load2: create');
 		var bgC2 = game.add.sprite(0, 0, 'back', 'BackgroundCutscene'); // add da background
 		bgC2.scale.setTo(1.25, 1.4); //scale cutscene background
@@ -917,6 +937,11 @@ level3.prototype = {
 		rLegOn = false;
 		game.state.start('load4')
 	}
+	if(chomped == true && canRip == true)
+	{
+		limbRip.play();
+	}
+	
 	if (game.input.keyboard.isDown(Phaser.Keyboard.R) || chomped == true){ //R to restart
 		game.state.start('level3')
 		music.destroy(); //so the music doesn't overlap
@@ -926,6 +951,7 @@ level3.prototype = {
 		walking.pause();
 		octoCanCharge = true;
 		octoFlip = false;
+		canRip = true;
 		
 	}
 	
@@ -1555,7 +1581,7 @@ function shake()
 	// Sets intensity and duration
 	game.camera.shake(shakeIntensity , shakeLength)
 	
-	shakeIntensity *= 1.1;
+	shakeIntensity *= 1.5;
 	if(shakeLength < time )
 	{
 	shakeLength *= 1.3;
