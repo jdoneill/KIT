@@ -32,11 +32,9 @@ function Player (game, key, frame, playerX, playerY) {
     lLeg.scale.setTo(1, 1.5);
 	}
 	
-
-		game.physics.arcade.enable(this); // add physics to the playa
-		this.body.gravity.y = 450; // change this to a var for water level gravity change
-		this.body.collideWorldBounds = false; // don't fall through the earth (changing this after we get platform collision)
-
+	game.physics.arcade.enable(this); // add physics to the playa
+	this.body.gravity.y = 450; // change this to a var for water level gravity change
+	this.body.collideWorldBounds = false; // don't fall through the earth (changing this after we get platform collision)
 	game.camera.follow(player, 800, 500);
 
 	}
@@ -83,35 +81,25 @@ Player.prototype.update = function(){
 	// P L A Y E R  M O V E M E N T
 	// J U M P
 	
-	if( level == 5)
-	{
+	if( level == 5){
 		canJump = false;
 	}
-	/* else */ if(lLegOn != true)
-	{
+	if(lLegOn != true){
 		canJump = false;
 	}
-/* 	else{
-		canJump = true;
-	} */
-	if(cursors.up.isDown && player.body.touching.down)
-    	{ //press up to jump (taken from phaser.io example code)
-			game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
-			
-    		if(canJump == true)
-        	{
-        		player.body.velocity.y = -330;
-        		console.log('jump');
-			canJump = false;
-			}
-    	}
+
+	if(cursors.up.isDown && player.body.touching.down){ //press up to jump (taken from phaser.io example code)
+		game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, .6, .6);
+    	if(canJump == true){
+       		player.body.velocity.y = -330;
+       		console.log('jump');
+		canJump = false;
+		}
+    }
     	// makes it so you have to press up each time you want to jump
-    	if(cursors.up.isUp && lLegOn == true)
-    	{
-			
-        	canJump = true;
-			
-    	}
+    if(cursors.up.isUp && lLegOn == true){
+       	canJump = true;
+    }
 	
 	// W A L K I N G
 	if (cursors.left.isDown && level != 5 && trapped == false){
@@ -130,54 +118,42 @@ Player.prototype.update = function(){
 	// P L A Y E R  M O V E M E N T
 	// R I G H T
 
-		else if(cursors.right.isDown && player.body.touching.down && level == 5 )
-			{
-	    		{ //press right to move
-	    			if(canRight == true)
-	        		{
-	        			player.body.x = player.body.x + distance;
-	        			console.log('right');
+		else if(cursors.right.isDown && player.body.touching.down && level == 5 ){{ //press right to move
+	    		if(canRight == true){
+        			player.body.x = player.body.x + distance;
 					canRight = false;
 					player.scale.setTo(2, 2);
 					// Makes you move slower towards the end.
-					
-					}
-					if(level == 5 && player.body.x >= 1400)
-					{
-						distance = 2;
-					}
-	    		}
-			}
+				}
+				if(level == 5 && player.body.x >= 1400)
+					distance = 2;
+				}
+	    	}
 		
     		// makes it so you have to press up each time you want to jump
-    		else if(cursors.right.isUp){
+    	if(cursors.right.isUp){
         	canRight = true;
-    		}
+    	}
 		
 	// L E F T
-	 if(cursors.left.isDown && player.body.touching.down && level == 5)
-    	{ //press left to move
-    		if(canLeft == true && player.body.x > 10)
-        	{
-        		player.body.x = player.body.x - distance;
-        		console.log('left');
+	 if(cursors.left.isDown && player.body.touching.down && level == 5){ //press left to move
+    	if(canLeft == true && player.body.x > 10){
+        	player.body.x = player.body.x - distance;
 			canLeft = false;
 			player.scale.setTo(-2, 2);
-			}
-    	}
+		}
+    }
     	// makes it so you have to press up each time you want to jump
-    	else if(cursors.left.isUp)
-		{
+    	else if(cursors.left.isUp){
         	canLeft = true;
     	}
 
-	if (cursors.left.isUp && cursors.right.isUp) 
-	{
+	if (cursors.left.isUp && cursors.right.isUp) {
 		//  don't move
 		player.body.velocity.x = 0;
 	}
 
-	if (game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR) /*&& lLegOn == true*/){ // this code doesn't do anything rn
+	if (game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR)){ // this code doesn't do anything rn
 		trapped = false;
 	}
 		

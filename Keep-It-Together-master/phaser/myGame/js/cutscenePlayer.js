@@ -1,10 +1,8 @@
 function Cutscene (game, key, frame) {
 	Phaser.Sprite.call(this, game, 400, -20, key, frame);
-	
-	size = 1;//rffv
-	
+		
 	this.anchor.set(0.5);
-	this.scale.setTo(size, size);
+	this.scale.setTo(1, 1);
 	
 	game.physics.enable(this);
 	this.body.immovable = false;
@@ -18,8 +16,5 @@ Cutscene.prototype = Object.create(Phaser.Sprite.prototype);
 Cutscene.prototype.constructor = Cutscene;
 
 Cutscene.prototype.update = function(){
-
 	cutscene.angle +=5;
-	size -= .01; //rffv
-
 }
